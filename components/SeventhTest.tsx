@@ -1,0 +1,1 @@
+"// Seventh test component"  
