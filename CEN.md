@@ -14,8 +14,6 @@ common-repo/
 │   ├── Input.tsx
 │   ├── Modal.tsx
 │   └── ...
-├── scripts/          # 자동화 스크립트
-│   └── sync-assets.ps1   # 공통 자산 정리 (AI-Powered)
 └── .claude/skills/   # IntelliCEN 스킬 정의
     └── common-asset-sync/
         └── SKILL.md
