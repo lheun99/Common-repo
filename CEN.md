@@ -9,6 +9,9 @@ common-repo/
 │   ├── FileController.java   # 파일 업로드/다운로드 컨트롤러
 │   ├── FileStorageService.java # 로컬 디스크 기반 파일 저장 서비스
 │   └── ...
+├── asset-index/      # 공통 자산 정리집 (스킬이 갱신)
+│   ├── asset-index.json  # 정리집 (MCP 서버·탐색기가 읽음)
+│   └── automation.log    # 정리 기록
 ├── components/       # React 공통 UI 컴포넌트 (.tsx)
 │   ├── Button.tsx
 │   ├── Input.tsx
@@ -25,34 +28,29 @@ common-repo/
 
 ### 전체 흐름
 
-1. **변경 사항 확인**: `git status` 로 `common-repo` 변경 파일 확인
+1. **커밋할 파일 확인**: 사용자가 `git add` 로 **stage 해 둔 파일만** 대상 (`git diff --cached --name-status`)
+   - stage 안 된 수정 파일·untracked 파일은 무시 (목록에도 넣지 않음)
 2. **공통 코드 커밋** (사용자 승인 후):
-   - 변경 파일 목록과 커밋 메시지 확인
-   - `git add -A` 대신 **변경 파일만 선택적 추가** (`git add <파일>`)
+   - stage된 파일 목록과 커밋 메시지 확인
+   - 추가 `git add` 없이 **stage된 그대로** `git commit -m` (`-a`, `git add -A` 금지)
    - 커밋 후 post-commit 훅이 `.git/common-asset-pending.txt` 에 해시 자동 기록
 3. **정리 대상 커밋 모으기**: `common-asset-pending.txt` 에서 해시 목록 읽기
-4. **정리집 갱신**: `common-sync-demo/asset-index.json` 업데이트
-   - 대상 저장소: `../common-sync-demo`
-   - 규칙 파일: `../common-sync-demo/index-agent-prompt.md`
-   - 로그: `../common-sync-demo/logs/automation.log`
-5. **정리집 커밋**: `common-sync-demo` 에서 `asset-index.json` 과 `logs/` 만 커밋
+4. **정리집 내용 구성 → 미리보기** (사용자 승인 후 반영): 추가/갱신/보류 항목, 로그 줄, 커밋 메시지를 먼저 보여 줌
+   - 반영 대상: `asset-index/asset-index.json` (이 저장소 안)
+   - 규칙: `.claude/skills/common-asset-sync/SKILL.md`의 "정리집 작성 규칙" 섹션
+   - 로그: `asset-index/automation.log`
+5. **정리집 커밋**: `asset-index/` 의 두 파일만 커밋 (`git commit ... -- <두 파일>`)
    - 메시지: `docs: 공통 자산 정리집 갱신 (<짧은 해시들>)`
-6. **결과 보고**: 추가/갱신된 자산, 보류 항목, 커밋 해시
+6. **push** (마지막에 한 번 확인): 코드 커밋과 정리집 커밋을 함께 push
+7. **결과 보고**: 추가/갱신된 자산, 보류 항목, 커밋 해시
 
-### 자산 판별 규칙
+### 자산 판별·필드 추출 규칙
 
-- **대상 디렉터리**: `components/` 또는 `backend/` 만 처리
-- **Type 분류**:
-  - `components/*.tsx` → `frontend-component`
-  - `backend/*.java` → `backend-module`
-- **자산명**: 파일명 (확장자 제거)
-- **Props/메서드**:
-  - Frontend: `interface XxxProps` 의 속성
-  - Backend: `public` 메서드
-- **Purpose**: JSDoc (`/** ... */`) 또는 Javadoc 에서 첫 줄 추출
+`.claude/skills/common-asset-sync/SKILL.md`의 "정리집 작성 규칙" 섹션을 따른다. (규칙의 원본은 그 파일 하나다.)
 
 ### 주의사항
 
+- **커밋된 내용만 정리**: 커밋되지 않은 파일은 정리집에 반영하지 않음. 소스는 `git show <해시>:<경로>` 로 읽음
 - `common-repo` 소스 코드를 **수정하지 않음** (커밋만 함)
 - 승인 없이 커밋/ push 하지 않음
 - `asset-index.json` 은 **UTF-8, 들여쓰기 2 칸**의 올바른 JSON
@@ -73,5 +71,6 @@ common-repo/
 
 ## 스킬 사용
 
-- `common-asset-sync` 스킬: `common-repo` 변경분을 `common-sync-demo` 의 정리집에 반영
+- `common-asset-sync` 스킬: `common-repo` 변경분을 `asset-index/` 의 정리집에 반영
+- 정리집을 읽는 도구(MCP 서버, 탐색기)는 별도 저장소 `../common-sync-demo` 에 있음
 - 스킬 실행: `.claude/skills/common-asset-sync/SKILL.md` 참조
