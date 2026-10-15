@@ -5,3 +5,4 @@
 [2026-10-08T06:53:05+01:00] commit 5b7d5c3 → index에 Tabs(frontend-component) 추가함
 [2026-10-08T07:03:30+01:00] commit 1f654be → index에 MaskingUtils(backend-module) 추가함
 [2026-10-15T00:55:32+01:00] commit 393dab8 → index에 SearchInput(frontend-component) 추가함 [new] (생성 포함: 사용 예, 승인)
+[2026-10-15T09:23:26+09:00] 기존 항목 20개를 새 규칙으로 재정리함 ([동작]·사용 예·usage 전체·related 추가, AI 추론 표시 제거)
