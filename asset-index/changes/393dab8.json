@@ -14,5 +14,7 @@
       "action": "목록 화면 상단의 검색어 입력창으로 사용하세요. Enter 키나 '검색' 버튼으로 검색을 실행합니다."
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-10-15T09:59:21+09:00",
+  "notification": "20261015-393dab8.json"
 }

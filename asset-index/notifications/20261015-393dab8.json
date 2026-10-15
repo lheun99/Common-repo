@@ -1,0 +1,19 @@
+{
+  "id": "20261015-393dab8",
+  "createdAt": "2026-10-15T09:59:21+09:00",
+  "sourceCommits": ["393dab8"],
+  "items": [
+    {
+      "asset": "SearchInput",
+      "type": "frontend-component",
+      "commit": "393dab8",
+      "grade": "new",
+      "summary": "SearchInput 컴포넌트가 추가되었습니다.",
+      "action": "목록 화면 상단의 검색어 입력창으로 사용하세요. Enter 키나 '검색' 버튼으로 검색을 실행합니다.",
+      "targets": [],
+      "candidates": []
+    }
+  ],
+  "scanErrors": [],
+  "messages": []
+}
