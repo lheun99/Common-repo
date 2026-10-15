@@ -19,5 +19,7 @@
       ]
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-10-15T10:36:31+09:00",
+  "notification": "20261015-3a660e9.json"
 }
