@@ -233,6 +233,16 @@
       "detail": "[설명]\n- 화면 표시나 로그 출력 시 이름·휴대폰 번호·이메일·주민등록번호가 그대로 노출되지 않도록 일부를 *로 가린다.\n- 마스킹 규칙은 개인정보 보호 지침(2026-09 개정)을 따른다.\n[사용 예]\n  String name = MaskingUtils.maskName(\"홍길동\");          // 홍*동\n  String phone = MaskingUtils.maskPhone(\"010-1234-5678\"); // 010-****-5678\n[주의]\n- 마스킹된 값은 원래 값으로 되돌릴 수 없다. DB에는 반드시 원본(암호화된 값)을 저장하고, 마스킹은 출력 직전에만 한다.\n[메서드]\n- maskName(name): 이름의 가운데 글자를 가린다. 두 글자 이름은 마지막 글자를 가린다. 마스킹된 이름 (name이 null이거나 비어 있으면 그대로 반환)\n- maskPhone(phone): 휴대폰 번호의 가운데 자리를 가린다. phone은 하이픈(-)이 포함된 휴대폰 번호 (예: 010-1234-5678), 마스킹된 번호 (예: 010-****-5678). 하이픈으로 나눈 결과가 3부분이 아닌 경우 IllegalArgumentException\n- maskEmail(email): 이메일 아이디의 앞 2글자만 남기고 가린다. 도메인은 가리지 않는다. 마스킹된 이메일 (예: ho****@company.com). @가 없으면 그대로 반환\n- maskRrn(rrn): 주민등록번호 뒷자리를 첫 글자만 남기고 가린다. 단, 하이픈 없이 13자리로 들어오면 앞 6자리 뒤에 하이픈을 넣어 반환한다. rrn은 주민등록번호 (예: 900101-1234567 또는 9001011234567), 마스킹된 주민등록번호 (예: 900101-1******)",
       "addedInCommit": "1f654be",
       "addedAt": "2026-10-08T07:03:30+01:00"
+    },
+    {
+      "type": "frontend-component",
+      "name": "SearchInput",
+      "path": "common-repo/components/SearchInput.tsx",
+      "purpose": "검색어 입력창 (목록 화면 상단 검색용)",
+      "props": ["value", "onChange", "onSearch", "placeholder", "disabled"],
+      "detail": "[사용 예]\n  <SearchInput\n    value={keyword}\n    onChange={setKeyword}\n    onSearch={(k) => searchList(k)}\n    placeholder=\"사용자명 검색\"\n  />\n[동작]\n- Enter 키를 누르거나 '검색' 버튼을 누르면 검색이 실행된다.\n- 검색어가 공백만이면 onSearch가 호출되지 않는다.\n- 입력값이 있고 disabled가 아니면 '지우기' 버튼이 표시된다. 누르면 입력값이 비어진다.\n[props]\n- value: 입력값\n- onChange: 입력할 때마다 호출 (입력된 문자열 전달)\n- onSearch: 검색 실행 시 호출 (앞뒤 공백을 제거한 검색어 전달)\n- placeholder: 입력 전 안내 문구 (선택, 기본 '검색어를 입력하세요')\n- disabled: 비활성화 여부 (선택, 기본 false)",
+      "addedInCommit": "393dab8",
+      "addedAt": "2026-10-15T00:55:32+01:00"
     }
   ]
 }
