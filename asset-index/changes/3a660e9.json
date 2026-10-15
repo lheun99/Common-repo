@@ -1,0 +1,23 @@
+{
+  "commit": "3a660e9",
+  "committedAt": "2026-10-15T10:33:04+09:00",
+  "subject": "feat: 토스트 알림 기능 추가",
+  "changes": [
+    {
+      "asset": "Toast",
+      "type": "frontend-feature",
+      "path": "common-repo/components/toast/ToastContainer.tsx",
+      "fileStatus": "A",
+      "grade": "new",
+      "summary": "토스트 알림 기능(ToastContainer, useToast)이 추가되었습니다.",
+      "details": [],
+      "action": "저장·삭제 결과 같은 짧은 알림을 띄울 때 사용하세요. 앱 최상위에 <ToastContainer />를 한 번 넣고, 화면에서 useToast()로 띄웁니다.",
+      "changedFiles": [
+        "common-repo/components/toast/ToastContainer.tsx",
+        "common-repo/components/toast/useToast.ts",
+        "common-repo/components/toast/toastStore.ts"
+      ]
+    }
+  ],
+  "notified": false
+}
