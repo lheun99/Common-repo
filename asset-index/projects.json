@@ -1,0 +1,22 @@
+{
+  "projects": [
+    {
+      "name": "shop-app",
+      "path": "../sample-projects/shop-app",
+      "owner": { "name": "최PL", "email": "pl.choi@example.com" },
+      "pmsProjectId": null
+    },
+    {
+      "name": "admin-app",
+      "path": "../sample-projects/admin-app",
+      "owner": { "name": "정PL", "email": "pl.jung@example.com" },
+      "pmsProjectId": null
+    },
+    {
+      "name": "hr-app",
+      "path": "../sample-projects/hr-app",
+      "owner": { "name": "한PL", "email": "pl.han@example.com" },
+      "pmsProjectId": null
+    }
+  ]
+}
