@@ -7,7 +7,7 @@ export interface ToastItem {
 }
 
 const MAX_TOASTS = 3;
-const DURATION_MS = 3000;
+const DURATION_MS = 5000;
 
 let toasts: ToastItem[] = [];
 let nextId = 1;
