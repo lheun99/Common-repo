@@ -1,0 +1,20 @@
+{
+  "commit": "6c12526",
+  "committedAt": "2026-10-21T08:02:36+01:00",
+  "subject": "fix: 토스트 자동 닫기 시간 3초 → 5초로 변경",
+  "changes": [
+    {
+      "asset": "Toast",
+      "type": "frontend-feature",
+      "path": "common-repo/components/toast/toastStore.ts",
+      "fileStatus": "M",
+      "grade": "behavior",
+      "summary": "info·success 토스트의 자동 닫기 시간이 3초에서 5초로 바뀌었습니다.",
+      "details": [
+        { "what": "info·success 토스트 자동 닫기 시간", "before": "3초 (3000ms)", "after": "5초 (5000ms)" }
+      ],
+      "action": "수정 불필요. info·success 토스트가 5초 동안 표시된다는 점만 확인하세요."
+    }
+  ],
+  "notified": false
+}

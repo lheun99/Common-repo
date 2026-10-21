@@ -258,7 +258,10 @@
       "props": ["value", "onChange", "onSearch", "placeholder", "disabled"],
       "detail": "[사용 예]\n  <SearchInput\n    value={keyword}\n    onChange={setKeyword}\n    onSearch={(k) => searchList(k)}\n    placeholder=\"사용자명 검색\"\n  />\n[동작]\n- Enter 키를 누르거나 '검색' 버튼을 누르면 검색이 실행된다.\n- 검색어가 공백만이면 onSearch가 호출되지 않는다.\n- 입력값이 있고 disabled가 아니면 '지우기' 버튼이 표시된다. 누르면 입력값이 비어진다.\n[props]\n- value: 입력값\n- onChange: 입력할 때마다 호출 (입력된 문자열 전달)\n- onSearch: 검색 실행 시 호출 (앞뒤 공백을 제거한 검색어 전달)\n- placeholder: 입력 전 안내 문구 (선택, 기본 '검색어를 입력하세요')\n- disabled: 비활성화 여부 (선택, 기본 false)",
       "addedInCommit": "393dab8",
-      "addedAt": "2026-10-15T00:55:32+01:00"
+      "addedAt": "2026-10-15T00:55:32+01:00",
+      "history": [
+        { "commit": "393dab8", "at": "2026-10-15T00:55:32+01:00", "grade": "new", "summary": "SearchInput 컴포넌트가 추가되었습니다." }
+      ]
     },
     {
       "type": "frontend-feature",
@@ -273,9 +276,15 @@
       "usage": [
         "useToast(): { info(message: string): number; success(message: string): number; error(message: string): number; close(id: number): void }"
       ],
-      "detail": "[설명]\n- 앱 최상위에 한 번만 넣는다.\n- useToast: 토스트 알림을 띄우는 hook\n[사용 예]\n  // 앱 최상위\n  <ToastContainer />\n\n  // 화면에서\n  const toast = useToast();\n  toast.success(\"저장되었습니다.\");\n  const id = toast.error(\"저장에 실패했습니다.\");\n  toast.close(id);\n[동작]\n- 토스트는 최대 3개까지 표시되며, 넘치면 가장 오래된 토스트부터 사라진다.\n- info·success 토스트는 3초 뒤 자동으로 닫힌다.\n- error 토스트는 자동으로 닫히지 않는다. '닫기' 버튼이나 close()로 닫아야 한다.\n- 토스트마다 \"닫기\" 버튼이 항상 표시된다.\n- info·success·error는 토스트 id(숫자)를 반환하며, 이 id를 close()에 넘기면 해당 토스트가 닫힌다.\n- error 토스트는 스크린 리더가 즉시 읽는 알림(role=\"alert\")으로, 나머지는 상태 알림(role=\"status\")으로 표시된다.\n- ToastContainer가 화면에 없으면 useToast로 띄운 토스트가 보이지 않는다.\n- 토스트 목록은 앱 전체에서 하나를 공유하므로, ToastContainer를 여러 곳에 넣으면 같은 토스트가 중복 표시된다.",
+      "detail": "[설명]\n- 앱 최상위에 한 번만 넣는다.\n- useToast: 토스트 알림을 띄우는 hook\n[사용 예]\n  // 앱 최상위\n  <ToastContainer />\n\n  // 화면에서\n  const toast = useToast();\n  toast.success(\"저장되었습니다.\");\n  const id = toast.error(\"저장에 실패했습니다.\");\n  toast.close(id);\n[동작]\n- 토스트는 최대 3개까지 표시되며, 넘치면 가장 오래된 토스트부터 사라진다.\n- info·success 토스트는 5초 뒤 자동으로 닫힌다.\n- error 토스트는 자동으로 닫히지 않는다. '닫기' 버튼이나 close()로 닫아야 한다.\n- 토스트마다 \"닫기\" 버튼이 항상 표시된다.\n- info·success·error는 토스트 id(숫자)를 반환하며, 이 id를 close()에 넘기면 해당 토스트가 닫힌다.\n- error 토스트는 스크린 리더가 즉시 읽는 알림(role=\"alert\")으로, 나머지는 상태 알림(role=\"status\")으로 표시된다.\n- ToastContainer가 화면에 없으면 useToast로 띄운 토스트가 보이지 않는다.\n- 토스트 목록은 앱 전체에서 하나를 공유하므로, ToastContainer를 여러 곳에 넣으면 같은 토스트가 중복 표시된다.",
       "addedInCommit": "3a660e9",
-      "addedAt": "2026-10-15T10:33:04+09:00"
+      "addedAt": "2026-10-15T10:33:04+09:00",
+      "updatedInCommit": "6c12526",
+      "updatedAt": "2026-10-21T08:02:36+01:00",
+      "history": [
+        { "commit": "3a660e9", "at": "2026-10-15T10:33:04+09:00", "grade": "new", "summary": "토스트 알림 기능(ToastContainer, useToast)가 추가되었습니다." },
+        { "commit": "6c12526", "at": "2026-10-21T08:02:36+01:00", "grade": "behavior", "summary": "info·success 토스트의 자동 닫기 시간이 3초에서 5초로 바뀌었습니다." }
+      ]
     }
   ]
 }
