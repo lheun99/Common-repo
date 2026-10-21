@@ -16,5 +16,6 @@
       "action": "수정 불필요. info·success 토스트가 5초 동안 표시된다는 점만 확인하세요."
     }
   ],
-  "notified": false
+  "notified": false,
+  "announcement": "20261021-3a660e9-6c12526"
 }
