@@ -1,0 +1,34 @@
+{
+  "commit": "817fe3b",
+  "committedAt": "2026-10-22T01:15:32+01:00",
+  "subject": "feat: 공휴일 조회 및 영업일 계산 API 추가",
+  "changes": [
+    {
+      "asset": "Holiday",
+      "type": "backend-feature",
+      "path": "common-repo/backend/holiday/HolidayController.java",
+      "fileStatus": "A",
+      "grade": "new",
+      "summary": "공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다.",
+      "details": [],
+      "action": "연도별 공휴일 조회, 날짜의 쉬는 날 여부 확인, 다음 영업일 구하기 기능을 사용할 수 있습니다.",
+      "affectedApi": [
+        "GET /api/holidays",
+        "GET /api/holidays/check",
+        "GET /api/holidays/next-business-day",
+        "getHolidays",
+        "isHoliday",
+        "nextBusinessDay"
+      ],
+      "changedFiles": [
+        "common-repo/backend/holiday/HolidayController.java",
+        "common-repo/backend/holiday/HolidayService.java",
+        "common-repo/backend/holiday/HolidayServiceImpl.java",
+        "common-repo/backend/holiday/HolidayMapper.java",
+        "common-repo/backend/holiday/HolidayVO.java",
+        "common-repo/backend/holiday/holiday_SQL.xml"
+      ]
+    }
+  ],
+  "notified": false
+}

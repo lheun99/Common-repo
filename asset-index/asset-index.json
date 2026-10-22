@@ -285,6 +285,37 @@
         { "commit": "3a660e9", "at": "2026-10-15T10:33:04+09:00", "grade": "new", "summary": "토스트 알림 기능(ToastContainer, useToast)가 추가되었습니다." },
         { "commit": "6c12526", "at": "2026-10-21T08:02:36+01:00", "grade": "behavior", "summary": "info·success 토스트의 자동 닫기 시간이 3초에서 5초로 바뀌었습니다." }
       ]
+    },
+    {
+      "type": "backend-feature",
+      "name": "Holiday",
+      "path": "common-repo/backend/holiday/HolidayController.java",
+      "files": [
+        "common-repo/backend/holiday/HolidayController.java",
+        "common-repo/backend/holiday/HolidayService.java",
+        "common-repo/backend/holiday/HolidayServiceImpl.java",
+        "common-repo/backend/holiday/HolidayMapper.java",
+        "common-repo/backend/holiday/HolidayVO.java",
+        "common-repo/backend/holiday/holiday_SQL.xml"
+      ],
+      "purpose": "공휴일 조회 및 영업일 계산 API.",
+      "api": [
+        "GET /api/holidays",
+        "GET /api/holidays/check",
+        "GET /api/holidays/next-business-day"
+      ],
+      "usage": [
+        "public List<HolidayVO> getHolidays(int year)",
+        "public boolean isHoliday(LocalDate date)",
+        "public LocalDate nextBusinessDay(LocalDate date)"
+      ],
+      "detail": "[설명]\n- 화면에서 달력에 공휴일을 표시하거나, 처리 예정일을 다음 영업일로 맞출 때 사용한다.\n- 서버 코드에서는 HolidayService를 주입해서 직접 호출한다.\n[사용 예]\n  GET /api/holidays?year=2026\n  → { \"success\": true, \"data\": [ { \"holidayDate\": \"2026-01-01\", \"holidayName\": \"설날\", \"substituteYn\": \"N\" } ] }\n\n  List<HolidayVO> holidays = holidayService.getHolidays(2026);\n  boolean off = holidayService.isHoliday(LocalDate.of(2026, 1, 1));\n  LocalDate next = holidayService.nextBusinessDay(LocalDate.of(2026, 1, 1));\n[동작]\n- 사용하지 않는 공휴일은 조회되지 않는다.\n- 공휴일 목록은 연도별로 캐시되므로, 공휴일 데이터가 바뀌어도 캐시 해제·서버 재시작 전까지 반영되지 않는다.\n- isHoliday: date가 null이면 예외를 던진다.\n- isHoliday: 주말(토·일)은 쉬는 날로 판정한다.\n- nextBusinessDay: 최대 60일까지 탐색한다.\n- nextBusinessDay: 60일 안에 영업일을 찾지 못하면 예외를 던진다.\n[API]\n- GET /api/holidays: 연도별 공휴일 목록\n  요청: year(정수, 선택, 생략 시 올해)\n  응답: { success, data: [{ holidayDate, holidayName, substituteYn }] }\n- GET /api/holidays/check: 해당 날짜가 쉬는 날인지 확인\n  요청: date(문자열, 필수, yyyy-MM-dd)\n  응답: { success, data: true/false }\n  실패: date 형식이 잘못되면 → success=false\n- GET /api/holidays/next-business-day: 기준일 다음의 첫 영업일\n  요청: date(문자열, 필수, yyyy-MM-dd)\n  응답: { success, data: \"yyyy-MM-dd\" }\n  실패: date 형식이 잘못되면 → success=false\n  실패: 60일 안에 영업일을 찾지 못하면 → success=false, \"서버 오류가 발생했습니다.\"\n[메서드]\n- getHolidays(year): year은 조회할 연도, 해당 연도의 공휴일 목록 (날짜 오름차순)\n- isHoliday(date): date은 확인할 날짜, 쉬는 날이면 true\n- nextBusinessDay(date): date은 기준일, 다음 영업일 (기준일 당일은 포함하지 않음)",
+      "related": ["ApiResponse", "DateTimeUtils"],
+      "addedInCommit": "817fe3b",
+      "addedAt": "2026-10-22T01:15:32+01:00",
+      "history": [
+        { "commit": "817fe3b", "at": "2026-10-22T01:15:32+01:00", "grade": "new", "summary": "공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다." }
+      ]
     }
   ]
 }

@@ -8,3 +8,4 @@
 [2026-10-15T09:23:26+09:00] 기존 항목 20개를 새 규칙으로 재정리함 ([동작]·사용 예·usage 전체·related 추가, AI 추론 표시 제거)
 [2026-10-15T10:33:04+09:00] commit 3a660e9 → index에 Toast(frontend-feature) 추가함 [new] (생성 포함: 사용 예, 승인)
 [2026-10-21T08:02:36+01:00] commit 6c12526 → index의 Toast(frontend-feature) 갱신함: detail [behavior]
+[2026-10-22T01:15:32+01:00] commit 817fe3b → index에 Holiday(backend-feature) 추가함 [new] (생성 포함: 사용 예, 승인)
