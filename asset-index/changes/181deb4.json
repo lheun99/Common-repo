@@ -1,0 +1,31 @@
+{
+  "commit": "181deb4",
+  "committedAt": "2026-10-22T07:19:42+01:00",
+  "subject": "refactor: Holiday 영업일 계산 메서드 변경, 대체공휴일 필드 boolean화",
+  "changes": [
+    {
+      "asset": "Holiday",
+      "type": "backend-feature",
+      "path": "common-repo/backend/holiday/HolidayController.java",
+      "fileStatus": "M",
+      "grade": "breaking",
+      "summary": "HolidayService의 nextBusinessDay가 addBusinessDays로 바뀌었고, 공휴일 목록 응답의 substituteYn이 substitute(boolean)로 바뀌었습니다.",
+      "details": [
+        { "what": "HolidayService 메서드", "before": "LocalDate nextBusinessDay(LocalDate date)", "after": "LocalDate addBusinessDays(LocalDate date, int days)" },
+        { "what": "GET /api/holidays 응답 필드", "before": "substituteYn: \"Y\"/\"N\"", "after": "substitute: true/false" },
+        { "what": "HolidayVO 필드", "before": "String substituteYn (getSubstituteYn/setSubstituteYn)", "after": "boolean substitute (isSubstitute/setSubstitute)" }
+      ],
+      "action": "nextBusinessDay를 호출하는 코드는 addBusinessDays로 바꾸세요 (다음 영업일은 addBusinessDays(date, 1)). substituteYn을 읽는 코드는 substitute(boolean)로 바꾸세요. 예: holidayService.addBusinessDays(date, 1), holiday.isSubstitute()",
+      "scanHints": ["nextBusinessDay", "substituteYn", "getSubstituteYn", "setSubstituteYn"],
+      "affectedApi": ["GET /api/holidays", "GET /api/holidays/next-business-day", "addBusinessDays", "getHolidays"],
+      "changedFiles": [
+        "common-repo/backend/holiday/HolidayController.java",
+        "common-repo/backend/holiday/HolidayService.java",
+        "common-repo/backend/holiday/HolidayServiceImpl.java",
+        "common-repo/backend/holiday/HolidayVO.java",
+        "common-repo/backend/holiday/holiday_SQL.xml"
+      ]
+    }
+  ],
+  "notified": false
+}

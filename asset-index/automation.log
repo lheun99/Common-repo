@@ -10,3 +10,4 @@
 [2026-10-21T08:02:36+01:00] commit 6c12526 → index의 Toast(frontend-feature) 갱신함: detail [behavior]
 [2026-10-22T01:15:32+01:00] commit 817fe3b → index에 Holiday(backend-feature) 추가함 [new] (생성 포함: 사용 예, 승인)
 [2026-10-22T06:59:15+01:00] commit 49f35f8 → index에 Code(backend-feature) 추가함 [new] (생성 포함: 사용 예, 승인)
+[2026-10-22T07:19:42+01:00] commit 181deb4 → index의 Holiday(backend-feature) 갱신함: usage, detail [breaking]
