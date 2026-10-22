@@ -13,8 +13,8 @@ public class HolidayVO {
     /** 공휴일 이름 (예: 설날, 추석) */
     private String holidayName;
 
-    /** 대체공휴일 여부 (Y/N) */
-    private String substituteYn;
+    /** 대체공휴일 여부 */
+    private boolean substitute;
 
     public LocalDate getHolidayDate() {
         return holidayDate;
@@ -32,11 +32,11 @@ public class HolidayVO {
         this.holidayName = holidayName;
     }
 
-    public String getSubstituteYn() {
-        return substituteYn;
+    public boolean isSubstitute() {
+        return substitute;
     }
 
-    public void setSubstituteYn(String substituteYn) {
-        this.substituteYn = substituteYn;
+    public void setSubstitute(boolean substitute) {
+        this.substitute = substitute;
     }
 }

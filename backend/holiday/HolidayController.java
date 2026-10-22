@@ -53,7 +53,7 @@ public class HolidayController {
      */
     @GetMapping("/next-business-day")
     public ApiResponse<String> nextBusinessDay(@RequestParam String date) {
-        LocalDate next = holidayService.nextBusinessDay(DateTimeUtils.parseDate(date));
+        LocalDate next = holidayService.addBusinessDays(DateTimeUtils.parseDate(date), 1);
         return ApiResponse.success(DateTimeUtils.formatDate(next));
     }
 }

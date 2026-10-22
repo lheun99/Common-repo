@@ -38,7 +38,18 @@ public class HolidayServiceImpl implements HolidayService {
     }
 
     @Override
-    public LocalDate nextBusinessDay(LocalDate date) {
+    public LocalDate addBusinessDays(LocalDate date, int days) {
+        if (days < 1) {
+            throw new IllegalArgumentException("days는 1 이상이어야 합니다.");
+        }
+        LocalDate result = date;
+        for (int n = 0; n < days; n++) {
+            result = nextBusinessDay(result);
+        }
+        return result;
+    }
+
+    private LocalDate nextBusinessDay(LocalDate date) {
         LocalDate candidate = date.plusDays(1);
         for (int i = 0; i < MAX_SEARCH_DAYS; i++) {
             if (!isHoliday(candidate)) {

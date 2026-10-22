@@ -21,11 +21,11 @@ public interface HolidayService {
     boolean isHoliday(LocalDate date);
 
     /**
-     * 기준일 다음의 첫 영업일을 구한다. 기준일 당일은 포함하지 않는다.
-     * 최대 30일까지 찾는다.
+     * 기준일로부터 days 영업일 뒤의 날짜를 구한다. 기준일 당일은 세지 않는다.
      *
      * @param date 기준일
-     * @return 다음 영업일
+     * @param days 더할 영업일 수 (1 이상)
+     * @return days 영업일 뒤의 날짜
      */
-    LocalDate nextBusinessDay(LocalDate date);
+    LocalDate addBusinessDays(LocalDate date, int days);
 }

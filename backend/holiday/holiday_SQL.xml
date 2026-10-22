@@ -5,7 +5,7 @@
     <select id="selectHolidayList" resultType="com.company.common.holiday.HolidayVO">
         SELECT holiday_date  AS holidayDate,
                holiday_name  AS holidayName,
-               substitute_yn AS substituteYn
+               CASE WHEN substitute_yn = 'Y' THEN 1 ELSE 0 END AS substitute
           FROM tb_holiday
          WHERE use_yn = 'Y'
         <if test="year != null">
