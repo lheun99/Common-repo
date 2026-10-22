@@ -1,0 +1,175 @@
+{
+  "id": "20261022-6c12526-817fe3b",
+  "createdAt": "2026-10-22T13:07:32+09:00",
+  "sourceCommits": [
+    "6c12526",
+    "817fe3b"
+  ],
+  "items": [
+    {
+      "asset": "Toast",
+      "type": "frontend-feature",
+      "commit": "6c12526",
+      "committedAt": "2026-10-21T08:02:36+01:00",
+      "grade": "behavior",
+      "summary": "info·success 토스트의 자동 닫기 시간이 3초에서 5초로 바뀌었습니다.",
+      "action": "수정 불필요. info·success 토스트가 5초 동안 표시된다는 점만 확인하세요.",
+      "targets": [],
+      "candidates": []
+    },
+    {
+      "asset": "Holiday",
+      "type": "backend-feature",
+      "commit": "817fe3b",
+      "committedAt": "2026-10-22T01:15:32+01:00",
+      "grade": "new",
+      "summary": "공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다.",
+      "action": "연도별 공휴일 조회, 날짜의 쉬는 날 여부 확인, 다음 영업일 구하기 기능을 사용할 수 있습니다.",
+      "targets": [
+        {
+          "project": "shop-app",
+          "pmsProjectId": null,
+          "file": "frontend/src/pages/DeliveryInfo.tsx",
+          "line": 7,
+          "code": "fetch(`/api/holidays/next-business-day?date=${orderDate}`)",
+          "usageKind": "api-call",
+          "endpoint": "GET /api/holidays/next-business-day",
+          "recipients": [
+            {
+              "name": "박개발",
+              "email": "park.dev@example.com",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "project": "shop-app",
+          "pmsProjectId": null,
+          "file": "backend/src/main/java/com/shop/delivery/DeliveryService.java",
+          "line": 17,
+          "code": "return holidayService.nextBusinessDay(orderDate);",
+          "usageKind": "import",
+          "recipients": [
+            {
+              "name": "김개발",
+              "email": "kim.dev@example.com",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "project": "admin-app",
+          "pmsProjectId": null,
+          "file": "frontend/src/pages/HolidayCalendar.tsx",
+          "line": 9,
+          "code": "fetch(`/api/holidays?year=${year}`)",
+          "usageKind": "api-call",
+          "endpoint": "GET /api/holidays",
+          "recipients": [
+            {
+              "name": "이개발",
+              "email": "lee.dev@example.com",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "project": "hr-app",
+          "pmsProjectId": null,
+          "file": "backend/src/main/java/com/hr/leave/LeaveService.java",
+          "line": 19,
+          "code": "if (!holidayService.isHoliday(d)) {",
+          "usageKind": "import",
+          "recipients": [
+            {
+              "name": "박개발",
+              "email": "park.dev@example.com",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "candidates": []
+    }
+  ],
+  "scanErrors": [],
+  "messages": [
+    {
+      "to": {
+        "name": "김개발",
+        "email": "kim.dev@example.com"
+      },
+      "role": "author",
+      "project": "shop-app",
+      "pmsProjectId": null,
+      "title": "[공통 변경] Holiday 신규 - 도입 검토",
+      "body": "공통 기능 Holiday가 새로 추가되어, 작성하신 코드에서 도입을 검토해 주시기 바랍니다.\n\n■ 변경 내용\n[신규] 공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다.\n\n■ 변경 일시\n2026-10-22 09:15 (커밋 817fe3b)\n\n■ 할 일\n연도별 공휴일 조회, 날짜의 쉬는 날 여부 확인, 다음 영업일 구하기 기능을 사용할 수 있습니다.\n\n■ 해당 위치\n- shop-app backend/src/main/java/com/shop/delivery/DeliveryService.java:17\n\n(공통 변경 커밋: 817fe3b)"
+    },
+    {
+      "to": {
+        "name": "박개발",
+        "email": "park.dev@example.com"
+      },
+      "role": "author",
+      "project": "shop-app",
+      "pmsProjectId": null,
+      "title": "[공통 변경] Holiday 신규 - 도입 검토",
+      "body": "공통 기능 Holiday가 새로 추가되어, 작성하신 코드에서 도입을 검토해 주시기 바랍니다.\n\n■ 변경 내용\n[신규] 공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다.\n\n■ 변경 일시\n2026-10-22 09:15 (커밋 817fe3b)\n\n■ 할 일\n연도별 공휴일 조회, 날짜의 쉬는 날 여부 확인, 다음 영업일 구하기 기능을 사용할 수 있습니다.\n\n■ 해당 위치\n- shop-app frontend/src/pages/DeliveryInfo.tsx:7\n\n(공통 변경 커밋: 817fe3b)"
+    },
+    {
+      "to": {
+        "name": "박개발",
+        "email": "park.dev@example.com"
+      },
+      "role": "author",
+      "project": "hr-app",
+      "pmsProjectId": null,
+      "title": "[공통 변경] Holiday 신규 - 도입 검토",
+      "body": "공통 기능 Holiday가 새로 추가되어, 작성하신 코드에서 도입을 검토해 주시기 바랍니다.\n\n■ 변경 내용\n[신규] 공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다.\n\n■ 변경 일시\n2026-10-22 09:15 (커밋 817fe3b)\n\n■ 할 일\n연도별 공휴일 조회, 날짜의 쉬는 날 여부 확인, 다음 영업일 구하기 기능을 사용할 수 있습니다.\n\n■ 해당 위치\n- hr-app backend/src/main/java/com/hr/leave/LeaveService.java:19\n\n(공통 변경 커밋: 817fe3b)"
+    },
+    {
+      "to": {
+        "name": "이개발",
+        "email": "lee.dev@example.com"
+      },
+      "role": "author",
+      "project": "admin-app",
+      "pmsProjectId": null,
+      "title": "[공통 변경] Holiday 신규 - 도입 검토",
+      "body": "공통 기능 Holiday가 새로 추가되어, 작성하신 코드에서 도입을 검토해 주시기 바랍니다.\n\n■ 변경 내용\n[신규] 공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다.\n\n■ 변경 일시\n2026-10-22 09:15 (커밋 817fe3b)\n\n■ 할 일\n연도별 공휴일 조회, 날짜의 쉬는 날 여부 확인, 다음 영업일 구하기 기능을 사용할 수 있습니다.\n\n■ 해당 위치\n- admin-app frontend/src/pages/HolidayCalendar.tsx:9\n\n(공통 변경 커밋: 817fe3b)"
+    },
+    {
+      "to": {
+        "name": "최PL",
+        "email": "pl.choi@example.com"
+      },
+      "role": "owner",
+      "project": "shop-app",
+      "pmsProjectId": null,
+      "title": "[공통 변경] Holiday 신규 - 도입 검토",
+      "body": "담당 프로젝트 shop-app에 공통 기능 Holiday 관련 코드가 있어 알려 드립니다.\n\n■ 변경 내용\n[신규] 공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다.\n\n■ 변경 일시\n2026-10-22 09:15 (커밋 817fe3b)\n\n■ 해당 위치\n- frontend/src/pages/DeliveryInfo.tsx:7 (작성 박개발)\n- backend/src/main/java/com/shop/delivery/DeliveryService.java:17 (작성 김개발)\n\n(공통 변경 커밋: 817fe3b)"
+    },
+    {
+      "to": {
+        "name": "정PL",
+        "email": "pl.jung@example.com"
+      },
+      "role": "owner",
+      "project": "admin-app",
+      "pmsProjectId": null,
+      "title": "[공통 변경] Holiday 신규 - 도입 검토",
+      "body": "담당 프로젝트 admin-app에 공통 기능 Holiday 관련 코드가 있어 알려 드립니다.\n\n■ 변경 내용\n[신규] 공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다.\n\n■ 변경 일시\n2026-10-22 09:15 (커밋 817fe3b)\n\n■ 해당 위치\n- frontend/src/pages/HolidayCalendar.tsx:9 (작성 이개발)\n\n(공통 변경 커밋: 817fe3b)"
+    },
+    {
+      "to": {
+        "name": "한PL",
+        "email": "pl.han@example.com"
+      },
+      "role": "owner",
+      "project": "hr-app",
+      "pmsProjectId": null,
+      "title": "[공통 변경] Holiday 신규 - 도입 검토",
+      "body": "담당 프로젝트 hr-app에 공통 기능 Holiday 관련 코드가 있어 알려 드립니다.\n\n■ 변경 내용\n[신규] 공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다.\n\n■ 변경 일시\n2026-10-22 09:15 (커밋 817fe3b)\n\n■ 해당 위치\n- backend/src/main/java/com/hr/leave/LeaveService.java:19 (작성 박개발)\n\n(공통 변경 커밋: 817fe3b)"
+    }
+  ]
+}
