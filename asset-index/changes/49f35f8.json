@@ -1,0 +1,32 @@
+{
+  "commit": "49f35f8",
+  "committedAt": "2026-10-22T06:59:15+01:00",
+  "subject": "feat: 공통코드 조회 기능 추가",
+  "changes": [
+    {
+      "asset": "Code",
+      "type": "backend-feature",
+      "path": "common-repo/backend/code/CodeController.java",
+      "fileStatus": "A",
+      "grade": "new",
+      "summary": "공통코드 조회 기능(CodeController, CodeService)이 추가되었습니다.",
+      "details": [],
+      "action": "화면의 선택 박스 목록이나 상태값 표시 이름을 공통코드에서 가져올 때 사용하세요.",
+      "affectedApi": [
+        "GET /api/codes/{groupCode}",
+        "GET /api/codes/{groupCode}/{code}/name",
+        "getCodes",
+        "getCodeName"
+      ],
+      "changedFiles": [
+        "common-repo/backend/code/CodeController.java",
+        "common-repo/backend/code/CodeService.java",
+        "common-repo/backend/code/CodeServiceImpl.java",
+        "common-repo/backend/code/CodeMapper.java",
+        "common-repo/backend/code/CodeVO.java",
+        "common-repo/backend/code/code_SQL.xml"
+      ]
+    }
+  ],
+  "notified": false
+}

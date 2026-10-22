@@ -316,6 +316,35 @@
       "history": [
         { "commit": "817fe3b", "at": "2026-10-22T01:15:32+01:00", "grade": "new", "summary": "공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다." }
       ]
+    },
+    {
+      "type": "backend-feature",
+      "name": "Code",
+      "path": "common-repo/backend/code/CodeController.java",
+      "files": [
+        "common-repo/backend/code/CodeController.java",
+        "common-repo/backend/code/CodeService.java",
+        "common-repo/backend/code/CodeServiceImpl.java",
+        "common-repo/backend/code/CodeMapper.java",
+        "common-repo/backend/code/CodeVO.java",
+        "common-repo/backend/code/code_SQL.xml"
+      ],
+      "purpose": "공통코드 조회 API.",
+      "api": [
+        "GET /api/codes/{groupCode}",
+        "GET /api/codes/{groupCode}/{code}/name"
+      ],
+      "usage": [
+        "public List<CodeVO> getCodes(String groupCode)",
+        "public String getCodeName(String groupCode, String code)"
+      ],
+      "detail": "[설명]\n- 화면의 선택 박스 목록이나 상태값 표시 이름을 공통코드에서 가져올 때 사용한다.\n- 서버 코드에서는 CodeService를 주입해서 직접 호출한다.\n[사용 예]\n  GET /api/codes/GENDER\n  → { \"success\": true, \"data\": [ { \"code\": \"M\", \"codeName\": \"남\", \"sortOrder\": 1 }, { \"code\": \"F\", \"codeName\": \"여\", \"sortOrder\": 2 } ] }\n\n  List<CodeVO> codes = codeService.getCodes(\"GENDER\");\n  String name = codeService.getCodeName(\"GENDER\", \"M\");\n[동작]\n- groupCode가 null이거나 공백이면 getCodes가 IllegalArgumentException을 던진다.\n- groupCode는 대문자로 변환되어 조회된다.\n- 사용하지 않는 코드는 조회되지 않는다.\n- 코드 목록은 sortOrder, 그 다음 code 순서로 정렬된다.\n- 코드 목록은 캐시되므로, 코드가 바뀌어도 캐시 해제·서버 재시작 전까지 반영되지 않는다.\n- getCodeName은 캐시가 적용되지 않는다.\n- getCodeName은 코드를 찾지 못하면(없거나 사용하지 않는 코드) 코드값을 그대로 반환한다.\n[API]\n- GET /api/codes/{groupCode}: 코드 그룹의 코드 목록\n  요청: groupCode(문자열, 필수)\n  응답: { success, data: [{ code, codeName, sortOrder }] }\n  실패: 없는 그룹이면 → 빈 목록\n- GET /api/codes/{groupCode}/{code}/name: 코드의 표시 이름\n  요청: groupCode(문자열, 필수), code(문자열, 필수)\n  응답: { success, data: \"남\" }\n[메서드]\n- getCodes(groupCode): groupCode는 코드 그룹, 코드 목록\n- getCodeName(groupCode, code): groupCode는 코드 그룹, code는 코드값, 코드의 표시 이름",
+      "related": ["ApiResponse"],
+      "addedInCommit": "49f35f8",
+      "addedAt": "2026-10-22T06:59:15+01:00",
+      "history": [
+        { "commit": "49f35f8", "at": "2026-10-22T06:59:15+01:00", "grade": "new", "summary": "공통코드 조회 기능(CodeController, CodeService)이 추가되었습니다." }
+      ]
     }
   ]
 }
