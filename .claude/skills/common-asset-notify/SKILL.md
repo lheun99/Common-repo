@@ -65,7 +65,7 @@ description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘
 [관련자 알림 미리보기]
 (⚠ 표시는 검토용이며 알림 파일에는 저장되지 않습니다)
 
-■ 🔴 비호환 — Pagination  (635c4ba)
+■ 🔴 비호환 — Pagination  (635c4ba, 2026-10-14 10:20 변경)
   요약   onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
   할 일  onChange 핸들러가 객체를 받도록 수정하세요.
 
@@ -139,6 +139,10 @@ description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘
 
 ## 사용처 탐지 규칙
 
+자산 종류에 따라 적용하는 규칙이 다르다.
+- `frontend-component`, `backend-module` (파일 하나인 자산): ①~⑤
+- `frontend-feature`, `backend-feature` (여러 파일로 된 기능 자산): ⑥ (대체 후보는 ⑤를 함께 적용)
+
 자산의 `name`을 `<Name>`이라 한다. 공통 원본 경로는 정리집의 `path`에서 `common-repo/`를 뺀 것이다 (예: `components/Pagination.tsx`).
 모든 검색은 `git -C <프로젝트> grep -n -E "<패턴>"`과 `git -C <프로젝트> ls-files`로 한다. (추적되는 파일만 검색되므로 node_modules·빌드 산출물은 자동으로 빠진다.)
 
@@ -183,6 +187,30 @@ description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘
 - ①②에서 이미 이 자산을 쓰는 파일은 뺀다.
 - 결과는 항상 추론이다. 미리보기에서 `⚠ 추론 — 확인 필요`와 근거(검색에 걸린 코드)를 함께 보여 주고, 공통팀이 고른 것만 넣는다.
 
+### ⑥ 여러 파일로 된 기능 자산 (`frontend-feature`, `backend-feature`)
+이런 자산은 개발자가 **시작 파일**만 쓰고 나머지 파일은 직접 쓰지 않는다. 그래서 시작 파일이 쓰이는 곳만 찾는다.
+정리집 항목의 `api`, `usage`, `props`, `path`를 쓴다.
+변경 기록에 `affectedApi`가 있으면 **그 엔드포인트·메서드만** 찾는다. (없으면 자산의 전체 `api`·`usage`)
+
+**코드로 직접 호출·사용** (`usage`나 `props`가 있을 때)
+- `usage`·`props`의 주인인 시작 파일의 클래스·컴포넌트·함수 이름을 `<Name>`으로 해서 ①~④를 그대로 적용한다.
+- 사용 줄은 `affectedApi`에 있는 메서드를 부르는 줄(`\.<메서드명>\(`)로 좁힌다.
+
+**HTTP로 호출** (다른 서비스, 프론트엔드)
+- 엔드포인트 경로에서 첫 `{` 앞까지의 고정 부분을 문자열로 찾는다.
+  ```
+  git -C <프로젝트> grep -n -F "<고정 부분>"        예: GET /common/code/{groupId} → "/common/code/"
+  ```
+- 프로젝트가 게이트웨이를 거쳐 호출해 경로 앞부분이 다르면 `projects.json`의 그 프로젝트에 `apiPrefix`(예: `"/api"`)를 적는다.
+  `apiPrefix`가 있으면 `<apiPrefix><고정 부분>`도 찾는다.
+- Feign Client는 경로가 `@FeignClient(path = ...)`와 메서드의 `@GetMapping(...)`으로 나뉘어 있을 수 있다.
+  `@FeignClient`를 검색해 클래스 경로와 메서드 경로를 합친 뒤 비교한다.
+- 찾은 줄은 파일을 읽어 **실제 HTTP 호출인지** 확인한다: `fetch(`, `axios.`, `RestTemplate`, `WebClient`, Feign 매핑.
+  주석·로그 문자열·테스트 데이터는 버린다. HTTP 메서드(GET/POST 등)가 다르면 버린다.
+- 사용 방식은 `api-call`이다.
+- 정밀 확인(`breaking`): 그 호출의 요청 본문이나 응답을 다루는 코드에서 `scanHints`(바뀐 필드 이름)가 쓰이면 `hit`.
+  응답을 받는 쪽 DTO·타입 정의에 그 필드가 있어도 `hit`이다.
+
 ## 담당자 규칙
 
 - **작성자**: 사용 줄마다 blame으로 찾는다.
@@ -208,6 +236,7 @@ description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘
       "asset": "Pagination",
       "type": "frontend-component",
       "commit": "635c4ba",
+      "committedAt": "2026-10-14T10:20:00+09:00",
       "grade": "breaking",
       "summary": "onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.",
       "action": "onChange 핸들러가 객체를 받도록 수정하세요. 예: onChange={({ page }) => setPage(page)}",
@@ -236,19 +265,22 @@ description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘
       "project": "shop-app",
       "pmsProjectId": null,
       "title": "[공통 변경] Pagination 비호환 변경 - 수정 필요",
-      "body": "공통 컴포넌트 Pagination이 변경되어 작성하신 코드의 수정이 필요합니다.\n\n■ 변경 내용\nonChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.\n\n■ 할 일\nonChange 핸들러가 객체를 받도록 수정하세요. 예: onChange={({ page }) => setPage(page)}\n\n■ 해당 위치\n- shop-app frontend/src/pages/OrderList.tsx:13\n\n(공통 변경 커밋: 635c4ba)"
+      "body": "공통 컴포넌트 Pagination이 변경되어 작성하신 코드의 수정이 필요합니다.\n\n■ 변경 내용\nonChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.\n\n■ 변경 일시\n2026-10-14 10:20 (커밋 635c4ba)\n\n■ 할 일\nonChange 핸들러가 객체를 받도록 수정하세요. 예: onChange={({ page }) => setPage(page)}\n\n■ 해당 위치\n- shop-app frontend/src/pages/OrderList.tsx:13\n\n(공통 변경 커밋: 635c4ba)"
     }
   ]
 }
 ```
 
-- `targets[].usageKind`: `import` / `copy` / `copy-modified`. 복사본이면 `copyFile`(복사본 경로)과 `copiedFrom`(`copy`일 때만)을 함께 넣는다.
+- `items[].committedAt`: 변경 기록의 `committedAt`을 그대로 옮긴다.
+- `targets[].usageKind`: `import` / `copy` / `copy-modified` / `api-call`. `api-call`이면 `endpoint`(`"<METHOD> <경로>"`)를 함께 넣는다. 복사본이면 `copyFile`(복사본 경로)과 `copiedFrom`(`copy`일 때만)을 함께 넣는다.
 - `hit`: `breaking` 항목에서만 넣는다.
 - `candidates`: `new` 항목에서 공통팀이 고른 대체 후보. `{ "project", "file", "line", "code", "recipients" }`
 - `messages`: **받는 사람 × 프로젝트**마다 하나. 한 사람이 같은 프로젝트에서 여러 자산에 해당하면 한 메시지로 묶는다.
   - `title`: `[공통 변경] <자산들> <가장 높은 등급 이름> - <요청 수준>`
     - 요청 수준: 🔴 `수정 필요`, 🟡 `확인 필요`, 🟢 `참고`, ⚪ `도입 검토`
-  - `body`: 사람이 읽는 본문. 순서: 인사 한 줄 → `■ 변경 내용` → `■ 할 일` → `■ 해당 위치` → 커밋 해시.
+  - `body`: 사람이 읽는 본문. 순서: 인사 한 줄 → `■ 변경 내용` → `■ 변경 일시` → `■ 할 일` → `■ 해당 위치` → 커밋 해시.
+    - `■ 변경 일시`: 변경 기록의 `committedAt`을 한국 시간(+09:00)으로 바꿔 `YYYY-MM-DD HH:mm (커밋 <해시7>)`로 쓴다.
+      한 메시지에 여러 자산·커밋이 묶이면 자산마다 한 줄씩 `<자산>: YYYY-MM-DD HH:mm (커밋 <해시7>)`로 쓴다.
     - 복사본이면 `■ 할 일`에 "복사해서 쓰는 파일이라 공통 변경이 자동으로 반영되지 않습니다."를 덧붙인다.
     - 담당자(`owner`) 메시지는 그 프로젝트의 모든 해당 위치와 작성자를 나열하는 요약으로 쓴다.
   - 등급 표시에는 이모지 대신 `[비호환]`, `[동작 변경]`, `[호환 추가]`, `[신규]`를 쓴다. (PMS에서 깨지지 않게)

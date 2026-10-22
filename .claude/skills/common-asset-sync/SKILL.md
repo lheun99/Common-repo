@@ -91,19 +91,22 @@ description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-r
 1. 커밋 정보를 확인한다.
    - `git -C common-repo show -s --format="%H%n%cI%n%s" <해시>` → 해시, 커밋 시각(ISO 8601), 메시지
    - `git -C common-repo diff-tree --no-commit-id --name-status -r <해시>` → 파일별 상태(A 추가 / M 수정 / D 삭제 / R 이름 변경)
-2. 바뀐 파일마다 아래 **[정리집 작성 규칙]** 의 "자산 판별"로 대상인지 가린다.
-3. 대상 파일의 소스를 `git -C common-repo show <해시>:<경로>`로 **끝까지** 읽는다.
-   (수정(M)이면 비교를 위해 `git -C common-repo show <해시>~1:<경로>`도 읽는다.)
-4. 규칙에 따라 대상 파일마다 **추가 / 갱신 / 판단 보류** 중 하나로 정하고, 반영할 내용을 만든다.
+2. 바뀐 파일들을 아래 **[정리집 작성 규칙]** 의 "자산 판별"로 **자산 단위로 묶는다.**
+   함께 커밋된 파일 중 서로 연결된 파일들은 기능 하나다. 이후 단계는 파일이 아니라 자산 단위로 한다.
+3. 자산마다 그 자산의 **모든 파일**을 `git -C common-repo show <해시>:<경로>`로 그 커밋 시점의 내용을 **끝까지** 읽는다.
+   - 이번 커밋에서 바뀌지 않은 파일도 그 자산의 `files`에 있으면 함께 읽는다. (예: XML만 바뀌어도 Controller·Service를 함께 읽어야 기능 전체의 동작을 안다)
+   - 수정이면 비교를 위해 `<해시>~1` 시점의 같은 파일들도 읽는다.
+4. 규칙에 따라 자산마다 **추가 / 갱신 / 판단 보류** 중 하나로 정하고, 반영할 내용을 만든다.
    - 추가: 새 항목 전체
    - 갱신: 바뀌는 필드의 이전 값과 새 값
    - 판단 보류: 이유
-5. 대상 파일마다 **변경 등급**을 정하고 변경 기록을 만든다. (아래 [변경 기록 작성 규칙])
+5. 자산마다 **변경 등급**을 정하고 변경 기록을 만든다. (아래 [변경 기록 작성 규칙])
 6. 남길 로그 줄과 정리집 커밋 메시지를 만든다.
 7. 항목마다 **근거 메모**를 만든다. 미리보기 전용이며 파일에는 저장하지 않는다.
    - `[동작]`의 각 줄이 어느 코드에서 확인됐는지 (예: `if (!open) return null`)
    - 추론한 부분이 있으면 무엇을 추론했는지
    - 주석과 코드가 서로 다른 부분
+   - 여러 파일로 된 자산이면 묶은 파일 목록, 시작 파일로 본 이유, 확인하지 못한 연결(`⚠ 연결 끊김`)
 
 ### 5. 반영 전 미리보기 (사용자 확인 후)
 4단계에서 만든 내용을 아래 형식으로 **한 번에** 보여 주고 **"이대로 정리집에 반영할까요?"** 를 묻는다.
@@ -161,6 +164,21 @@ description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-r
              pageSize prop 추가 (선택, 기본 20)
     할 일    onChange 핸들러가 객체를 받도록 수정한다.
     스캔 키  onChange
+  ▸ 변경 이력에 추가
+    2026-10-09T10:00:00+09:00  1a2b3c4  🔴 비호환  onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
+
+■ 갱신 — Code (backend-feature)
+  커밋  7f8e9d0 (2026-10-15T11:00:00+09:00)
+  바뀐 파일  backend/code/code_SQL.xml
+  묶음  정리집 files에 있음 → Code 기능 (CodeController, CodeService, CodeServiceImpl, CodeMapper, CodeVO, code_SQL.xml 함께 읽음)
+  영향  code_SQL.xml의 selectCodeList를 CodeController의 GET /common/code/{groupId}가 사용
+  ▸ detail [동작]
+    추가: - 사용하지 않는 코드는 조회되지 않는다.   ← 근거: WHERE use_yn = 'Y' 추가
+  ▸ 변경 등급  🟡 동작 변경
+    요약       코드 목록 조회에서 사용하지 않는 코드가 빠집니다.
+    영향 API   GET /common/code/{groupId}, selectCodeList
+    할 일      사용하지 않는 코드도 화면에 보여야 하는 곳이 있는지 확인하세요.
+  ⚠ 연결 끊김: CodeService 구현체가 2개(CodeServiceImpl, CachedCodeServiceImpl) — 어느 것이 쓰이는지 확인 필요
 
 ■ 판단 보류 — components/Alert.tsx
   커밋  48daac6
@@ -195,6 +213,7 @@ description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-r
     `ConvertTo-Json` 등은 쓰지 않는다. 파일 편집 도구로 해당 항목만 고친다.)
   - **새 항목은 `assets` 배열의 맨 끝에 추가한다.** 마지막 항목의 닫는 `}` 뒤에 `,`를 붙이고 그 뒤에 넣는다.
     다른 항목의 중간에 끼워 넣지 않는다.
+  - 추가·갱신한 항목마다 `history`에 이번 커밋 줄을 붙인다. (아래 [정리집 작성 규칙]의 "변경 이력")
 - 변경 기록 `asset-index/changes/<해시7>.json`을 커밋마다 새 파일로 만든다. (UTF-8, 들여쓰기 2칸)
 - 저장한 뒤 **JSON이 올바른지 반드시 확인한다.** (common-repo에서 실행)
   `node -e "for (const f of process.argv.slice(1)) JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('JSON OK')" asset-index/asset-index.json asset-index/changes/<해시7>.json`
@@ -277,21 +296,50 @@ git -C <저장소> commit -m "feat: Spinner 컴포넌트 추가" -m "- Spinner: 
 diff에 나오는 경로는 `common-repo` **내부 기준**이라 `common-repo/` 접두사가 없다 (예: `backend/PageRequest.java`).
 정리집의 `path` 필드에는 항상 `common-repo/`를 붙인 전체 경로를 적는다 (예: `common-repo/backend/PageRequest.java`).
 
-| 종류 (`type`) | diff상 경로 패턴 | 정리집 `path` | 예 |
-|---|---|---|---|
-| `frontend-component` | `components/*.tsx` | `common-repo/components/*.tsx` | Button, Pagination |
-| `backend-module` | `backend/*.java` | `common-repo/backend/*.java` | ApiResponse, GlobalExceptionHandler |
+**정리 대상 파일**: `components/`, `backend/` 아래의 소스 파일 (`.tsx`, `.ts`, `.java`, `.xml`).
+그 밖의 파일(설정, 스크립트, 문서, 테스트 등)은 정리 대상이 아니므로 무시한다.
+(저장소 구조가 다르면 이 폴더를 그 구조에 맞게 바꾸고, post-commit 훅이 감시하는 폴더도 함께 맞춘다.)
 
-둘 다 아닌 파일(설정, 스크립트, 문서, 테스트 등)은 정리 대상이 아니므로 무시한다.
+**자산 = 기능 하나.** 파일 하나로 된 기능도 있고(Button, DateTimeUtils), 여러 파일로 된 기능도 있다
+(Controller + Service + Mapper + XML). 공통팀은 기능 하나를 이루는 파일들을 **함께 커밋한다.**
+그래서 함께 커밋된 파일 중 **서로 연결된 파일들을 기능 하나로 묶는다.** 파일 이름 규칙으로 정하지 않는다.
+
+**묶는 순서**
+1. **이미 정리된 자산의 파일인가**: 정리집 어떤 항목의 `files`(또는 `path`)에 있으면 그 자산이다.
+2. **기존 자산에 새로 붙은 파일인가**: `files`에 없는 새 파일을 기존 자산의 파일이 쓰고 있으면(import, 호출, 구현, XML `namespace`) 그 자산에 붙인다.
+   찾는 법: `git -C common-repo grep -n "<새 파일의 클래스·함수 이름>" <해시> -- components/ backend/`
+3. **남은 파일끼리 묶는다**: 서로 참조하는 파일들(import, 호출, `implements`, `extends`, XML `namespace` ↔ Mapper)을 한 묶음으로 한다.
+   - 한 묶음 = 새 자산 하나. 서로 참조하지 않으면 각각 다른 자산이다. (한 커밋에 기능 두 개가 섞여 있을 수 있다)
+   - 묶음 안의 파일이 이미 정리된 **다른 자산**(예: ApiResponse)을 쓰기만 하면 그 자산은 묶지 않고 `related`에 넣는다.
+4. **시작 파일을 정한다**: 묶음에서 **개발자가 직접 쓰는 쪽**이다. 보통 묶음 안의 다른 파일이 참조하지 않는 바깥쪽 파일이다.
+   (예: Controller, 화면에 넣는 컴포넌트, 주입해서 부르는 클래스, 붙여 쓰는 어노테이션)
+   시작 파일이 여러 개일 수 있다. (예: API로도 부르고 Service를 주입해서도 부르는 기능)
+
+**종류 (`type`)**
+| 종류 | 언제 | 예 |
+|---|---|---|
+| `frontend-component` | `components/`의 파일 하나로 된 기능 | Button, Pagination |
+| `backend-module` | `backend/`의 파일 하나로 된 기능 | ApiResponse, DateTimeUtils |
+| `frontend-feature` | `components/`의 여러 파일로 된 기능 (컴포넌트 + hook + API 호출 등) | 주소 검색 |
+| `backend-feature` | `backend/`의 여러 파일로 된 기능 (Controller + Service + Mapper + XML 등) | 공통코드 조회 |
+
+- 미리보기에서 **어떻게 묶었는지**(파일 목록, 시작 파일과 그 이유)를 반드시 보여 준다. 공통팀이 묶음이 맞는지 확인한다.
+- 묶음이 애매하면(서로 참조는 없지만 같은 기능 같아 보이는 경우 등) 미리보기에서 `⚠ 묶음 확인 필요`로 묻는다. 지어서 묶지 않는다.
 
 ### 파일 상태별 처리
 
 | 상태 | 정리집 처리 | 변경 기록 |
 |---|---|---|
 | A (추가) | 새 항목을 추가한다. 같은 `name`이 이미 있으면 추가하지 않고 판단 보류로 남긴다. | `new` |
-| M (수정) | 이전 소스(`<해시>~1`)와 이후 소스에서 **각각 이 규칙대로** 필드(`props`/`usage`/`purpose`/`detail`/`related`)를 뽑아 비교하고, 달라진 필드만 갱신한다. (정리집에 저장된 값과 비교하지 않는다. 예전 형식으로 저장된 항목이라는 이유만으로 고치지 않는다.) 달라진 필드는 이후 소스 기준으로 **통째로 다시 쓴다.** 정리집에 항목이 없던 자산이면 새 항목으로 추가한다. | 비교 결과에 따라 등급 판정 |
+| M (수정) | 이전 소스(`<해시>~1`)와 이후 소스에서 **각각 이 규칙대로** 필드(`props`/`usage`/`api`/`files`/`purpose`/`detail`/`related`)를 뽑아 비교하고, 달라진 필드만 갱신한다. (정리집에 저장된 값과 비교하지 않는다. 예전 형식으로 저장된 항목이라는 이유만으로 고치지 않는다.) 달라진 필드는 이후 소스 기준으로 **통째로 다시 쓴다.** 정리집에 항목이 없던 자산이면 새 항목으로 추가한다. | 비교 결과에 따라 등급 판정 |
 | D (삭제) | 항목을 지우지 않고 판단 보류로 남긴다. (삭제 반영 여부는 사람이 결정한다.) | `breaking` (자산 삭제) |
 | R (이름 변경/이동) | 추가하지 않고 판단 보류로 남긴다. | `breaking` (이름 변경/이동) |
+
+위 표는 **자산 단위**로 적용한다.
+- 파일 하나로 된 자산: 그 파일의 상태를 따른다.
+- 여러 파일로 된 자산: **새로 묶인 자산이면 A**, 기존 자산에 속한 파일이 하나라도 바뀌었거나 새 파일이 붙었으면 **M**이다.
+  (예: XML 한 파일만 바뀐 커밋 → 그 XML이 속한 자산의 M. 이전·이후 시점의 `files` 전체를 읽어 비교한다)
+  - 기존 자산의 시작 파일이 D/R이면 자산의 D/R로 본다. 시작 파일이 아닌 파일만 D면 M이다. (`files`에서 뺀다)
 
 diff에서 바뀌지 않은 기존 항목은 절대 건드리지 않는다.
 
@@ -316,6 +364,36 @@ diff에서 바뀌지 않은 기존 항목은 절대 건드리지 않는다.
 - `detail`: 아래 [detail 작성 형식]으로 정리한다. 쓸 내용이 하나도 없으면 `null`.
 - `related`: 아래 [related 작성 규칙]
 
+**frontend-feature / backend-feature** (여러 파일로 된 기능)
+- `name`: 기능 이름. 시작 파일의 이름에서 `Controller`·`Service` 같은 꼬리를 뗀 이름 (예: `CodeController` → `Code`)
+- `path`: 시작 파일의 전체 경로 (시작 파일이 여러 개면 개발자가 가장 먼저 쓰는 것)
+- `files`: 이 기능을 이루는 파일의 전체 경로 목록. 시작 파일부터 연결 순서대로. **다음에 이 중 하나만 바뀌어도 이 기능의 변경으로 찾는 데 쓴다.**
+- `purpose`: 시작 파일 상단 주석의 **첫 문장 하나**. 없으면 **파일 전체에서 확인한 기능을 한 줄로 요약**한다.
+- `api`: HTTP로 부르는 엔드포인트가 있으면 한 줄에 하나씩 `"<METHOD> <전체 경로>"` (클래스의 `@RequestMapping` 경로 + 메서드 매핑 경로). 없으면 넣지 않는다.
+- `usage`: 코드로 직접 부르는 시작 파일(주입해서 부르는 클래스, export 함수·hook 등)의 public 시그니처 전부. 없으면 넣지 않는다.
+- `props`: 화면에 넣는 컴포넌트가 시작 파일이면 그 props. 없으면 넣지 않는다.
+- `detail`: 아래 [detail 작성 형식]으로 정리한다. `[동작]`에는 시작 파일만이 아니라 **묶인 모든 파일**에서 확인한 사실을 쓴다.
+  (예: 검증은 Controller, 캐시는 Service, 조회 조건·정렬은 XML에 있다)
+- `related`: 아래 [related 작성 규칙]
+
+### 묶음 밖의 파일이 필요할 때 (보조)
+
+함께 커밋된 파일과 `files`만으로 동작을 다 알 수 없으면, 그때만 필요한 파일을 더 찾아 읽는다. 저장소 전체를 읽지 않는다.
+검색은 항상 **그 커밋 시점**으로 한다: `git -C common-repo grep -n "<패턴>" <해시> -- components/ backend/`
+- 묶음의 파일이 쓰는데 커밋에도 `files`에도 없는 파일 (예: 구현체, 부모 클래스, Mapper가 가리키는 XML)
+  - 이미 다른 자산이면 `related`에 넣고 들어가지 않는다.
+  - 다른 자산이 아니면 읽고, 이 기능의 일부로 보이면 `files`에 넣는다. (미리보기에서 "묶음에 추가함"으로 보여 준다)
+- 바뀐 파일이 여러 자산의 `files`에 들어 있으면 (공유 Mapper 등) **모든** 자산이 바뀐 것이다.
+
+**확인하지 못한 연결** — 지어내지 않고 미리보기에 `⚠ 연결 끊김: <무엇> — 확인 필요`로 표시한다. 공통팀이 판단한다.
+- 구현체가 여러 개라 어느 것이 쓰이는지 코드로 알 수 없는 경우
+- 코드에 호출이 보이지 않고 설정으로 끼어드는 것 (설정 파일로 등록한 AOP·인터셉터·필터)
+  - 단, 클래스·메서드에 붙은 어노테이션(`@Transactional`, `@Cacheable`, `@Valid`, `@PreAuthorize` 등)은 보이므로 그 동작을 `[동작]`에 쓴다.
+- 저장소 밖 (DB 프로시저·트리거, 다른 서비스, 외부 API)
+
+**공개 결과물에 쓰지 않는 것**: 테이블명, 컬럼명, SQL 원문, 내부 클래스 이름(Impl, Mapper 등). 개발자가 관찰할 수 있는 동작으로 바꿔 쓴다.
+(예: `WHERE use_yn = 'Y'` → `사용하지 않는 코드는 조회되지 않는다.`) 원문은 근거 메모에만 둔다.
+
 ### detail 작성 형식
 
 `detail`은 한 덩어리 문장으로 이어 붙이지 않는다. 아래 섹션 순서로 **줄을 나눠** 쓴다.
@@ -328,7 +406,13 @@ JSON에는 줄바꿈을 `\n`으로 넣은 하나의 문자열로 저장한다. �
 | `[주의]` | "주의", "단", "반드시" 등 개발자의 당부 | 항목마다 `- ` 한 줄 |
 | `[동작]` | **코드에서 확인한** 사실 중 주석에 없는 것 | 사실마다 `- ` 한 문장 |
 | `[props]` (프론트) | prop별 주석, 코드에서 확인한 기본값·선택 여부 | `- <prop>: <설명>` 한 줄씩, interface에 적힌 순서대로 |
+| `[API]` (API가 있는 기능) | 엔드포인트별 요청·응답·실패 | 엔드포인트마다 `- <METHOD> <경로>: <설명>` 한 줄, 그 아래 공백 2칸 들여 `요청:`, `응답:`, `실패:` 줄 (해당하는 것만) |
 | `[메서드]` (백엔드) | 메서드별 Javadoc, `@param`/`@return`/`@throws`, 코드에서 확인한 예외·null 처리 | `- <메서드명>(<인자명>): <설명>` 한 줄씩, 소스 순서대로 |
+
+- `[API]`의 `요청:`에는 파라미터·본문 필드를 `이름(타입, 필수/선택)`으로 쓴다. 검증 규칙(`@NotBlank`, `@Size` 등)이 있으면 함께 쓴다.
+- `[API]`의 `응답:`에는 개발자가 받는 JSON의 모양을 한 줄로 쓴다. (예: `{ success, data: [{ code, name }] }`)
+- `[API]`의 `실패:`에는 `조건 → 결과`로 쓴다. (예: `groupId가 없으면 → success=false, "존재하지 않는 코드 그룹입니다."`)
+- backend-feature의 `[사용 예]`에는 **API 호출 예**(요청과 응답 JSON)를 넣고, `usage`가 있으면 **Java 호출 예**도 넣는다.
 
 **`[동작]`에 쓰는 것** — 개발자가 이 자산을 쓸 때 알아야 하는데 주석에 없는 사실:
 - 렌더링하지 않는 조건, 표시가 바뀌는 조건 (예: `open이 false이면 아무것도 렌더링하지 않는다.`)
@@ -337,6 +421,8 @@ JSON에는 줄바꿈을 `\n`으로 넣은 하나의 문자열로 저장한다. �
 - null·빈 값 처리, 던지는 예외
 - 고정된 문구나 요소 (예: `헤더에 "닫기" 버튼이 항상 표시된다.`)
 - 파일·DB·외부 호출 같은 부수효과
+- (여러 파일로 된 기능) 조회에서 빠지는 데이터, 정렬 순서, 조건에 따라 달라지는 조회 범위 (동적 SQL의 `<if>`)
+- (여러 파일로 된 기능) 캐시 (변경이 바로 반영되지 않음), 트랜잭션 범위, 권한·인증 요구
 
 **`[동작]` 쓰는 법**
 - 문장만 쓴다. 근거(코드 조각, 줄 번호)는 붙이지 않는다. 근거는 미리보기의 근거 메모에만 둔다.
@@ -378,9 +464,18 @@ JSON에는 줄바꿈을 `\n`으로 넣은 하나의 문자열로 저장한다. �
 - 시각은 작업한 시각이 아니라 **커밋 시각**을 쓴다. 반드시 `git -C common-repo show -s --format=%cI <해시>`의
   출력을 **그대로** 쓴다. (예: `2026-10-08T05:28:35+01:00`) 날짜만 쓰거나 `00:00:00`처럼 시각을 지어내지 않는다.
 
+**변경 이력 (`history`)**
+개발자가 탐색 페이지와 MCP에서 "언제, 어떤 등급으로 바뀌었는지"를 바로 볼 수 있게 변경 기록의 요약을 항목에 남긴다.
+- 항목을 **추가하거나 갱신할 때마다** `history` 배열 끝에 한 줄을 붙인다. 판단 보류는 항목을 건드리지 않으므로 붙이지 않는다.
+- 한 줄 형식: `{ "commit": "<해시7>", "at": "<커밋 시각>", "grade": "<grade>", "summary": "<summary>" }`
+  - `at`은 `updatedAt`/`addedAt`과 같은 커밋 시각(`%cI` 그대로), `grade`·`summary`는 같은 커밋의 변경 기록 값을 **그대로** 쓴다.
+- 기존 줄은 고치거나 지우지 않는다. 오래된 것부터 쌓는다. (화면에서는 최신순으로 보여 준다)
+- `history`가 없는 기존 항목을 갱신하면 `history`를 새로 만들고 이번 줄 하나만 넣는다. 과거 이력을 지어 넣지 않는다.
+
 ### 항목 예시
 
-필드 순서: `type`, `name`, `path`, `purpose`, `props` 또는 `usage`, `detail`, `related`, `addedInCommit`, `addedAt`, (`updatedInCommit`, `updatedAt`)
+필드 순서: `type`, `name`, `path`, (`files`), `purpose`, (`api`), `props` 또는 `usage`, `detail`, `related`, `addedInCommit`, `addedAt`, (`updatedInCommit`, `updatedAt`), `history`
+`files`·`api`·`usage`·`history` 배열은 한 줄에 하나씩 쓴다.
 
 ```json
 {
@@ -396,7 +491,39 @@ JSON에는 줄바꿈을 `\n`으로 넣은 하나의 문자열로 저장한다. �
   "detail": null,
   "related": ["FileStorageService", "FileUploadResult", "ApiResponse"],
   "addedInCommit": "2eaa9e4",
-  "addedAt": "2026-09-10T15:20:35+09:00"
+  "addedAt": "2026-09-10T15:20:35+09:00",
+  "history": [
+    { "commit": "2eaa9e4", "at": "2026-09-10T15:20:35+09:00", "grade": "new", "summary": "FileController가 추가되었습니다." }
+  ]
+}
+```
+
+기능 자산 예 (Controller → Service → Mapper → XML로 이루어진 공통코드 조회):
+
+```json
+{
+  "type": "backend-feature",
+  "name": "Code",
+  "path": "common-repo/backend/code/CodeController.java",
+  "files": [
+    "common-repo/backend/code/CodeController.java",
+    "common-repo/backend/code/CodeService.java",
+    "common-repo/backend/code/CodeServiceImpl.java",
+    "common-repo/backend/code/CodeMapper.java",
+    "common-repo/backend/code/CodeVO.java",
+    "common-repo/backend/code/code_SQL.xml"
+  ],
+  "purpose": "공통코드 그룹별 코드 목록 조회.",
+  "api": [
+    "GET /common/code/{groupId}"
+  ],
+  "usage": [
+    "public List<CodeVO> selectCodeList(String groupId)"
+  ],
+  "detail": "[사용 예]\n  GET /common/code/GENDER\n  → { \"success\": true, \"data\": [{ \"code\": \"M\", \"name\": \"남\" }, { \"code\": \"F\", \"name\": \"여\" }] }\n  List<CodeVO> codes = codeService.selectCodeList(\"GENDER\");\n[동작]\n- 사용하지 않는 코드는 조회되지 않는다.\n- 정렬 순서는 코드별로 지정된 순서를 따른다.\n- 조회 결과는 캐시되어, 코드를 바꿔도 서버를 다시 시작하기 전까지 반영되지 않는다.\n[API]\n- GET /common/code/{groupId}: 코드 그룹의 코드 목록\n  요청: groupId(문자열, 필수)\n  응답: { success, data: [{ code, name }] }\n  실패: 없는 그룹이면 → 빈 목록",
+  "related": ["ApiResponse"],
+  "addedInCommit": "a1b2c3d",
+  "addedAt": "2026-10-15T10:00:00+09:00"
 }
 ```
 
@@ -407,9 +534,9 @@ JSON에는 줄바꿈을 `\n`으로 넣은 하나의 문자열로 저장한다. �
 
 | 등급 | `grade` | 기준 | `action`(개발자가 할 일) |
 |---|---|---|---|
-| 🔴 비호환 | `breaking` | prop·public 메서드 삭제나 이름 변경, 필수 prop·인자 추가, 타입·반환 타입 변경, 예외를 던지는 조건 변경, 파일 삭제(D)나 이동(R) | 반드시 수정할 내용 |
-| 🟡 동작 변경 | `behavior` | 시그니처는 같지만 기본값, 보정, null 처리, 렌더링 조건, 호출 시점 등 동작이 바뀜 | 확인할 내용 |
-| 🟢 호환 추가 | `compatible` | 선택 prop·새 public 메서드 추가 등 기존 사용 코드가 그대로 동작하는 추가 | 새로 쓸 수 있는 기능 |
+| 🔴 비호환 | `breaking` | prop·public 메서드 삭제나 이름 변경, 필수 prop·인자 추가, 타입·반환 타입 변경, 예외를 던지는 조건 변경, 파일 삭제(D)나 이동(R). **API**: 엔드포인트 삭제, 경로·HTTP 메서드 변경, 요청 필드가 필수로 바뀜, 응답 필드 삭제·이름·타입 변경 | 반드시 수정할 내용 |
+| 🟡 동작 변경 | `behavior` | 시그니처는 같지만 기본값, 보정, null 처리, 렌더링 조건, 호출 시점 등 동작이 바뀜. **기능 자산**: 조회 조건·정렬, 검증 규칙, 캐시, 권한, 실패 시 응답이 바뀜 (XML·Impl만 바뀐 경우가 대부분 여기) | 확인할 내용 |
+| 🟢 호환 추가 | `compatible` | 선택 prop·새 public 메서드 추가 등 기존 사용 코드가 그대로 동작하는 추가. **API**: 새 엔드포인트, 선택 요청 필드, 응답 필드 추가 | 새로 쓸 수 있는 기능 |
 | ⚪ 신규 | `new` | 새 자산 (A) | 이 자산이 대신할 수 있는 일 |
 | 문서 | `docs` | 주석·서식·내부 구현만 바뀌고 사용하는 쪽에서 보이는 동작은 같음 | `null` |
 
@@ -453,8 +580,11 @@ JSON에는 줄바꿈을 `\n`으로 넣은 하나의 문자열로 저장한다. �
 - `fileStatus`: `A` / `M` / `D` / `R`
 - `details`: 바뀐 점마다 하나. 신규(`new`)면 빈 배열 `[]`.
 - `scanHints`: `breaking`일 때만 넣는다. 삭제되거나 바뀐 prop·메서드·필드 이름. 영향 대상을 정밀하게 찾는 데 쓴다.
+- `affectedApi`: 여러 파일로 된 기능일 때, 영향 받은 엔드포인트(`"<METHOD> <경로>"`)와 직접 부르는 메서드 이름 목록.
+  바뀐 파일이 쓰이는 엔드포인트·메서드만 넣는다. (예: XML의 `selectCodeList`만 바뀌었으면 `["GET /common/code/{groupId}", "selectCodeList"]`)
+- `changedFiles`: 여러 파일로 된 기능일 때, 이 커밋에서 바뀐 이 자산의 파일 목록 (전체 경로). 공통팀 검토용이다.
 - `notified`: 항상 `false`로 만든다. `notified`, `notifiedAt`, `notification`은 `common-asset-notify`만 바꾼다.
-- `announcement`는 넣지 않는다. 전파 자료에 포함되면 `common-asset-announce`가 추가한다.
+- `announcement`는 넣지 않는다. 정리 자료에 포함되면 `common-asset-announce`가 추가한다.
 
 ### 로그 형식 (`asset-index/automation.log`, 한 줄씩 추가)
 
