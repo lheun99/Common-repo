@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.common.code.CodeMapper">
+
+    <select id="selectCodeList" resultType="com.company.common.code.CodeVO">
+        SELECT code,
+               code_name  AS codeName,
+               sort_order AS sortOrder
+          FROM tb_common_code
+         WHERE group_code = #{groupCode}
+           AND use_yn = 'Y'
+         ORDER BY sort_order, code
+    </select>
+
+    <select id="selectCodeName" resultType="string">
+        SELECT code_name
+          FROM tb_common_code
+         WHERE group_code = #{groupCode}
+           AND code = #{code}
+           AND use_yn = 'Y'
+    </select>
+
+</mapper>
