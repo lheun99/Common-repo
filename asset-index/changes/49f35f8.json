@@ -28,5 +28,7 @@
       ]
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-10-22T17:15:51+09:00",
+  "notification": "20261022-49f35f8-181deb4.json"
 }
