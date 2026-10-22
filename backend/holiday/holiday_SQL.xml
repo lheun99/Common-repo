@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.common.holiday.HolidayMapper">
+
+    <select id="selectHolidayList" resultType="com.company.common.holiday.HolidayVO">
+        SELECT holiday_date  AS holidayDate,
+               holiday_name  AS holidayName,
+               substitute_yn AS substituteYn
+          FROM tb_holiday
+         WHERE use_yn = 'Y'
+        <if test="year != null">
+           AND EXTRACT(YEAR FROM holiday_date) = #{year}
+        </if>
+         ORDER BY holiday_date
+    </select>
+
+    <select id="selectHolidayCount" resultType="int">
+        SELECT COUNT(*)
+          FROM tb_holiday
+         WHERE use_yn = 'Y'
+           AND holiday_date = #{date}
+    </select>
+
+</mapper>
