@@ -1,0 +1,210 @@
+{
+  "id": "20261102-817fe3b-49f35f8-181deb4",
+  "createdAt": "2026-11-02T13:30:52+09:00",
+  "sourceCommits": ["817fe3b", "49f35f8", "181deb4"],
+  "items": [
+    {
+      "asset": "Holiday",
+      "type": "backend-feature",
+      "commit": "181deb4",
+      "committedAt": "2026-10-22T07:19:42+01:00",
+      "grade": "breaking",
+      "summary": "[817fe3b] 공휴일 조회 및 영업일 계산 기능(HolidayController, HolidayService)이 추가되었습니다. [181deb4] HolidayService의 nextBusinessDay가 addBusinessDays로 바뀌었고, 공휴일 목록 응답의 substituteYn이 substitute(boolean)로 바뀌었습니다.",
+      "action": "nextBusinessDay를 호출하는 코드는 addBusinessDays로 바꾸세요 (다음 영업일은 addBusinessDays(date, 1)). substituteYn을 읽는 코드는 substitute(boolean)로 바꾸세요. 예: holidayService.addBusinessDays(date, 1), holiday.isSubstitute()",
+      "targets": [
+        {
+          "project": "shop-app",
+          "pmsProjectId": null,
+          "file": "backend/src/main/java/com/shop/delivery/DeliveryService.java",
+          "line": 17,
+          "code": "return holidayService.nextBusinessDay(orderDate);",
+          "usageKind": "import",
+          "hit": true,
+          "recipients": [
+            { "name": "김개발", "email": "kim.dev@example.com", "role": "author" }
+          ]
+        },
+        {
+          "project": "shop-app",
+          "pmsProjectId": null,
+          "file": "frontend/src/pages/DeliveryInfo.tsx",
+          "line": 7,
+          "code": "fetch(`/api/holidays/next-business-day?date=${orderDate}`)",
+          "usageKind": "api-call",
+          "endpoint": "GET /api/holidays/next-business-day",
+          "hit": false,
+          "recipients": [
+            { "name": "박개발", "email": "park.dev@example.com", "role": "author" }
+          ]
+        },
+        {
+          "project": "admin-app",
+          "pmsProjectId": null,
+          "file": "frontend/src/pages/HolidayCalendar.tsx",
+          "line": 9,
+          "code": "fetch(`/api/holidays?year=${year}`)",
+          "usageKind": "api-call",
+          "endpoint": "GET /api/holidays",
+          "hit": true,
+          "recipients": [
+            { "name": "이개발", "email": "lee.dev@example.com", "role": "author" }
+          ]
+        },
+        {
+          "project": "hr-app",
+          "pmsProjectId": null,
+          "file": "backend/src/main/java/com/hr/leave/LeaveService.java",
+          "line": 19,
+          "code": "if (!holidayService.isHoliday(d)) {",
+          "usageKind": "import",
+          "hit": false,
+          "recipients": [
+            { "name": "박개발", "email": "park.dev@example.com", "role": "author" }
+          ]
+        }
+      ],
+      "candidates": []
+    },
+    {
+      "asset": "Code",
+      "type": "backend-feature",
+      "commit": "49f35f8",
+      "committedAt": "2026-10-22T06:59:15+01:00",
+      "grade": "new",
+      "summary": "공통코드 조회 기능(CodeController, CodeService)이 추가되었습니다.",
+      "action": "화면의 선택 박스 목록이나 상태값 표시 이름을 공통코드에서 가져올 때 사용하세요.",
+      "targets": [],
+      "candidates": []
+    }
+  ],
+  "scanErrors": [],
+  "developers": [
+    {
+      "name": "김개발",
+      "email": "kim.dev@example.com",
+      "role": "author",
+      "project": "shop-app",
+      "pmsProjectId": null,
+      "assets": [
+        {
+          "asset": "Holiday",
+          "grade": "breaking",
+          "usageKind": "import",
+          "locations": [
+            { "file": "backend/src/main/java/com/shop/delivery/DeliveryService.java", "line": 17 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "박개발",
+      "email": "park.dev@example.com",
+      "role": "author",
+      "project": "shop-app",
+      "pmsProjectId": null,
+      "assets": [
+        {
+          "asset": "Holiday",
+          "grade": "breaking",
+          "usageKind": "api-call",
+          "locations": [
+            { "file": "frontend/src/pages/DeliveryInfo.tsx", "line": 7 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "박개발",
+      "email": "park.dev@example.com",
+      "role": "author",
+      "project": "hr-app",
+      "pmsProjectId": null,
+      "assets": [
+        {
+          "asset": "Holiday",
+          "grade": "breaking",
+          "usageKind": "import",
+          "locations": [
+            { "file": "backend/src/main/java/com/hr/leave/LeaveService.java", "line": 19 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "이개발",
+      "email": "lee.dev@example.com",
+      "role": "author",
+      "project": "admin-app",
+      "pmsProjectId": null,
+      "assets": [
+        {
+          "asset": "Holiday",
+          "grade": "breaking",
+          "usageKind": "api-call",
+          "locations": [
+            { "file": "frontend/src/pages/HolidayCalendar.tsx", "line": 9 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "최PL",
+      "email": "pl.choi@example.com",
+      "role": "owner",
+      "project": "shop-app",
+      "pmsProjectId": null,
+      "assets": [
+        {
+          "asset": "Holiday",
+          "grade": "breaking",
+          "usageKind": "import",
+          "locations": [
+            { "file": "backend/src/main/java/com/shop/delivery/DeliveryService.java", "line": 17 }
+          ]
+        },
+        {
+          "asset": "Holiday",
+          "grade": "breaking",
+          "usageKind": "api-call",
+          "locations": [
+            { "file": "frontend/src/pages/DeliveryInfo.tsx", "line": 7 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "정PL",
+      "email": "pl.jung@example.com",
+      "role": "owner",
+      "project": "admin-app",
+      "pmsProjectId": null,
+      "assets": [
+        {
+          "asset": "Holiday",
+          "grade": "breaking",
+          "usageKind": "api-call",
+          "locations": [
+            { "file": "frontend/src/pages/HolidayCalendar.tsx", "line": 9 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "한PL",
+      "email": "pl.han@example.com",
+      "role": "owner",
+      "project": "hr-app",
+      "pmsProjectId": null,
+      "assets": [
+        {
+          "asset": "Holiday",
+          "grade": "breaking",
+          "usageKind": "import",
+          "locations": [
+            { "file": "backend/src/main/java/com/hr/leave/LeaveService.java", "line": 19 }
+          ]
+        }
+      ]
+    }
+  ]
+}
