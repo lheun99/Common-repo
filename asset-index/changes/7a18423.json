@@ -14,5 +14,7 @@
       "action": "조회 결과가 없을 때 안내 문구를 표시하는 데 사용하세요. actionLabel과 onAction을 둘 다 넘겨야 버튼이 표시됩니다."
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-02T06:38:19.287Z",
+  "notification": "20261102-7a18423.md"
 }
