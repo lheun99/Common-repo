@@ -5,10 +5,15 @@
       "name": "Button",
       "path": "common-repo/components/Button.tsx",
       "purpose": "버튼 (primary/secondary/danger)",
-      "props": ["label", "variant", "disabled", "onClick"],
-      "detail": "[사용 예]\n  <Button label=\"저장\" onClick={handleSave} />\n  <Button label=\"삭제\" variant=\"danger\" disabled={!selected} onClick={handleDelete} />\n[props]\n- label: 버튼에 표시할 문구\n- variant: 버튼 종류 (기본 primary, primary/secondary/danger)\n- disabled: 비활성화 여부 (선택)\n- onClick: 버튼을 눌렀을 때 호출 (선택)",
+      "props": ["label", "variant", "size", "disabled", "onClick"],
+      "detail": "[사용 예]\n  <Button label=\"저장\" onClick={handleSave} />\n  <Button label=\"삭제\" variant=\"danger\" disabled={!selected} onClick={handleDelete} />\n[props]\n- label: 버튼에 표시할 문구\n- variant: 버튼 종류 (기본 primary, primary/secondary/danger)\n- size: 버튼 크기 (기본 md, sm/md/lg)\n- disabled: 비활성화 여부 (선택)\n- onClick: 버튼을 눌렀을 때 호출 (선택)",
       "addedInCommit": "bfc1777",
-      "addedAt": "baseline"
+      "addedAt": "baseline",
+      "updatedInCommit": "5613b54",
+      "updatedAt": "2026-11-11T01:56:40Z",
+      "history": [
+        { "commit": "5613b54", "at": "2026-11-11T01:56:40Z", "grade": "compatible", "summary": "size prop이 추가되었습니다. (sm/md/lg, 기본 md)" }
+      ]
     },
     {
       "type": "frontend-component",
