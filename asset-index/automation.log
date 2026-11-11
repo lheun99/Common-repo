@@ -12,3 +12,4 @@
 [2026-10-22T06:59:15+01:00] commit 49f35f8 → index에 Code(backend-feature) 추가함 [new] (생성 포함: 사용 예, 승인)
 [2026-10-22T07:19:42+01:00] commit 181deb4 → index의 Holiday(backend-feature) 갱신함: usage, detail [breaking]
 [2026-11-02T06:23:01Z] commit 7a18423 → index에 EmptyState(frontend-component) 추가함 [new]
+[2026-11-11T00:31:54Z] commit 3b02531 → index의 EmptyState(frontend-component) 갱신함: props, detail [compatible]

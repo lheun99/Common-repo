@@ -1,0 +1,20 @@
+{
+  "commit": "3b02531",
+  "committedAt": "2026-11-11T00:31:54Z",
+  "subject": "feat: EmptyState title prop 추가",
+  "changes": [
+    {
+      "asset": "EmptyState",
+      "type": "frontend-component",
+      "path": "common-repo/components/EmptyState.tsx",
+      "fileStatus": "M",
+      "grade": "compatible",
+      "summary": "title prop이 추가되었습니다. (굵게 표시할 제목, 선택)",
+      "details": [
+        { "what": "title prop 추가 (선택)", "before": null, "after": "title?: string" }
+      ],
+      "action": null
+    }
+  ],
+  "notified": false
+}
