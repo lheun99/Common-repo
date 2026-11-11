@@ -1,16 +1,23 @@
 ---
 name: common-asset-notify
-description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘", "<자산> 쓰는 곳 찾아줘", "영향도 분석해줘"라고 할 때, 또는 common-asset-sync가 끝난 뒤 변경 기록(asset-index/changes/)의 관련자 알림을 이어서 진행하기로 했을 때 사용.
+description: 공통팀이 "영향도 조사해줘", "영향도 분석해줘", "관련 개발자 정리해줘", "<자산> 쓰는 곳 찾아줘"라고 할 때, 또는 common-asset-sync가 끝난 뒤 변경 기록(asset-index/changes/)의 영향도 조사와 개발자 정리를 이어서 진행하기로 했을 때 사용.
 ---
 
-# 공통 변경 관련자 파악 및 알림
+# 공통 변경 영향도 조사 및 개발자 정리
 
 공통 자산의 변경이 **어느 프로젝트의 어느 코드에 영향을 주는지** 실제 소스를 스캔해 찾고,
-그 코드를 작성한 개발자와 프로젝트 담당자에게 보낼 알림을 만든다.
+그 코드를 작성한 개발자와 프로젝트 담당자를 **정리**해 md 문서로 남긴다.
+
+| 변경 기록의 등급 | 하는 일 |
+|---|---|
+| `new` (신규) | 조사하지 않는다. 문서에 "신규"로 한 줄만 올린다. |
+| `breaking` / `behavior` / `compatible` (변경, 수정) | 사용처를 스캔해 영향 대상을 찾고, 관련 개발자를 정리한다. |
+| `docs` | 대상에서 뺀다. |
 
 - 개발자가 AI로 만들었든 직접 짰든 상관없이 **코드 기준**으로 찾는다.
-- 알림은 파일(`asset-index/notifications/`)로만 만든다. 실제 발송(PMS, 메일)은 하지 않는다.
-  나중에 PMS를 연동하면 이 파일의 `messages`를 그대로 보낸다.
+- 결과는 md 문서(`asset-index/notifications/`)로 남긴다. 알림 발송(PMS, 메일, 메신저)은 하지 않는다.
+  (폴더 이름과 변경 기록의 `notified` 필드 이름은 이전 이름 그대로 쓴다. 뜻은 "영향도 조사·개발자 정리를 마침"이다.)
+- 신규 자산의 대체 후보(기존에 직접 구현한 곳) 탐색은 하지 않는다.
 - 변경 내용 자체(무엇이 어떻게 바뀌었나)는 `common-asset-sync`가 남긴 변경 기록을 그대로 쓴다. 다시 판정하지 않는다.
 
 ## 경로
@@ -19,111 +26,88 @@ description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘
 - 정리집: `common-repo/asset-index/asset-index.json` (자산의 path·종류 확인용, 읽기만 한다)
 - 프로젝트 목록: `common-repo/asset-index/projects.json` (공통팀이 관리한다)
   - `path`는 common-repo 기준 상대 경로이거나 절대 경로다.
-- 알림 파일: `common-repo/asset-index/notifications/<YYYYMMDD>-<해시7들>.json`
+- 정리 문서: `common-repo/asset-index/notifications/<YYYYMMDD>-<해시7들>.md`
 
 ## 두 가지 모드
 
 | 모드 | 요청 예 | 하는 일 | 파일 생성 |
 |---|---|---|---|
-| **알림** | "공통 변경 알림 보내줘", sync 이후 이어서 진행 | 미처리 변경 기록 → 스캔 → 알림 파일 | O (승인 후) |
-| **조회** | "Pagination 쓰는 곳 찾아줘", "DateTimeUtils 영향도 알려줘" | 지정한 자산만 스캔 → 결과를 채팅으로 보고 | X |
+| **정리** | "영향도 조사해줘", "관련 개발자 정리해줘", sync 이후 이어서 진행 | 미처리 변경 기록 → 스캔 → 개발자 정리 → 정리 문서 | O (승인 후) |
+| **조회** | "Pagination 쓰는 곳 찾아줘", "Holiday 영향도 알려줘" | 지정한 자산만 스캔 → 결과를 채팅으로 보고 | X |
 
 조회 모드는 아래 2~3단계(스캔, 담당자)만 하고 결과를 표로 보여 준 뒤 끝낸다. 커밋하지 않는다.
+이미 정리를 마친(`notified: true`) 자산도 조회할 수 있다. 변경 기록은 고치지 않는다.
 
 ## 핵심 원칙
 
 1. **프로젝트 저장소는 읽기만 한다.** 수정, 커밋, 브랜치 변경을 하지 않는다.
 2. **커밋된 코드만 스캔한다.** `git -C <프로젝트> grep`, `ls-files`, `blame`을 쓴다. (작업 트리의 미커밋 변경은 보지 않는다.)
-3. **찾은 것만 알린다.** 스캔에서 나오지 않은 사용처나 담당자를 지어내지 않는다.
-4. **공개되는 결과물에는 깨끗한 문장만 남긴다.** 알림 파일과 메시지에 `(AI 추론)` 같은 표시를 넣지 않는다.
-   추론이 필요한 판단(대체 후보 등)은 미리보기에서 `⚠ 추론 — 확인 필요`로 보여 주고, 공통팀이 승인한 것만 넣는다.
-5. **사용자 확인은 두 번 받는다: 알림 파일 생성(4단계), push(6단계).**
+3. **찾은 것만 적는다.** 스캔에서 나오지 않은 사용처나 담당자를 지어내지 않는다.
+4. **공개되는 결과물에는 깨끗한 문장만 남긴다.** 정리 문서에 `(AI 추론)` 같은 표시를 넣지 않는다.
+5. **사용자 확인은 두 번 받는다: 정리 문서 생성(4단계), push(6단계).**
+6. **셸 명령은 한 번에 하나만 실행한다.** `;`, `&&`, `&`로 잇지 않는다. (실행 셸이 cmd.exe·PowerShell·bash 중 무엇인지에 따라 문법이 달라 실패한다.)
+   `cd` 없이 `git -C <경로>`로 실행하고, 같은 프로젝트에서 찾을 패턴이 여러 개면 `git -C <프로젝트> grep -n -E -e "<패턴1>" -e "<패턴2>"`처럼 한 명령으로 묶는다.
 
-## 순서 (알림 모드)
+## 순서 (정리 모드)
 
 ### 1. 처리할 변경 기록 모으기
-- `asset-index/changes/*.json` 중 `notified`가 `false`인 파일을 읽는다. 커밋 시각(`committedAt`) 순으로 정렬한다.
-- 각 파일의 `changes` 중 `grade`가 `docs`인 항목은 알림 대상에서 뺀다.
-- 처리할 항목이 없으면 "알릴 변경이 없습니다"라고 알리고 끝낸다.
-  (모든 항목이 `docs`인 기록 파일은 4단계 승인 없이 `notified: true`로 바꾸지 않는다. 다음 알림 때 함께 처리한다.)
-- `projects.json`을 읽는다. 없거나 프로젝트가 0개면 "projects.json에 스캔할 프로젝트를 등록해 주세요"라고 안내하고 끝낸다.
+- `asset-index/changes/*.json`에서 내용 검색으로 `"notified": false`가 들어 있는 파일만 골라 **그 파일만** 읽는다. `notified`가 `true`인 파일은 열지 않는다. 커밋 시각(`committedAt`) 순으로 정렬한다.
+- **범위 지정:** 요청에 자산 이름이나 커밋 해시가 있으면(예: "Holiday만 영향도 조사해줘", "49f35f8만 진행해줘") 그 자산·커밋의 변경 기록만 처리한다.
+  나머지 `notified: false` 파일은 열지도 고치지도 않고, 그대로 미처리로 남긴다. 범위가 없으면 전부 처리한다.
+  (자산 이름은 변경 기록 파일을 열기 전에 `"asset": "<Name>"` 내용 검색으로 해당 파일만 고른다.)
+- **같은 자산은 하나로 묶는다:** 처리할 기록 중 같은 자산(`asset`)이 여러 건이면 한 항목으로 합쳐 **최신 상태 기준으로 한 번만** 스캔한다.
+  - 등급은 가장 높은 것을 쓴다. (`breaking` > `behavior` > `compatible` > `new`)
+  - 요약·할 일은 기록들의 내용을 커밋 시각 순으로 모아 보여 준다. 문서에는 묶인 커밋 해시를 모두 적는다.
+  - 스캔 단서(`scanHints`, `affectedApi`)는 묶인 기록의 것을 합친다.
+  - 묶인 기록이 모두 `new`일 때만 신규 항목이다. `new`와 다른 등급이 섞여 있으면 그 다른 등급 항목으로 조사한다.
+  - 5단계에서 묶인 기록 파일을 모두 `notified: true`로 바꾼다. 정리 문서 이름에는 해시를 모두 `-`로 잇는다.
+- 정리집(`asset-index.json`)은 통째로 읽지 않는다. 조사할 자산(`new`가 아닌 것)마다 `"name": "<Name>"`을 검색해 그 항목 부분만 읽는다.
+- 각 파일의 `changes` 중 `grade`가 `docs`인 항목은 대상에서 뺀다.
+- 처리할 항목이 없으면 "조사할 변경이 없습니다"라고 알리고 끝낸다.
+  (모든 항목이 `docs`인 기록 파일은 4단계 승인 없이 `notified: true`로 바꾸지 않는다. 다음 정리 때 함께 처리한다.)
+- 조사할 항목(`new`가 아닌 것)이 있으면 `projects.json`을 읽는다. 없거나 프로젝트가 0개면 "projects.json에 스캔할 프로젝트를 등록해 주세요"라고 안내하고 끝낸다.
+  신규 항목만 있으면 `projects.json`은 읽지 않는다.
 
-### 2. 사용처 스캔
-항목(자산)마다, 프로젝트마다 아래 [사용처 탐지 규칙]을 적용한다.
+### 2. 사용처 스캔 (`new`가 아닌 항목만)
+항목(자산)마다, 프로젝트마다 아래 [사용처 탐지 규칙]을 적용한다. 신규 항목은 스캔하지 않는다.
 - 프로젝트 경로가 없거나 git 저장소가 아니면 건너뛰고 "스캔 실패: <프로젝트> - <이유>"로 기록한다.
-- 결과는 사용처 목록이다: 프로젝트, 파일, 줄, 코드 한 줄, 사용 방식(`import` / `copy` / `copy-modified`), `hit` 여부.
+- 결과는 사용처 목록이다: 프로젝트, 파일, 줄, 코드 한 줄, 사용 방식(`import` / `copy` / `copy-modified` / `api-call`), `hit` 여부.
 
-### 3. 담당자 파악
-아래 [담당자 규칙]을 적용한다.
+### 3. 담당자 파악 (`new`가 아닌 항목만)
+아래 [담당자 규칙]을 적용한다. 결과는 **개발자별로 묶어** 정리한다. (누가, 어느 프로젝트의 어느 자산을, 어느 파일·줄에서 쓰는가)
 
 ### 4. 미리보기 (사용자 확인 후)
-미리보기 전문을 **채팅 본문**에 먼저 출력한 뒤, 질문 도구로 **"이대로 알림 파일을 만들까요?"** 한 줄만 묻는다.
-질문 창에는 긴 내용이 보이지 않는다.
-**질문 전 확인**: 바로 위 응답 본문에 `[관련자 알림 미리보기]` 블록 전문이 있는가? 없으면 질문하지 말고 블록부터 출력한다.
+저장할 정리 문서 **전문**(아래 [정리 문서 형식])을 **채팅 본문**에 먼저 출력한 뒤, 질문 도구로 **"이대로 정리 문서를 만들까요?"** 한 줄만 묻는다.
+질문 창에는 긴 내용이 보이지 않는다. 질문 도구가 없으면 같은 질문을 채팅 본문 마지막 줄에 적고 답을 기다린다.
+**질문 전 확인**: 바로 위 응답 본문에 정리 문서 전문이 있는가? 없으면 질문하지 말고 문서부터 출력한다.
+아래 두 줄을 문서 맨 위에 붙여 미리보기임을 표시한다. (저장하는 문서에는 넣지 않는다.)
 
 ```
-[관련자 알림 미리보기]
-(⚠ 표시는 검토용이며 알림 파일에는 저장되지 않습니다)
-
-■ 🔴 비호환 — Pagination  (635c4ba, 2026-10-14 10:20 변경)
-  요약   onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
-  할 일  onChange 핸들러가 객체를 받도록 수정하세요.
-
-  영향 대상 3곳 (프로젝트 2개)
-  shop-app
-    - frontend/src/pages/OrderList.tsx:13    import   onChange 사용 ●   작성 김개발
-    - frontend/src/pages/ProductList.tsx:15  import   onChange 사용 ●   작성 박개발
-  admin-app
-    - frontend/src/components/Pagination.tsx  copy-modified (공통 원본을 복사 후 수정)   작성 이개발
-      사용 줄: frontend/src/pages/UserList.tsx:10   작성 이개발
-      → 복사본이라 공통 변경이 자동 반영되지 않습니다. 새 버전 반영 여부를 직접 판단해야 합니다.
-
-■ ⚪ 신규 — DateTimeUtils  (b6a0f67)
-  대체 후보 1곳  ⚠ 추론 — 확인 필요
-    - admin-app  backend/src/main/java/com/admin/util/DateFormat.java   작성 이개발
-      근거: DateTimeFormatter.ofPattern("yyyy-MM-dd"), toDate/toDateTime/parse가 DateTimeUtils와 같은 역할
-  → 포함할 후보를 골라 주세요. (기본: 모두 제외)
-
-■ 받는 사람 (4명)
-  김개발  shop-app   Pagination 🔴
-  박개발  shop-app   Pagination 🔴
-  이개발  admin-app  Pagination 🔴 (복사본)
-  최PL    shop-app   담당자 참조 — Pagination 🔴 2곳
-  정PL    admin-app  담당자 참조 — Pagination 🔴 1곳
-
-■ 스캔 결과
-  shop-app ✓  admin-app ✓  hr-app ✓ (해당 없음)
-
-■ 알림 파일
-  asset-index/notifications/20261014-635c4ba.json
-
-■ 커밋 메시지
-  docs: 공통 변경 알림 생성 (635c4ba)
-
-  - Pagination [비호환]: 3곳, 프로젝트 2개, 수신 5명
+[영향도 조사·개발자 정리 미리보기]
+정리 문서: asset-index/notifications/20261014-635c4ba.md · 커밋 메시지: docs: 공통 변경 영향도 정리 (635c4ba)
 ```
 
-- `●`은 `hit`(스캔 키가 실제로 쓰인 줄)이다. 비호환인데 `hit`가 없는 사용처는 "사용은 하지만 바뀐 부분은 쓰지 않음 — 확인 권장"으로 보여 준다.
-- 대체 후보는 **공통팀이 고른 것만** 알림에 넣는다. 고르지 않으면 넣지 않는다.
 - 사용자가 수정을 요청하면 고친 뒤 미리보기를 다시 보여 주고 다시 묻는다.
 - 사용자가 거절하면 아무 파일도 만들지 않고 변경 기록도 그대로 둔다.
-- 영향 대상이 0곳인 항목도 미리보기에 "영향 대상 없음"으로 보여 준다. 승인하면 알림 파일에 그대로 남기고 처리한 것으로 본다.
+- 영향 대상이 0곳인 항목도 문서에 "영향 대상 없음"으로 남긴다. 승인하면 처리한 것으로 본다.
 
-### 5. 알림 파일 생성과 커밋
-승인받은 내용 **그대로** 만든다. `⚠` 표시와 근거 메모는 저장하지 않는다.
-- `asset-index/notifications/<YYYYMMDD>-<해시7들>.json`을 만든다. (UTF-8, 들여쓰기 2칸, 형식은 아래 [알림 파일 형식])
-  - `<YYYYMMDD>`는 알림을 만든 날짜, `<해시7들>`은 포함된 변경 기록의 해시를 `-`로 이은 것.
-- 처리한 변경 기록 파일마다 `notified: true`, `notifiedAt`(지금 시각, ISO 8601), `notification`(알림 파일 이름)을 넣는다.
+### 5. 정리 문서 생성과 커밋
+승인받은 내용 **그대로** 만든다.
+- `asset-index/notifications/<YYYYMMDD>-<해시7들>.md`를 만든다. (UTF-8)
+  - `<YYYYMMDD>`는 문서를 만든 날짜, `<해시7들>`은 포함된 변경 기록의 해시를 `-`로 이은 것.
+- 처리한 변경 기록 파일마다 `notified: true`, `notifiedAt`(지금 시각, ISO 8601), `notification`(정리 문서 이름)을 넣는다.
   파일 편집 도구로 이 세 필드만 고친다. 다른 필드는 건드리지 않는다.
-- JSON이 올바른지 확인한다. (common-repo에서 실행)
-  `node -e "for (const f of process.argv.slice(1)) JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('JSON OK')" <알림 파일> <변경 기록 파일들>`
-- 알림 파일과 고친 변경 기록 파일**만** 커밋한다. 경로는 하나씩 적는다.
+- 고친 변경 기록의 JSON이 올바른지 확인한다. (common-repo에서 실행)
+  `node -e "for (const f of process.argv.slice(1)) JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('JSON OK')" <변경 기록 파일들>`
+- 정리 문서와 고친 변경 기록 파일**만** 커밋한다. 경로는 하나씩 적는다.
   ```
-  git -C common-repo add <알림 파일> <변경 기록 파일들>
-  git -C common-repo commit -m "<제목>" -m "<본문>" -- <알림 파일> <변경 기록 파일들>
+  git -C common-repo add <정리 문서> <변경 기록 파일들>
+  git -C common-repo commit -m "<제목>" -m "<본문>" -- <정리 문서> <변경 기록 파일들>
   ```
-  - 제목: `docs: 공통 변경 알림 생성 (<해시7들>)`
-  - 본문: 자산마다 한 줄. `- <자산> [<등급>]: <N>곳, 프로젝트 <M>개, 수신 <K>명`
+  - 제목: `docs: 공통 변경 영향도 정리 (<해시7들>)`
+  - 본문: 자산마다 한 줄.
+    - 조사한 자산: `- <자산> [<등급>]: <N>곳, 프로젝트 <M>개, 관련 개발자 <K>명`
+    - 신규 자산: `- <자산> [신규]`
   - 메시지는 `-F` 파일 대신 `-m`을 두 번 써서 명령 인자로 넘긴다. 커밋 직후 `git -C common-repo log -1 --format=%B`로 한글이 깨지지 않았는지 확인한다.
 
 ### 6. push 확인
@@ -131,17 +115,17 @@ description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘
 - 있으면 목록을 보여 주고 **"push할까요?"** 를 한 번만 묻는다.
 
 ### 7. 결과 보고
-- 알림 파일 이름
-- 자산별 등급과 영향 대상 수 (프로젝트, 파일)
-- 받는 사람 목록
+- 정리 문서 이름
+- 자산별 등급과 영향 대상 수 (프로젝트, 파일). 신규 자산은 "신규"로만 적는다.
+- 관련 개발자 목록
 - 스캔 실패한 프로젝트와 이유
 - push 결과
 
 ## 사용처 탐지 규칙
 
 자산 종류에 따라 적용하는 규칙이 다르다.
-- `frontend-component`, `backend-module` (파일 하나인 자산): ①~⑤
-- `frontend-feature`, `backend-feature` (여러 파일로 된 기능 자산): ⑥ (대체 후보는 ⑤를 함께 적용)
+- `frontend-component`, `backend-module` (파일 하나인 자산): ①~④
+- `frontend-feature`, `backend-feature` (여러 파일로 된 기능 자산): ⑤
 
 자산의 `name`을 `<Name>`이라 한다. 공통 원본 경로는 정리집의 `path`에서 `common-repo/`를 뺀 것이다 (예: `components/Pagination.tsx`).
 모든 검색은 `git -C <프로젝트> grep -n -E "<패턴>"`과 `git -C <프로젝트> ls-files`로 한다. (추적되는 파일만 검색되므로 node_modules·빌드 산출물은 자동으로 빠진다.)
@@ -177,17 +161,9 @@ description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘
 변경 기록의 `scanHints`(바뀐 prop·메서드 이름)가 사용 줄에서 쓰이는지 확인한다.
 - 프론트: 사용 줄부터 그 JSX 요소가 닫힐 때까지(`/>` 또는 `</<Name>>`) 안에 `<hint>=` 또는 `<hint>:`가 있으면 `hit`
 - 백엔드: `<Name>.<hint>(`, `.<hint>(` (사용 줄의 변수에 대해)가 있으면 `hit`
-- 판단이 어려우면 파일을 읽어 확인한다. 그래도 애매하면 `hit: false`로 두고 미리보기에서 "확인 권장"으로 보여 준다.
+- 판단이 어려우면 파일을 읽어 확인한다. 그래도 애매하면 `hit: false`로 두고 문서에서 "확인 권장"으로 적는다.
 
-### ⑤ 대체 후보 (`new` 항목만)
-새 자산이 하는 일을 프로젝트가 **직접 구현한** 곳을 찾는다. 자산의 소스(`git -C common-repo show HEAD:<공통 원본 경로>`)를 읽고
-핵심 구현을 나타내는 검색어를 정한다.
-- 예: DateTimeUtils → `DateTimeFormatter.ofPattern\("yyyy-MM-dd`, `formatDate|toDate|parseDate`
-- 예: MaskingUtils → `replaceAll\(.*\*`, `mask[A-Z]`
-- ①②에서 이미 이 자산을 쓰는 파일은 뺀다.
-- 결과는 항상 추론이다. 미리보기에서 `⚠ 추론 — 확인 필요`와 근거(검색에 걸린 코드)를 함께 보여 주고, 공통팀이 고른 것만 넣는다.
-
-### ⑥ 여러 파일로 된 기능 자산 (`frontend-feature`, `backend-feature`)
+### ⑤ 여러 파일로 된 기능 자산 (`frontend-feature`, `backend-feature`)
 이런 자산은 개발자가 **시작 파일**만 쓰고 나머지 파일은 직접 쓰지 않는다. 그래서 시작 파일이 쓰이는 곳만 찾는다.
 정리집 항목의 `api`, `usage`, `props`, `path`를 쓴다.
 변경 기록에 `affectedApi`가 있으면 **그 엔드포인트·메서드만** 찾는다. (없으면 자산의 전체 `api`·`usage`)
@@ -221,73 +197,79 @@ description: 공통팀이 "공통 변경 알림 보내줘", "관련자 알려줘
   - import 줄과 사용 줄의 작성자가 다르면 둘 다 넣는다.
   - `copy` / `copy-modified`이면 복사본 파일을 마지막으로 커밋한 사람(`git -C <프로젝트> log -1 --format="%an|%ae" -- <복사본>`)도 넣는다.
   - `Not Committed Yet`은 미커밋 줄이므로 원칙 2에 따라 나오지 않는다. 나오면 그 줄은 버린다.
-- **프로젝트 담당자**: `projects.json`의 `owner`를 `role: "owner"`로 넣는다. 영향 대상이 있는 프로젝트의 담당자만 넣는다.
+- **프로젝트 담당자**: `projects.json`의 `owner`를 담당자로 넣는다. 영향 대상이 있는 프로젝트의 담당자만 넣는다.
 - 같은 사람(이메일 기준)은 한 번만 센다.
 
-## 알림 파일 형식
+## 정리 문서 형식
 
-```json
-{
-  "id": "20261014-635c4ba",
-  "createdAt": "2026-10-14T11:00:00+09:00",
-  "sourceCommits": ["635c4ba"],
-  "items": [
-    {
-      "asset": "Pagination",
-      "type": "frontend-component",
-      "commit": "635c4ba",
-      "committedAt": "2026-10-14T10:20:00+09:00",
-      "grade": "breaking",
-      "summary": "onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.",
-      "action": "onChange 핸들러가 객체를 받도록 수정하세요. 예: onChange={({ page }) => setPage(page)}",
-      "targets": [
-        {
-          "project": "shop-app",
-          "pmsProjectId": null,
-          "file": "frontend/src/pages/OrderList.tsx",
-          "line": 13,
-          "code": "<Pagination page={page} totalPages={totalPages} onChange={setPage} />",
-          "usageKind": "import",
-          "hit": true,
-          "recipients": [
-            { "name": "김개발", "email": "kim.dev@example.com", "role": "author" }
-          ]
-        }
-      ],
-      "candidates": []
-    }
-  ],
-  "scanErrors": [],
-  "messages": [
-    {
-      "to": { "name": "김개발", "email": "kim.dev@example.com" },
-      "role": "author",
-      "project": "shop-app",
-      "pmsProjectId": null,
-      "title": "[공통 변경] Pagination 비호환 변경 - 수정 필요",
-      "body": "공통 컴포넌트 Pagination이 변경되어 작성하신 코드의 수정이 필요합니다.\n\n■ 변경 내용\nonChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.\n\n■ 변경 일시\n2026-10-14 10:20 (커밋 635c4ba)\n\n■ 할 일\nonChange 핸들러가 객체를 받도록 수정하세요. 예: onChange={({ page }) => setPage(page)}\n\n■ 해당 위치\n- shop-app frontend/src/pages/OrderList.tsx:13\n\n(공통 변경 커밋: 635c4ba)"
-    }
-  ]
-}
-```
+아래 구성과 순서를 따른다. 해당 내용이 없는 섹션은 만들지 않는다. 표는 마크다운 표로 쓴다.
+등급 표시는 `🔴 비호환`, `🟡 동작 변경`, `🟢 호환 추가`, `⚪ 신규`를 쓴다.
 
-- `items[].committedAt`: 변경 기록의 `committedAt`을 그대로 옮긴다.
-- `targets[].usageKind`: `import` / `copy` / `copy-modified` / `api-call`. `api-call`이면 `endpoint`(`"<METHOD> <경로>"`)를 함께 넣는다. 복사본이면 `copyFile`(복사본 경로)과 `copiedFrom`(`copy`일 때만)을 함께 넣는다.
-- `hit`: `breaking` 항목에서만 넣는다.
-- `candidates`: `new` 항목에서 공통팀이 고른 대체 후보. `{ "project", "file", "line", "code", "recipients" }`
-- `messages`: **받는 사람 × 프로젝트**마다 하나. 한 사람이 같은 프로젝트에서 여러 자산에 해당하면 한 메시지로 묶는다.
-  - `title`: `[공통 변경] <자산들> <가장 높은 등급 이름> - <요청 수준>`
-    - 요청 수준: 🔴 `수정 필요`, 🟡 `확인 필요`, 🟢 `참고`, ⚪ `도입 검토`
-  - `body`: 사람이 읽는 본문. 순서: 인사 한 줄 → `■ 변경 내용` → `■ 변경 일시` → `■ 할 일` → `■ 해당 위치` → 커밋 해시.
-    - `■ 변경 일시`: 변경 기록의 `committedAt`을 한국 시간(+09:00)으로 바꿔 `YYYY-MM-DD HH:mm (커밋 <해시7>)`로 쓴다.
-      한 메시지에 여러 자산·커밋이 묶이면 자산마다 한 줄씩 `<자산>: YYYY-MM-DD HH:mm (커밋 <해시7>)`로 쓴다.
-    - 복사본이면 `■ 할 일`에 "복사해서 쓰는 파일이라 공통 변경이 자동으로 반영되지 않습니다."를 덧붙인다.
-    - 담당자(`owner`) 메시지는 그 프로젝트의 모든 해당 위치와 작성자를 나열하는 요약으로 쓴다.
-  - 등급 표시에는 이모지 대신 `[비호환]`, `[동작 변경]`, `[호환 추가]`, `[신규]`를 쓴다. (PMS에서 깨지지 않게)
+````markdown
+# 공통 변경 영향도 정리
+
+- 작성일: 2026-10-14
+- 대상 변경: 635c4ba (Pagination), b6a0f67 (DateTimeUtils)
+
+## 한눈에 보기
+
+| 자산 | 등급 | 영향 대상 | 관련 개발자 |
+|---|---|---|---|
+| Pagination | 🔴 비호환 | 수정 필요 2곳 · 확인 권장 1곳 (프로젝트 2개) | 5명 |
+| DateTimeUtils | ⚪ 신규 | 해당 없음 | - |
+
+## 🔴 Pagination — 비호환 (635c4ba, 2026-10-14 10:20 변경)
+
+- **변경 내용**: onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
+- **할 일**: onChange 핸들러가 객체를 받도록 수정하세요. 예: `onChange={({ page }) => setPage(page)}`
+
+| 프로젝트 | 파일:줄 | 사용 방식 | 바뀐 부분 사용 | 작성자 |
+|---|---|---|---|---|
+| shop-app | frontend/src/pages/OrderList.tsx:13 | import | ● 사용 | 김개발 |
+| shop-app | frontend/src/pages/ProductList.tsx:15 | import | ● 사용 | 박개발 |
+| admin-app | frontend/src/components/Pagination.tsx | 복사본(수정됨) | - | 이개발 |
+| admin-app | frontend/src/pages/UserList.tsx:10 | 복사본 사용 | - | 이개발 |
+
+> admin-app은 공통 원본을 복사해서 쓰는 파일이라 공통 변경이 자동 반영되지 않습니다. 새 버전 반영 여부를 직접 판단해야 합니다.
+
+## ⚪ DateTimeUtils — 신규 (b6a0f67)
+
+새 공통 자산이 추가되었습니다.
+
+## 관련 개발자
+
+| 개발자 | 프로젝트 | 자산 | 위치 |
+|---|---|---|---|
+| 김개발 | shop-app | Pagination 🔴 | OrderList.tsx:13 |
+| 박개발 | shop-app | Pagination 🔴 | ProductList.tsx:15 |
+| 이개발 | admin-app | Pagination 확인 권장 (복사본) | components/Pagination.tsx, UserList.tsx:10 |
+| 최PL (담당자) | shop-app | Pagination 🔴 | 2곳 |
+| 정PL (담당자) | admin-app | Pagination 확인 권장 | 1곳 |
+
+## 스캔 결과
+
+shop-app ✓ · admin-app ✓ · hr-app ✓ (해당 없음)
+````
+
+- **자산 섹션**: 조사한 자산은 `변경 내용`, `할 일`, 영향 대상 표를 쓴다. 신규 자산은 한 줄 설명만 쓰고 표를 만들지 않는다.
+  - 묶인 기록이 여러 건이면 `변경 내용`에 커밋 시각 순으로 한 줄씩 적고, 제목에 해시를 모두 적는다.
+  - `바뀐 부분 사용` 열은 `breaking` 항목에만 쓴다. `hit`이면 `● 사용`, 사용은 하지만 바뀐 부분을 쓰지 않으면 `확인 권장`, 그 외 등급은 `-`로 둔다.
+  - 사용 방식이 `api-call`이면 사용 방식 칸에 `API 호출 (<METHOD> <경로>)`로 적는다.
+  - 영향 대상이 없으면 표 대신 "영향 대상 없음"으로 쓴다.
+- **수정 필요와 확인 권장을 나눠 표시한다:** `breaking` 항목에서 `바뀐 부분 사용`이 `● 사용`인 곳만 수정이 필요한 곳이다.
+  `확인 권장`(사용은 하지만 바뀐 부분은 쓰지 않음, 복사본)인 곳은 수정 필요로 세지 않는다.
+  - `한눈에 보기`의 영향 대상 칸: `수정 필요 N곳 · 확인 권장 M곳 (프로젝트 K개)`. 한쪽이 0이면 그 부분은 쓰지 않는다.
+  - `관련 개발자`의 자산 칸: 수정 필요인 곳은 등급 이모지(🔴), 확인 권장인 곳은 `확인 권장`으로 쓴다.
+    한 사람이 두 종류에 모두 해당하면 수정 필요를 우선한다. 담당자는 그 프로젝트에 수정 필요가 하나라도 있으면 🔴, 없으면 `확인 권장`.
+  - `behavior` / `compatible` 항목은 이 구분을 하지 않고 등급 이모지를 그대로 쓴다.
+- **관련 개발자**: 개발자 × 프로젝트마다 한 줄. 같은 사람(이메일 기준)이 같은 프로젝트에서 여러 자산에 해당하면 한 줄에 모은다.
+  담당자는 이름 뒤에 `(담당자)`를 붙이고 위치 칸에는 그 프로젝트의 해당 곳 수를 쓴다. 조사한 자산이 하나도 없으면 이 섹션은 만들지 않는다.
+- **스캔 결과**: 프로젝트별로 `✓` 또는 `스캔 실패: <이유>`. 조사한 자산이 없으면 이 섹션은 만들지 않는다.
+- 이메일, 커밋 메시지, 근거 메모는 문서에 넣지 않는다.
 
 ## 하지 말 것
 - 프로젝트 저장소를 수정하거나, 프로젝트 저장소에서 커밋·checkout·pull 하지 않는다.
-- 실제로 메일, 메신저, PMS로 보내지 않는다.
+- 알림 문구(제목·본문)를 만들거나 메일, 메신저, PMS로 보내지 않는다. 알림은 이 스킬의 범위가 아니다.
+- 신규 자산에 대해 사용처 스캔이나 대체 후보 탐색을 하지 않는다.
 - 변경 기록의 `notified`·`notifiedAt`·`notification` 외 필드를 고치지 않는다. 정리집(`asset-index.json`)을 고치지 않는다.
 - 스캔에서 나오지 않은 사용처나 담당자를 넣지 않는다.
-- 공통팀이 고르지 않은 대체 후보를 알림에 넣지 않는다.

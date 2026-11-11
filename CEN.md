@@ -14,7 +14,7 @@ common-repo/
 │   ├── automation.log    # 정리 기록
 │   ├── projects.json     # 영향도 스캔 대상 프로젝트 목록 (공통팀이 관리)
 │   ├── changes/          # 변경 기록 (커밋별 변경 등급·요약·할 일)
-│   ├── notifications/    # 관련자 알림 (나중에 PMS로 보낼 내용)
+│   ├── notifications/    # 영향도 조사·개발자 정리 문서 (.md, 폴더명은 이전 이름 유지, 알림 발송은 안 함)
 │   └── announcements/    # 변경 정리 자료
 ├── components/       # React 공통 UI 컴포넌트 (.tsx)
 │   ├── Button.tsx
@@ -23,7 +23,7 @@ common-repo/
 │   └── ...
 └── .claude/skills/   # IntelliCEN 스킬 정의
     ├── common-asset-sync/      # 공통 자산 정리
-    ├── common-asset-notify/    # 영향도 확인 및 관련자 알림
+    ├── common-asset-notify/    # 영향도 조사 및 개발자 정리
     └── common-asset-announce/  # 변경 정리 자료 작성
 ```
 
@@ -35,7 +35,7 @@ common-repo/
 | 스킬 | 요청 예 | 하는 일 | 결과물 |
 |---|---|---|---|
 | `common-asset-sync` | "공통 자산 정리해줘" | stage된 변경 커밋 → 소스 분석 → 정리집 갱신 → 변경 등급 판정 | `asset-index.json`, `changes/*.json` |
-| `common-asset-notify` | "공통 변경 알림 보내줘", "Pagination 쓰는 곳 찾아줘" | `projects.json`의 프로젝트 소스를 스캔해 사용처·담당자 파악 | `notifications/*.json` |
+| `common-asset-notify` | "영향도 조사해줘", "관련 개발자 정리해줘", "Pagination 쓰는 곳 찾아줘" | `projects.json`의 프로젝트 소스를 스캔해 사용처를 찾고 개발자별로 정리. 신규는 "신규"로만 표시 | `notifications/*.md` |
 | `common-asset-announce` | "정리 자료 만들어줘" | 아직 정리하지 않은 변경을 모아 팀 전체가 볼 정리 자료 작성 | `announcements/*.md` |
 
 ### 공통 주의사항
@@ -43,7 +43,7 @@ common-repo/
 - **커밋된 내용만 다룬다.** 소스는 `git show <해시>:<경로>`로 읽는다.
 - `common-repo` 소스 코드와 다른 프로젝트 저장소를 **수정하지 않는다.**
 - 승인 없이 커밋하거나 push하지 않는다. 반영 전에는 항상 미리보기를 채팅 본문에 먼저 보여 준다.
-- 정리집·알림·정리 자료 등 **공개되는 결과물에는 `(AI 추론)` 같은 표시를 넣지 않는다.** 그런 표시는 미리보기에서만 쓴다.
+- 정리집·영향도 정리·정리 자료 등 **공개되는 결과물에는 `(AI 추론)` 같은 표시를 넣지 않는다.** 그런 표시는 미리보기에서만 쓴다.
 - JSON 파일은 UTF-8, 들여쓰기 2칸의 올바른 JSON으로 저장한다.
 
 ## 백엔드 파일 저장 서비스 특이점
