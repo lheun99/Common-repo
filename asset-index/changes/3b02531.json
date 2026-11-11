@@ -16,5 +16,7 @@
       "action": null
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-11T02:10:22Z",
+  "notification": "20261111-3b02531-5613b54.md"
 }

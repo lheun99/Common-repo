@@ -16,5 +16,7 @@
       "action": "size prop을 사용해 버튼 크기를 지정할 수 있습니다. 예: <Button label=\"확인\" size=\"lg\" />"
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-11T02:10:22Z",
+  "notification": "20261111-3b02531-5613b54.md"
 }
