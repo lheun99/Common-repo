@@ -1,0 +1,36 @@
+{
+  "commit": "62a81c6",
+  "committedAt": "2026-11-12T07:25:37Z",
+  "subject": "feat: getCodeName 미발견 시 반환값 변경, HolidayService isBusinessDay 추가",
+  "changes": [
+    {
+      "asset": "Code",
+      "type": "backend-feature",
+      "path": "common-repo/backend/code/CodeServiceImpl.java",
+      "fileStatus": "M",
+      "grade": "behavior",
+      "summary": "getCodeName이 코드를 찾지 못할 때 반환값이 코드값에서 빈 문자열로 바뀌었습니다.",
+      "details": [
+        { "what": "getCodeName 미발견 시 반환값", "before": "코드값을 그대로 반환", "after": "빈 문자열(\"\")을 반환" }
+      ],
+      "action": "getCodeName의 반환값을 그대로 화면에 표시하거나 조건 분기에 쓰는 곳이 있는지 확인하세요. 빈 문자열을 받으면 \"미등록\" 같은 안내 문구로 대체하는 것이 좋습니다.",
+      "affectedApi": ["GET /api/codes/{groupCode}/{code}/name", "getCodeName"],
+      "changedFiles": ["common-repo/backend/code/CodeServiceImpl.java"]
+    },
+    {
+      "asset": "Holiday",
+      "type": "backend-feature",
+      "path": "common-repo/backend/holiday/HolidayService.java",
+      "fileStatus": "M",
+      "grade": "compatible",
+      "summary": "HolidayService에 isBusinessDay 메서드가 추가되었습니다.",
+      "details": [
+        { "what": "isBusinessDay 메서드 추가", "before": null, "after": "public default boolean isBusinessDay(LocalDate date)" }
+      ],
+      "action": "isHoliday를 !isHoliday(date)로 쓰고 있던 코드를 isBusinessDay(date)로 바꿀 수 있습니다.",
+      "affectedApi": ["isBusinessDay"],
+      "changedFiles": ["common-repo/backend/holiday/HolidayService.java"]
+    }
+  ],
+  "notified": false
+}
