@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.common.sequence.SequenceMapper">
+
+    <insert id="upsertNextNo">
+        MERGE INTO tb_common_sequence t
+        USING (SELECT #{seqType} AS seq_type, #{baseDate} AS base_date FROM dual) s
+           ON (t.seq_type = s.seq_type AND t.base_date = s.base_date)
+         WHEN MATCHED THEN
+              UPDATE SET t.last_no = t.last_no + 1
+         WHEN NOT MATCHED THEN
+              INSERT (seq_type, base_date, last_no)
+              VALUES (s.seq_type, s.base_date, 1)
+    </insert>
+
+    <select id="selectSequence" resultType="com.company.common.sequence.SequenceVO">
+        SELECT seq_type  AS seqType,
+               base_date AS baseDate,
+               last_no   AS lastNo
+          FROM tb_common_sequence
+         WHERE seq_type = #{seqType}
+           AND base_date = #{baseDate}
+    </select>
+
+</mapper>
