@@ -18,5 +18,7 @@
       "scanHints": ["onChange"]
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-12T00:00:00Z",
+  "notification": "20261112-b6395ec.md"
 }
