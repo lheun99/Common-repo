@@ -1,0 +1,22 @@
+{
+  "commit": "b6395ec",
+  "committedAt": "2026-11-11T04:57:16Z",
+  "subject": "feat: Pagination onChange 인자 변경, pageSize prop 추가",
+  "changes": [
+    {
+      "asset": "Pagination",
+      "type": "frontend-component",
+      "path": "common-repo/components/Pagination.tsx",
+      "fileStatus": "M",
+      "grade": "breaking",
+      "summary": "onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.",
+      "details": [
+        { "what": "onChange 시그니처", "before": "(page: number) => void", "after": "(value: { page: number; pageSize: number }) => void" },
+        { "what": "pageSize prop 추가 (선택, 기본 20)", "before": null, "after": "pageSize?: number" }
+      ],
+      "action": "onChange 핸들러가 객체를 받도록 수정하세요. 예: onChange={({ page }) => setPage(page)}",
+      "scanHints": ["onChange"]
+    }
+  ],
+  "notified": false
+}

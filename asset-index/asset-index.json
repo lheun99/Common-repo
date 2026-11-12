@@ -40,10 +40,15 @@
       "name": "Pagination",
       "path": "common-repo/components/Pagination.tsx",
       "purpose": "목록 하단 페이지 넘기기",
-      "props": ["page", "totalPages", "onChange"],
-      "detail": "[사용 예]\n  <Pagination page={page} totalPages={totalPages} onChange={setPage} />\n[동작]\n- \"이전\" 버튼은 page가 1 이하일 때, \"다음\" 버튼은 page가 totalPages 이상일 때 비활성화된다.\n- 버튼 사이에 \"현재 페이지 / 전체 페이지\"를 표시한다.\n- totalPages가 1 이하여도 숨겨지지 않고 항상 표시된다.\n[props]\n- page: 현재 페이지 (1부터 시작)\n- totalPages: 전체 페이지 수\n- onChange: 이전/다음을 눌렀을 때 호출 (이동할 페이지 번호 전달)",
+      "props": ["page", "totalPages", "pageSize", "onChange"],
+      "detail": "[사용 예]\n  <Pagination page={page} totalPages={totalPages} onChange={({ page }) => setPage(page)} />\n[동작]\n- \"이전\" 버튼은 page가 1 이하일 때, \"다음\" 버튼은 page가 totalPages 이상일 때 비활성화된다.\n- 버튼 사이에 \"현재 페이지 / 전체 페이지\"를 표시한다.\n- totalPages가 1 이하여도 숨겨지지 않고 항상 표시된다.\n[props]\n- page: 현재 페이지 (1부터 시작)\n- totalPages: 전체 페이지 수\n- pageSize: 페이지 크기 (선택, 기본 20)\n- onChange: 이전/다음을 눌렀을 때 호출 ({ page, pageSize } 객체 전달)",
       "addedInCommit": "370478a",
-      "addedAt": "2026-09-10T12:34:53+09:00"
+      "addedAt": "2026-09-10T12:34:53+09:00",
+      "updatedInCommit": "b6395ec",
+      "updatedAt": "2026-11-11T04:57:16Z",
+      "history": [
+        { "commit": "b6395ec", "at": "2026-11-11T04:57:16Z", "grade": "breaking", "summary": "onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다." }
+      ]
     },
     {
       "type": "frontend-component",

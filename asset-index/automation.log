@@ -14,3 +14,4 @@
 [2026-11-02T06:23:01Z] commit 7a18423 → index에 EmptyState(frontend-component) 추가함 [new]
 [2026-11-11T00:31:54Z] commit 3b02531 → index의 EmptyState(frontend-component) 갱신함: props, detail [compatible]
 [2026-11-11T01:56:40Z] commit 5613b54 → index의 Button(frontend-component) 갱신함: props, detail [compatible]
+[2026-11-11T04:57:16Z] commit b6395ec → index의 Pagination(frontend-component) 갱신함: props, detail [breaking]
