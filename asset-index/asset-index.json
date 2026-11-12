@@ -246,9 +246,14 @@
         "public static String formatDateTime(LocalDateTime dateTime)",
         "public static boolean isValidRange(LocalDate from, LocalDate to)"
       ],
-      "detail": "[설명]\n- 화면과 API에서 주고받는 날짜 문자열 형식을 회사 표준(yyyy-MM-dd, yyyy-MM-dd HH:mm:ss)으로 통일한다.\n- 각 서비스에서 DateTimeFormatter를 따로 만들지 말고 이 클래스를 사용한다.\n[사용 예]\n  LocalDate d = DateTimeUtils.parseDate(\"2026-10-08\");\n  String s = DateTimeUtils.formatDateTime(LocalDateTime.now());\n[주의]\n- 모든 메서드는 서버 기본 시간대 기준이다. 시간대 변환이 필요하면 호출부에서 처리한다.\n[동작]\n- parseDate()는 앞뒤 공백을 지운 뒤 변환한다.\n[메서드]\n- parseDate(text): text는 yyyy-MM-dd 형식의 날짜 문자열, 변환된 LocalDate. 형식이 맞지 않거나 null인 경우 IllegalArgumentException\n- formatDate(date): date는 변환할 날짜, yyyy-MM-dd 형식 문자열 (date가 null이면 빈 문자열)\n- formatDateTime(dateTime): dateTime은 변환할 일시, yyyy-MM-dd HH:mm:ss 형식 문자열 (dateTime이 null이면 빈 문자열)\n- isValidRange(from, to): 기간 검색 조건 검증용. 시작일이 종료일보다 늦으면 false. 단, 둘 중 하나라도 null이면 기간 조건이 없는 것으로 보고 true를 반환한다.",
+      "detail": "[설명]\n- 화면과 API에서 주고받는 날짜 문자열 형식을 회사 표준(yyyy-MM-dd, yyyy-MM-dd HH:mm:ss)으로 통일한다.\n- 각 서비스에서 DateTimeFormatter를 따로 만들지 말고 이 클래스를 사용한다.\n- 날짜 형식이 바뀌면 이 클래스만 고치면 되도록 형식 정의는 아래 상수 두 곳에만 둔다.\n[사용 예]\n  LocalDate d = DateTimeUtils.parseDate(\"2026-10-08\");\n  String s = DateTimeUtils.formatDateTime(LocalDateTime.now());\n[주의]\n- 모든 메서드는 서버 기본 시간대 기준이다. 시간대 변환이 필요하면 호출부에서 처리한다.\n[동작]\n- parseDate()는 앞뒤 공백을 지운 뒤 변환한다.\n[메서드]\n- parseDate(text): text는 yyyy-MM-dd 형식의 날짜 문자열, 변환된 LocalDate. 형식이 맞지 않거나 null인 경우 IllegalArgumentException\n- formatDate(date): date는 변환할 날짜, yyyy-MM-dd 형식 문자열 (date가 null이면 빈 문자열)\n- formatDateTime(dateTime): dateTime은 변환할 일시, yyyy-MM-dd HH:mm:ss 형식 문자열 (dateTime이 null이면 빈 문자열)\n- isValidRange(from, to): 기간 검색 조건 검증용. 시작일이 종료일보다 늦으면 false. 단, 둘 중 하나라도 null이면 기간 조건이 없는 것으로 보고 true를 반환한다.",
       "addedInCommit": "b6a0f67",
-      "addedAt": "2026-10-08T05:43:23+01:00"
+      "addedAt": "2026-10-08T05:43:23+01:00",
+      "updatedInCommit": "8777d82",
+      "updatedAt": "2026-11-12T07:52:22Z",
+      "history": [
+        { "commit": "8777d82", "at": "2026-11-12T07:52:22Z", "grade": "docs", "summary": "주석에 형식 상수 위치 안내가 추가되었습니다." }
+      ]
     },
     {
       "type": "backend-module",
@@ -374,6 +379,21 @@
     { "commit": "49f35f8", "at": "2026-10-22T06:59:15+01:00", "grade": "new", "summary": "공통코드 조회 기능(CodeController, CodeService)이 추가되었습니다." },
     { "commit": "62a81c6", "at": "2026-11-12T07:25:37Z", "grade": "behavior", "summary": "getCodeName이 코드를 찾지 못할 때 반환값이 코드값에서 빈 문자열로 바뀌었습니다." }
   ]
-}
+},
+    {
+      "type": "backend-module",
+      "name": "NumberFormatUtils",
+      "path": "common-repo/backend/NumberFormatUtils.java",
+      "purpose": "숫자 표시 형식 유틸 클래스.",
+      "usage": [
+        "public static String formatAmount(Number amount)"
+      ],
+      "detail": "[설명]\n- 금액·수량을 화면에 보여 줄 때 회사 표준(천 단위 쉼표)으로 통일한다.\n[사용 예]\n  String s = NumberFormatUtils.formatAmount(1234567);  // 1,234,567\n  String t = NumberFormatUtils.formatAmount(null);     // 0\n[동작]\n- null이면 \"0\"을 반환한다.\n[메서드]\n- formatAmount(amount): amount은 금액 또는 수량, 천 단위 쉼표가 들어간 문자열 (null이면 \"0\")",
+      "addedInCommit": "8777d82",
+      "addedAt": "2026-11-12T07:52:22Z",
+      "history": [
+        { "commit": "8777d82", "at": "2026-11-12T07:52:22Z", "grade": "new", "summary": "NumberFormatUtils가 추가되었습니다." }
+      ]
+    }
   ]
 }

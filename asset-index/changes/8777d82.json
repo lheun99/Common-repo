@@ -1,0 +1,30 @@
+{
+  "commit": "8777d82",
+  "committedAt": "2026-11-12T07:52:22Z",
+  "subject": "feat: NumberFormatUtils 유틸 클래스 추가, DateTimeUtils 주석 보강",
+  "changes": [
+    {
+      "asset": "NumberFormatUtils",
+      "type": "backend-module",
+      "path": "common-repo/backend/NumberFormatUtils.java",
+      "fileStatus": "A",
+      "grade": "new",
+      "summary": "NumberFormatUtils가 추가되었습니다.",
+      "details": [],
+      "action": "금액·수량을 화면에 천 단위 쉼표로 표시할 때 이 클래스를 사용하세요."
+    },
+    {
+      "asset": "DateTimeUtils",
+      "type": "backend-module",
+      "path": "common-repo/backend/DateTimeUtils.java",
+      "fileStatus": "M",
+      "grade": "docs",
+      "summary": "주석에 형식 상수 위치 안내가 추가되었습니다.",
+      "details": [
+        { "what": "[설명] 추가", "before": null, "after": "날짜 형식이 바뀌면 이 클래스만 고치면 되도록 형식 정의는 아래 상수 두 곳에만 둔다." }
+      ],
+      "action": null
+    }
+  ],
+  "notified": false
+}
