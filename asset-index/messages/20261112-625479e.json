@@ -1,0 +1,46 @@
+{
+  "id": "20261112-625479e",
+  "createdAt": "2026-11-12T04:35:00Z",
+  "sourceNotification": "20261112-625479e.md",
+  "status": "draft",
+  "messages": [
+    {
+      "recipient": {
+        "name": "박개발",
+        "email": "park.dev@example.com",
+        "role": "author",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "MaskingUtils", "grade": "behavior", "commit": "625479e", "action": "none" }
+      ],
+      "locations": [
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/util/MaskingUtils.java", "line": null, "usageKind": "copy", "action": "none" },
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/employee/EmployeeService.java", "line": 8, "usageKind": "copy", "action": "none" },
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/employee/EmployeeService.java", "line": 12, "usageKind": "copy", "action": "none" }
+      ],
+      "text": "[공통 변경 알림] MaskingUtils — 동작 변경\n\nmaskName() 마스킹 규칙이 \"가운데 글자 가리기\"에서 \"첫 글자만 남기고 가리기\"로 바뀌었습니다.\n\n내 코드에서 쓰는 곳\n- hr-app backend/src/main/java/com/hr/util/MaskingUtils.java (복사본)\n- hr-app backend/src/main/java/com/hr/employee/EmployeeService.java:8 (복사본 사용)\n- hr-app backend/src/main/java/com/hr/employee/EmployeeService.java:12 (복사본 사용)\n\n살펴볼 점\n확인해 보세요: maskName() 출력값을 그대로 표시하는 화면이 있으면 마스킹된 이름 형식이 달라졌는지 확인하세요.\n\nhr-app은 공통 원본을 복사해서 쓰는 파일이라 공통 변경이 자동 반영되지 않습니다. 새 버전 반영 여부를 직접 판단해야 합니다.\n\n자세한 내용: 20261112-625479e.md"
+    },
+    {
+      "recipient": {
+        "name": "한PL",
+        "email": "pl.han@example.com",
+        "role": "owner",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "MaskingUtils", "grade": "behavior", "commit": "625479e", "action": "none" }
+      ],
+      "locations": [
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/util/MaskingUtils.java", "line": null, "usageKind": "copy", "action": "none" },
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/employee/EmployeeService.java", "line": 8, "usageKind": "copy", "action": "none" },
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/employee/EmployeeService.java", "line": 12, "usageKind": "copy", "action": "none" }
+      ],
+      "text": "[공통 변경 알림] MaskingUtils — 동작 변경\n\nmaskName() 마스킹 규칙이 \"가운데 글자 가리기\"에서 \"첫 글자만 남기고 가리기\"로 바뀌었습니다.\n\nhr-app 영향 대상: 3곳 (박개발)\n- backend/src/main/java/com/hr/util/MaskingUtils.java (복사본)\n- backend/src/main/java/com/hr/employee/EmployeeService.java:8 (복사본 사용)\n- backend/src/main/java/com/hr/employee/EmployeeService.java:12 (복사본 사용)\n\n참고: hr-app은 공통 원본을 복사해서 쓰는 파일이라 공통 변경이 자동 반영되지 않습니다.\n\n자세한 내용: 20261112-625479e.md"
+    }
+  ]
+}
