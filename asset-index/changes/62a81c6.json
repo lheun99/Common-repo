@@ -32,5 +32,7 @@
       "changedFiles": ["common-repo/backend/holiday/HolidayService.java"]
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-12T07:37:03Z",
+  "notification": "20261112-62a81c6.md"
 }
