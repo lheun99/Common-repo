@@ -23,5 +23,7 @@
       ]
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-12T05:32:28Z",
+  "notification": "20261112-a34a18c.md"
 }
