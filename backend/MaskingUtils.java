@@ -36,9 +36,12 @@ public final class MaskingUtils {
      *
      * @param phone 하이픈(-)이 포함된 휴대폰 번호 (예: 010-1234-5678)
      * @return 마스킹된 번호 (예: 010-****-5678)
-     * @throws IllegalArgumentException 하이픈으로 나눈 결과가 3부분이 아닌 경우
+     * @throws IllegalArgumentException 01X-XXXX-XXXX 형식이 아닌 경우
      */
     public static String maskPhone(String phone) {
+        if (!phone.matches("01\\d-\\d{3,4}-\\d{4}")) {
+            throw new IllegalArgumentException("휴대폰 번호 형식이 올바르지 않습니다: " + phone);
+        }
         String[] parts = phone.split("-");
         if (parts.length != 3) {
             throw new IllegalArgumentException("휴대폰 번호 형식이 올바르지 않습니다: " + phone);

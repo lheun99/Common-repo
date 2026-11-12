@@ -29,9 +29,14 @@ public class PageRequest {
     /**
      * @param page 요청받은 페이지 번호 (1-base)
      * @param size 요청받은 페이지 크기
+     * @param sort 정렬 기준 (필수, 예: created_at desc)
      * @return 검증·보정이 끝난 PageRequest
+     * @throws IllegalArgumentException sort가 null이거나 비어 있는 경우
      */
-    public static PageRequest of(int page, int size) {
+    public static PageRequest of(int page, int size, String sort) {
+        if (sort == null || sort.isBlank()) {
+            throw new IllegalArgumentException("sort는 필수입니다.");
+        }
         int safePage = page < 1 ? 1 : page;
         int safeSize = size <= 0 ? DEFAULT_SIZE : Math.min(size, MAX_SIZE);
         return new PageRequest(safePage, safeSize);
