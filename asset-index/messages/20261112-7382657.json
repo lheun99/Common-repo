@@ -1,0 +1,77 @@
+{
+  "id": "20261112-7382657",
+  "createdAt": "2026-11-12T06:15:00Z",
+  "sourceNotification": "20261112-7382657.md",
+  "status": "draft",
+  "broadcasts": [],
+  "messages": [
+    {
+      "recipient": {
+        "name": "김개발",
+        "email": "kim.dev@example.com",
+        "role": "author",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Sequence", "grade": "breaking", "commit": "7382657", "action": "required" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/order/OrderService.java", "line": 15, "usageKind": "import", "action": "required" }
+      ],
+      "text": "[공통 변경] Sequence (비호환)\n\nSequenceService의 nextNumber 메서드명이 issueNumber로 바뀌었습니다.\n\n사용 예상 위치\n- shop-app backend/src/main/java/com/shop/order/OrderService.java:15 (import)\n\n확인 사항\n- 수정 필요: sequenceService.nextNumber(...) 호출을 sequenceService.issueNumber(...)로 수정하세요.\n\n상세: 20261112-7382657.md"
+    },
+    {
+      "recipient": {
+        "name": "박개발",
+        "email": "park.dev@example.com",
+        "role": "author",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Sequence", "grade": "breaking", "commit": "7382657", "action": "required" }
+      ],
+      "locations": [
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/leave/LeaveRequestService.java", "line": 18, "usageKind": "import", "action": "required" }
+      ],
+      "text": "[공통 변경] Sequence (비호환)\n\nSequenceService의 nextNumber 메서드명이 issueNumber로 바뀌었습니다.\n\n사용 예상 위치\n- hr-app backend/src/main/java/com/hr/leave/LeaveRequestService.java:18 (import)\n\n확인 사항\n- 수정 필요: sequenceService.nextNumber(...) 호출을 sequenceService.issueNumber(...)로 수정하세요.\n\n상세: 20261112-7382657.md"
+    },
+    {
+      "recipient": {
+        "name": "최PL",
+        "email": "pl.choi@example.com",
+        "role": "owner",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Sequence", "grade": "breaking", "commit": "7382657", "action": "required" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/order/OrderService.java", "line": 15, "usageKind": "import", "action": "required" }
+      ],
+      "text": "[공통 변경] Sequence (비호환)\n\nSequenceService의 nextNumber 메서드명이 issueNumber로 바뀌었습니다.\n\nshop-app에서 1곳이 영향을 받습니다.\n- 김개발: backend/src/main/java/com/shop/order/OrderService.java:15\n\n확인 사항\n- 수정 필요: sequenceService.nextNumber(...) 호출을 sequenceService.issueNumber(...)로 수정하세요.\n\n상세: 20261112-7382657.md"
+    },
+    {
+      "recipient": {
+        "name": "한PL",
+        "email": "pl.han@example.com",
+        "role": "owner",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Sequence", "grade": "breaking", "commit": "7382657", "action": "required" }
+      ],
+      "locations": [
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/leave/LeaveRequestService.java", "line": 18, "usageKind": "import", "action": "required" }
+      ],
+      "text": "[공통 변경] Sequence (비호환)\n\nSequenceService의 nextNumber 메서드명이 issueNumber로 바뀌었습니다.\n\nhr-app에서 1곳이 영향을 받습니다.\n- 박개발: backend/src/main/java/com/hr/leave/LeaveRequestService.java:18\n\n확인 사항\n- 수정 필요: sequenceService.nextNumber(...) 호출을 sequenceService.issueNumber(...)로 수정하세요.\n\n상세: 20261112-7382657.md"
+    }
+  ]
+}
