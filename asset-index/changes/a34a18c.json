@@ -1,0 +1,27 @@
+{
+  "commit": "a34a18c",
+  "committedAt": "2026-11-12T05:19:40Z",
+  "subject": "feat: 문서번호 채번(Sequence) 기능 추가",
+  "changes": [
+    {
+      "asset": "Sequence",
+      "type": "backend-feature",
+      "path": "common-repo/backend/sequence/SequenceController.java",
+      "fileStatus": "A",
+      "grade": "new",
+      "summary": "문서번호 채번 기능(SequenceController, SequenceService)이 추가되었습니다.",
+      "details": [],
+      "action": "구분+날짜+일련번호 형태의 문서번호(주문번호, 결재번호 등)를 발급할 때 사용하세요. API: POST /api/sequences/{prefix}/next, 서버 코드: sequenceService.nextNumber(\"ORD\")",
+      "affectedApi": ["POST /api/sequences/{prefix}/next", "nextNumber"],
+      "changedFiles": [
+        "common-repo/backend/sequence/SequenceController.java",
+        "common-repo/backend/sequence/SequenceMapper.java",
+        "common-repo/backend/sequence/SequenceService.java",
+        "common-repo/backend/sequence/SequenceServiceImpl.java",
+        "common-repo/backend/sequence/SequenceVO.java",
+        "common-repo/backend/sequence/sequence_SQL.xml"
+      ]
+    }
+  ],
+  "notified": false
+}
