@@ -16,5 +16,7 @@
       "action": "maskName() 출력값을 그대로 표시하는 화면이 있으면 마스킹된 이름 형식이 달라졌는지 확인하세요."
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-12T04:30:00Z",
+  "notification": "20261112-625479e.md"
 }
