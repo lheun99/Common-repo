@@ -7,7 +7,7 @@ package com.company.common.sequence;
  * 같은 구분·같은 날짜 안에서 번호는 중복 없이 1부터 순서대로 발급된다.
  *
  * 사용 예시:
- *   String no = sequenceService.nextNumber("ORD");  // ORD-20261112-0001
+ *   String no = sequenceService.issueNumber("ORD");  // ORD-20261112-0001
  */
 public interface SequenceService {
 
@@ -18,7 +18,7 @@ public interface SequenceService {
      * @return 발급된 번호 (예: ORD-20261112-0001)
      * @throws IllegalArgumentException prefix 형식이 맞지 않는 경우
      */
-    String nextNumber(String prefix);
+    String issueNumber(String prefix);
 
     /**
      * 지정한 일자 기준으로 다음 번호를 발급한다. (과거 일자 보정 등에 사용)
@@ -27,5 +27,5 @@ public interface SequenceService {
      * @param baseDate 기준 일자 (yyyyMMdd)
      * @return 발급된 번호
      */
-    String nextNumber(String prefix, String baseDate);
+    String issueNumber(String prefix, String baseDate);
 }

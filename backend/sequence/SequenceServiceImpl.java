@@ -19,13 +19,13 @@ public class SequenceServiceImpl implements SequenceService {
     }
 
     @Override
-    public String nextNumber(String prefix) {
-        return nextNumber(prefix, LocalDate.now().format(DATE_FORMAT));
+    public String issueNumber(String prefix) {
+        return issueNumber(prefix, LocalDate.now().format(DATE_FORMAT));
     }
 
     @Override
     @Transactional
-    public String nextNumber(String prefix, String baseDate) {
+    public String issueNumber(String prefix, String baseDate) {
         if (prefix == null || !PREFIX_PATTERN.matcher(prefix).matches()) {
             throw new IllegalArgumentException("prefix는 영문 대문자 2~10자여야 합니다.");
         }

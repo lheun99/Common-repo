@@ -29,6 +29,6 @@ public class SequenceController {
      */
     @PostMapping("/{prefix}/next")
     public ApiResponse<String> next(@PathVariable String prefix) {
-        return ApiResponse.success(sequenceService.nextNumber(prefix));
+        return ApiResponse.success(sequenceService.issueNumber(prefix));
     }
 }
