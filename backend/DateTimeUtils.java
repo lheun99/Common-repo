@@ -10,6 +10,7 @@ import java.time.format.DateTimeParseException;
  *
  * 화면과 API에서 주고받는 날짜 문자열 형식을 회사 표준(yyyy-MM-dd, yyyy-MM-dd HH:mm:ss)으로 통일한다.
  * 각 서비스에서 DateTimeFormatter를 따로 만들지 말고 이 클래스를 사용한다.
+ * 날짜 형식이 바뀌면 이 클래스만 고치면 되도록 형식 정의는 아래 상수 두 곳에만 둔다.
  *
  * 사용 예시:
  *   LocalDate d = DateTimeUtils.parseDate("2026-10-08");
