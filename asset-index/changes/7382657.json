@@ -1,0 +1,28 @@
+{
+  "commit": "7382657",
+  "committedAt": "2026-11-12T05:55:06Z",
+  "subject": "refactor: Sequence 번호 발급 메서드명을 issueNumber로 변경",
+  "changes": [
+    {
+      "asset": "Sequence",
+      "type": "backend-feature",
+      "path": "common-repo/backend/sequence/SequenceController.java",
+      "fileStatus": "M",
+      "grade": "breaking",
+      "summary": "SequenceService의 nextNumber 메서드명이 issueNumber로 바뀌었습니다.",
+      "details": [
+        { "what": "SequenceService 메서드명", "before": "nextNumber(prefix)", "after": "issueNumber(prefix)" },
+        { "what": "SequenceService 메서드명", "before": "nextNumber(prefix, baseDate)", "after": "issueNumber(prefix, baseDate)" }
+      ],
+      "action": "sequenceService.nextNumber(...) 호출을 sequenceService.issueNumber(...)로 수정하세요.",
+      "scanHints": ["nextNumber"],
+      "affectedApi": ["POST /api/sequences/{prefix}/next"],
+      "changedFiles": [
+        "common-repo/backend/sequence/SequenceController.java",
+        "common-repo/backend/sequence/SequenceService.java",
+        "common-repo/backend/sequence/SequenceServiceImpl.java"
+      ]
+    }
+  ],
+  "notified": false
+}

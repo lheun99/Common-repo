@@ -17,3 +17,4 @@
 [2026-11-11T04:57:16Z] commit b6395ec → index의 Pagination(frontend-component) 갱신함: props, detail [breaking]
 [2026-11-12T04:24:02Z] commit 625479e → index의 MaskingUtils(backend-module) 갱신함: detail [behavior]
 [2026-11-12T05:19:40Z] commit a34a18c → index에 Sequence(backend-feature) 추가함 [new] (생성 포함: 사용 예, 승인)
+[2026-11-12T05:55:06Z] commit 7382657 → index의 Sequence(backend-feature) 갱신함: usage, detail [breaking]
