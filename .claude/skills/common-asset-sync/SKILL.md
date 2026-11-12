@@ -114,89 +114,155 @@ description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-r
 > **미리보기는 질문 도구 안에 넣지 않는다.** 질문 창에는 긴 내용이 보이지 않는다.
 > 1) 먼저 미리보기 전문을 **일반 응답 메시지(채팅 본문)** 로 출력한다.
 > 2) 그다음 질문 도구로는 "위 미리보기대로 정리집에 반영할까요?" 한 줄만 묻는다.
-> **질문 전 확인**: 바로 위 응답 본문에 `[정리집 반영 미리보기]` 블록 전문이 있는가? 없으면 질문하지 말고 블록부터 출력한다.
+> **질문 전 확인**: 바로 위 응답 본문에 `[정리집 반영 미리보기]` 제목과 자산별 내용이 있는가? 없으면 질문하지 말고 미리보기부터 출력한다.
 
-미리보기는 **사람이 읽는 화면**이다. JSON을 그대로 보여 주지 않는다. 필드마다 제목을 달고, `detail`은
-[detail 작성 형식]의 섹션 그대로 줄을 나눠 보여 준다. (실제 저장은 6단계에서 JSON으로 한다.)
-`[동작]` 줄 뒤에는 `← 근거: <코드>`를 붙이고, 추론한 줄에는 `⚠ 추론 — 확인 필요`를 붙인다.
-이 표시는 미리보기에만 있고 파일에는 저장되지 않는다는 점을 미리보기 맨 위에 한 줄로 밝힌다.
+#### 출력 방식: 마크다운 문서를 그대로 출력한다 (코드 블록으로 감싸지 않는다)
 
-```
-[정리집 반영 미리보기]
-(← 근거, ⚠ 표시는 검토용이며 정리집에는 저장되지 않습니다)
+미리보기는 **렌더링된 문서처럼 읽히는 화면**이다. 채팅 본문에 **마크다운을 그대로 출력**해서 제목·표·인용·구분선이
+렌더링되게 한다. 아래 규칙을 지킨다.
 
-■ 추가 — Modal (frontend-component)
-  커밋  477e742 (2026-09-10T16:27:43+09:00)
-  경로  common-repo/components/Modal.tsx
+- 미리보기 전체를 ``` 코드 블록으로 감싸지 않는다. (감싸면 렌더링되지 않고 원문 글자가 그대로 보인다.)
+  코드 블록은 `[사용 예]`의 코드 조각에만 쓴다.
+- JSON 구조, 필드명(purpose, props 등), 들여쓰기로 맞춘 칸, `──` 같은 글자 구분선, `■`·`▸` 같은 기호 제목을 쓰지 않는다.
+- 구조는 마크다운 요소로만 만든다.
+  | 용도 | 쓰는 요소 |
+  |---|---|
+  | 전체 제목 | `## 정리집 반영 미리보기` |
+  | 자산 하나 | `### <상태 아이콘> <상태> · <자산명>` 제목 + 바로 아래 한 줄 요약 (`종류 · 커밋 · 경로`) |
+  | 필드(목적/Props/관련 자산 등) | 2열 표 (`항목 \| 내용`) |
+  | 갱신에서 값이 바뀐 필드 | 3열 표 (`항목 \| 이전 \| 이후`) |
+  | `[동작]` 목록과 근거 | 3열 표 (`동작 \| 근거`) — 근거 칸에 코드 조각을 `` `코드` `` 로 쓴다. 추론한 줄은 근거 칸에 `⚠ 추론 — 확인 필요` |
+  | `[사용 예]` | 언어를 붙인 코드 블록 (생성한 예시면 바로 위에 `⚠ 생성 — 확인 필요`) |
+  | 변경 등급·요약·할 일 | 인용(`>`) 블록, 등급은 **굵게** |
+  | 확인이 필요한 것 (연결 끊김, 묶음 확인, 주석·코드 불일치) | `> ⚠ ...` 인용 블록 |
+  | 자산 사이 구분 | `---` |
+- 상태 아이콘: 추가 🆕, 갱신 🔄, 판단 보류 ⏸️. 변경 등급 아이콘은 🔴 비호환 / 🟡 동작 변경 / 🟢 호환 추가 / ⚪ 신규.
+- 표 칸 안에서 `|` 글자는 `\|`로 쓴다. 칸 하나에는 한 줄만 쓴다. 긴 목록은 표의 행으로 나눈다.
+- `detail`은 [detail 작성 형식]의 섹션(`[설명]`, `[사용 예]`, `[주의]`, `[동작]`, `[props]`, `[API]`, `[메서드]`)을 `#### 상세` 아래에
+  **굵은 소제목**(예: **동작**)으로 나눠 보여 준다. (실제 저장은 6단계에서 JSON으로 한다.)
+- 맨 위 인용 블록으로 "근거·⚠ 표시는 검토용이며 정리집에는 저장되지 않습니다"를 한 줄 밝힌다.
+- 맨 아래에 **요약 표**(자산 / 처리 / 등급)를 두고, 그 뒤에 로그 줄·변경 기록 파일·정리집 커밋 메시지를 보여 준다.
+  로그 줄과 커밋 메시지는 그대로 복사해 쓰는 글이므로 코드 블록으로 보여 준다.
 
-  ▸ purpose
-    제목과 닫기 버튼이 있는 오버레이 모달 창.   ← 근거: 코드 동작 요약 (상단 주석 없음)
+#### 출력 예시
 
-  ▸ props
-    open, title, onClose, children
+아래 ````markdown 블록은 **형식을 설명하기 위한 예시**다. 실제로는 이 블록 안의 내용을 코드 블록 없이 그대로 출력한다.
 
-  ▸ detail
-    [사용 예]   ⚠ 생성 — 확인 필요
-      <Modal open={open} title="상세 정보" onClose={() => setOpen(false)}>
-        <p>내용</p>
-      </Modal>
-    [동작]
-    - open이 false이면 아무것도 렌더링하지 않는다.   ← 근거: if (!open) return null
-    - 배경을 클릭하면 onClose가 호출된다. 모달 안쪽 클릭은 닫히지 않는다.   ← 근거: backdrop onClick, e.stopPropagation()
-    - 헤더에 "닫기" 버튼이 항상 표시된다.   ← 근거: <button onClick={onClose}>닫기</button>
-    [props]
-    - children: 선택 (없으면 본문이 비어 있다)   ← 근거: children?: ReactNode
+````markdown
+## 정리집 반영 미리보기
 
-  ▸ related
-    (없음)
+> 표의 **근거** 칸과 ⚠ 표시는 검토용이며 정리집에는 저장되지 않습니다.
 
-  ▸ 변경 등급  ⚪ 신규
-    요약  Modal 컴포넌트 추가
+**이번에 정리할 내용: 추가 1건 · 갱신 2건 · 판단 보류 1건**
 
-■ 갱신 — Pagination (frontend-component)
-  커밋  1a2b3c4 (2026-10-09T10:00:00+09:00)
-  ▸ props
-    이전: page, totalPages, onChange
-    이후: page, totalPages, pageSize, onChange
-  ▸ 변경 등급  🔴 비호환
-    요약     onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀜
-    상세     onChange: (page: number) => void → (value: { page: number; pageSize: number }) => void
-             pageSize prop 추가 (선택, 기본 20)
-    할 일    onChange 핸들러가 객체를 받도록 수정한다.
-    스캔 키  onChange
-  ▸ 변경 이력에 추가
-    2026-10-09T10:00:00+09:00  1a2b3c4  🔴 비호환  onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
+---
 
-■ 갱신 — Code (backend-feature)
-  커밋  7f8e9d0 (2026-10-15T11:00:00+09:00)
-  바뀐 파일  backend/code/code_SQL.xml
-  묶음  정리집 files에 있음 → Code 기능 (CodeController, CodeService, CodeServiceImpl, CodeMapper, CodeVO, code_SQL.xml 함께 읽음)
-  영향  code_SQL.xml의 selectCodeList를 CodeController의 GET /common/code/{groupId}가 사용
-  ▸ detail [동작]
-    추가: - 사용하지 않는 코드는 조회되지 않는다.   ← 근거: WHERE use_yn = 'Y' 추가
-  ▸ 변경 등급  🟡 동작 변경
-    요약       코드 목록 조회에서 사용하지 않는 코드가 빠집니다.
-    영향 API   GET /common/code/{groupId}, selectCodeList
-    할 일      사용하지 않는 코드도 화면에 보여야 하는 곳이 있는지 확인하세요.
-  ⚠ 연결 끊김: CodeService 구현체가 2개(CodeServiceImpl, CachedCodeServiceImpl) — 어느 것이 쓰이는지 확인 필요
+### 🆕 추가 · Modal
+`frontend-component` · 커밋 `477e742` (2026-09-10 16:27) · `common-repo/components/Modal.tsx`
 
-■ 판단 보류 — components/Alert.tsx
-  커밋  48daac6
-  이유  같은 이름의 항목이 이미 있음
+| 항목 | 내용 |
+|---|---|
+| 목적 | 제목과 닫기 버튼이 있는 오버레이 모달 창. <br>*(근거: 코드 동작 요약, 상단 주석 없음)* |
+| Props | `open` `title` `onClose` `children` |
+| 관련 자산 | 없음 |
 
-■ 로그에 추가할 줄
-  [2026-09-10T16:27:43+09:00] commit 477e742 → index에 Modal(frontend-component) 추가함
+#### 상세
 
-■ 변경 기록 파일
-  asset-index/changes/477e742.json (1건: ⚪ Modal)
-
-■ 정리집 커밋 메시지
-  docs: 공통 자산 정리집 갱신 (477e742)
-
-  - 추가: Modal(frontend-component) ← 477e742
+**사용 예** — ⚠ 생성 — 확인 필요
+```tsx
+<Modal open={open} title="상세 정보" onClose={() => setOpen(false)}>
+  <p>내용</p>
+</Modal>
 ```
 
-- 주석과 코드가 다른 부분이 있으면 해당 항목 맨 위에 `⚠ 주석과 코드 불일치: ...`로 보여 준다.
+**동작**
+
+| 동작 | 근거 |
+|---|---|
+| open이 false이면 아무것도 렌더링하지 않는다. | `if (!open) return null` |
+| 배경을 클릭하면 onClose가 호출된다. 모달 안쪽 클릭은 닫히지 않는다. | backdrop `onClick`, `e.stopPropagation()` |
+| 헤더에 "닫기" 버튼이 항상 표시된다. | `<button onClick={onClose}>닫기</button>` |
+
+**props**
+
+| prop | 설명 | 근거 |
+|---|---|---|
+| children | 선택 (없으면 본문이 비어 있다) | `children?: ReactNode` |
+
+> **⚪ 신규** — Modal 컴포넌트 추가
+
+---
+
+### 🔄 갱신 · Pagination
+`frontend-component` · 커밋 `1a2b3c4` (2026-10-09 10:00)
+
+| 항목 | 이전 | 이후 |
+|---|---|---|
+| Props | `page` `totalPages` `onChange` | `page` `totalPages` **`pageSize`** `onChange` |
+| onChange | `(page: number) => void` | `(value: { page, pageSize }) => void` |
+
+> **🔴 비호환** — onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
+> - pageSize prop 추가 (선택, 기본 20)
+> - **할 일**: onChange 핸들러가 객체를 받도록 수정한다. 예: `onChange={({ page }) => setPage(page)}`
+> - **스캔 키**: `onChange`
+
+**변경 이력에 추가**: `1a2b3c4` 🔴 비호환 — onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
+
+---
+
+### 🔄 갱신 · Code
+`backend-feature` · 커밋 `7f8e9d0` (2026-10-15 11:00)
+
+| 항목 | 내용 |
+|---|---|
+| 바뀐 파일 | `backend/code/code_SQL.xml` |
+| 묶음 | Code 기능 — CodeController, CodeService, CodeServiceImpl, CodeMapper, CodeVO, code_SQL.xml (모두 함께 읽음) |
+| 시작 파일 | `CodeController` (GET /common/code/{groupId}를 직접 노출) |
+| 영향 API | `GET /common/code/{groupId}` · `selectCodeList` |
+
+**동작 추가**
+
+| 동작 | 근거 |
+|---|---|
+| ➕ 사용하지 않는 코드는 조회되지 않는다. | `WHERE use_yn = 'Y'` 추가 |
+
+> **🟡 동작 변경** — 코드 목록 조회에서 사용하지 않는 코드가 빠집니다.
+> - **할 일**: 사용하지 않는 코드도 화면에 보여야 하는 곳이 있는지 확인하세요.
+
+> ⚠ **연결 끊김**: CodeService 구현체가 2개(CodeServiceImpl, CachedCodeServiceImpl) — 어느 것이 쓰이는지 확인 필요
+
+---
+
+### ⏸️ 판단 보류 · components/Alert.tsx
+커밋 `48daac6` — **이유**: 같은 이름의 항목이 이미 있음
+
+---
+
+### 요약
+
+| 자산 | 처리 | 등급 | 커밋 |
+|---|---|---|---|
+| Modal | 추가 | ⚪ 신규 | `477e742` |
+| Pagination | 갱신 | 🔴 비호환 | `1a2b3c4` |
+| Code | 갱신 | 🟡 동작 변경 | `7f8e9d0` |
+| Alert | 판단 보류 | — | `48daac6` |
+
+**남길 로그 줄**
+```
+[2026-09-10T16:27:43+09:00] commit 477e742 → index에 Modal(frontend-component) 추가함 [new]
+```
+
+**변경 기록 파일**: `asset-index/changes/477e742.json` (1건: ⚪ Modal)
+
+**정리집 커밋 메시지**
+```
+docs: 공통 자산 정리집 갱신 (477e742)
+
+- 추가: Modal(frontend-component) ← 477e742
+```
+````
+
+- 주석과 코드가 다른 부분이 있으면 해당 자산 제목 바로 아래에 `> ⚠ **주석과 코드 불일치**: ...` 인용 블록으로 보여 준다.
 - 사용자가 **수정을 요청**하면 그대로 고친 뒤 미리보기를 다시 보여 주고 다시 묻는다.
   사용자가 넣어 달라는 내용은 소스에 없더라도 공통팀이 확인한 내용으로 보고 표시 없이 반영한다.
 - 사용자가 **거절**하면 `asset-index/`의 어떤 파일도 건드리지 않고, 대기열도 그대로 둔다. (다음 실행 때 다시 정리된다.)
