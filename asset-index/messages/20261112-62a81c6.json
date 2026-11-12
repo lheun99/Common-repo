@@ -1,0 +1,113 @@
+{
+  "id": "20261112-62a81c6",
+  "createdAt": "2026-11-12T07:40:00Z",
+  "sourceNotification": "20261112-62a81c6.md",
+  "status": "draft",
+  "broadcasts": [],
+  "messages": [
+    {
+      "recipient": {
+        "name": "김개발",
+        "email": "kim.dev@example.com",
+        "role": "author",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Holiday", "grade": "compatible", "commit": "62a81c6", "action": "none" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/delivery/DeliveryService.java", "line": 3, "usageKind": "import", "action": "none" }
+      ],
+      "text": "[공통 변경] Holiday (기능 추가)\n\nHolidayService에 isBusinessDay 메서드가 추가되었습니다.\n\n사용 예상 위치\n- shop-app backend/src/main/java/com/shop/delivery/DeliveryService.java:3 (import)\n\n확인 사항\n- isHoliday를 !isHoliday(date)로 쓰고 있던 코드를 isBusinessDay(date)로 바꿀 수 있습니다.\n\n상세: 20261112-62a81c6.md"
+    },
+    {
+      "recipient": {
+        "name": "박개발",
+        "email": "park.dev@example.com",
+        "role": "author",
+        "projects": ["shop-app", "hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Holiday", "grade": "compatible", "commit": "62a81c6", "action": "none" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "frontend/src/pages/DeliveryInfo.tsx", "line": 7, "usageKind": "api-call", "action": "none" },
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/leave/LeaveService.java", "line": 3, "usageKind": "import", "action": "none" }
+      ],
+      "text": "[공통 변경] Holiday (기능 추가)\n\nHolidayService에 isBusinessDay 메서드가 추가되었습니다.\n\n사용 예상 위치\n- shop-app frontend/src/pages/DeliveryInfo.tsx:7 (API 호출)\n- hr-app backend/src/main/java/com/hr/leave/LeaveService.java:3 (import)\n\n확인 사항\n- isHoliday를 !isHoliday(date)로 쓰고 있던 코드를 isBusinessDay(date)로 바꿀 수 있습니다.\n\n상세: 20261112-62a81c6.md"
+    },
+    {
+      "recipient": {
+        "name": "이개발",
+        "email": "lee.dev@example.com",
+        "role": "author",
+        "projects": ["admin-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Holiday", "grade": "compatible", "commit": "62a81c6", "action": "none" }
+      ],
+      "locations": [
+        { "project": "admin-app", "file": "frontend/src/pages/HolidayCalendar.tsx", "line": 9, "usageKind": "api-call", "action": "none" }
+      ],
+      "text": "[공통 변경] Holiday (기능 추가)\n\nHolidayService에 isBusinessDay 메서드가 추가되었습니다.\n\n사용 예상 위치\n- admin-app frontend/src/pages/HolidayCalendar.tsx:9 (API 호출)\n\n확인 사항\n- isHoliday를 !isHoliday(date)로 쓰고 있던 코드를 isBusinessDay(date)로 바꿀 수 있습니다.\n\n상세: 20261112-62a81c6.md"
+    },
+    {
+      "recipient": {
+        "name": "최PL",
+        "email": "pl.choi@example.com",
+        "role": "owner",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Holiday", "grade": "compatible", "commit": "62a81c6", "action": "none" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/delivery/DeliveryService.java", "line": 3, "usageKind": "import", "action": "none" },
+        { "project": "shop-app", "file": "frontend/src/pages/DeliveryInfo.tsx", "line": 7, "usageKind": "api-call", "action": "none" }
+      ],
+      "text": "[공통 변경] Holiday (기능 추가)\n\nHolidayService에 isBusinessDay 메서드가 추가되었습니다.\n\nshop-app 영향 대상 2곳\n- 김개발: backend/src/main/java/com/shop/delivery/DeliveryService.java:3 (import)\n- 박개발: frontend/src/pages/DeliveryInfo.tsx:7 (API 호출)\n\n확인 사항\n- isHoliday를 !isHoliday(date)로 쓰고 있던 코드를 isBusinessDay(date)로 바꿀 수 있습니다.\n\n상세: 20261112-62a81c6.md"
+    },
+    {
+      "recipient": {
+        "name": "정PL",
+        "email": "pl.jung@example.com",
+        "role": "owner",
+        "projects": ["admin-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Holiday", "grade": "compatible", "commit": "62a81c6", "action": "none" }
+      ],
+      "locations": [
+        { "project": "admin-app", "file": "frontend/src/pages/HolidayCalendar.tsx", "line": 9, "usageKind": "api-call", "action": "none" }
+      ],
+      "text": "[공통 변경] Holiday (기능 추가)\n\nHolidayService에 isBusinessDay 메서드가 추가되었습니다.\n\nadmin-app 영향 대상 1곳\n- 이개발: frontend/src/pages/HolidayCalendar.tsx:9 (API 호출)\n\n확인 사항\n- isHoliday를 !isHoliday(date)로 쓰고 있던 코드를 isBusinessDay(date)로 바꿀 수 있습니다.\n\n상세: 20261112-62a81c6.md"
+    },
+    {
+      "recipient": {
+        "name": "한PL",
+        "email": "pl.han@example.com",
+        "role": "owner",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Holiday", "grade": "compatible", "commit": "62a81c6", "action": "none" }
+      ],
+      "locations": [
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/leave/LeaveService.java", "line": 3, "usageKind": "import", "action": "none" }
+      ],
+      "text": "[공통 변경] Holiday (기능 추가)\n\nHolidayService에 isBusinessDay 메서드가 추가되었습니다.\n\nhr-app 영향 대상 1곳\n- 박개발: backend/src/main/java/com/hr/leave/LeaveService.java:3 (import)\n\n확인 사항\n- isHoliday를 !isHoliday(date)로 쓰고 있던 코드를 isBusinessDay(date)로 바꿀 수 있습니다.\n\n상세: 20261112-62a81c6.md"
+    }
+  ]
+}
