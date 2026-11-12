@@ -1,0 +1,20 @@
+{
+  "commit": "625479e",
+  "committedAt": "2026-11-12T04:24:02Z",
+  "subject": "fix: MaskingUtils.maskName 마스킹 규칙 변경",
+  "changes": [
+    {
+      "asset": "MaskingUtils",
+      "type": "backend-module",
+      "path": "common-repo/backend/MaskingUtils.java",
+      "fileStatus": "M",
+      "grade": "behavior",
+      "summary": "maskName() 마스킹 규칙이 \"가운데 글자 가리기\"에서 \"첫 글자만 남기고 가리기\"로 바뀌었습니다.",
+      "details": [
+        { "what": "maskName() 출력 형식", "before": "홍길동 → 홍*동 (첫 글자 + 마지막 글자 유지, 가운데 가림)", "after": "홍길동 → 홍** (첫 글자만 유지, 나머지 가림)" }
+      ],
+      "action": "maskName() 출력값을 그대로 표시하는 화면이 있으면 마스킹된 이름 형식이 달라졌는지 확인하세요."
+    }
+  ],
+  "notified": false
+}
