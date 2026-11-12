@@ -1,0 +1,34 @@
+{
+  "commit": "6731a2f",
+  "committedAt": "2026-11-12T06:21:10Z",
+  "subject": "fix: MaskingUtils 형식 검증 추가, PageRequest of()에 sort 필수 인자 추가",
+  "changes": [
+    {
+      "asset": "MaskingUtils",
+      "type": "backend-module",
+      "path": "common-repo/backend/MaskingUtils.java",
+      "fileStatus": "M",
+      "grade": "behavior",
+      "summary": "maskPhone()이 01X-XXXX-XXXX 형식이 아닌 값에 대해 IllegalArgumentException을 던지도록 검증이 추가되었습니다.",
+      "details": [
+        { "what": "maskPhone 예외 조건", "before": "하이픈으로 나눈 결과가 3부분이 아닌 경우", "after": "01X-XXXX-XXXX 형식이 아닌 경우" }
+      ],
+      "action": "maskPhone()에 전달하는 값이 항상 01X-XXXX-XXXX 형식인지 확인하세요."
+    },
+    {
+      "asset": "PageRequest",
+      "type": "backend-module",
+      "path": "common-repo/backend/PageRequest.java",
+      "fileStatus": "M",
+      "grade": "breaking",
+      "summary": "of()에 sort 필수 인자가 추가되어 기존 호출 코드가 컴파일되지 않습니다.",
+      "details": [
+        { "what": "of() 시그니처", "before": "of(int page, int size)", "after": "of(int page, int size, String sort)" },
+        { "what": "sort null/빈 값 처리", "before": null, "after": "IllegalArgumentException(\"sort는 필수입니다.\")" }
+      ],
+      "action": "PageRequest.of() 호출부에 sort 인자를 추가하세요. 예: PageRequest.of(page, size, \"created_at desc\")",
+      "scanHints": ["of"]
+    }
+  ],
+  "notified": false
+}
