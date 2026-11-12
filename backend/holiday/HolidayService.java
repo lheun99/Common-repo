@@ -28,4 +28,12 @@ public interface HolidayService {
      * @return days 영업일 뒤의 날짜
      */
     LocalDate addBusinessDays(LocalDate date, int days);
+
+    /**
+     * @param date 확인할 날짜
+     * @return 영업일이면 true (isHoliday의 반대)
+     */
+    default boolean isBusinessDay(LocalDate date) {
+        return !isHoliday(date);
+    }
 }

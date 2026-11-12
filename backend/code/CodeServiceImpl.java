@@ -27,6 +27,6 @@ public class CodeServiceImpl implements CodeService {
     @Override
     public String getCodeName(String groupCode, String code) {
         String name = codeMapper.selectCodeName(groupCode.toUpperCase(), code);
-        return (name != null) ? name : code;
+        return (name != null) ? name : "";
     }
 }
