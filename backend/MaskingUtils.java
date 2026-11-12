@@ -7,7 +7,7 @@ package com.company.common.util;
  * 마스킹 규칙은 개인정보 보호 지침(2026-09 개정)을 따른다.
  *
  * 사용 예시:
- *   String name = MaskingUtils.maskName("홍길동");          // 홍*동
+ *   String name = MaskingUtils.maskName("홍길동");          // 홍**
  *   String phone = MaskingUtils.maskPhone("010-1234-5678"); // 010-****-5678
  *
  * 주의: 마스킹된 값은 원래 값으로 되돌릴 수 없다. DB에는 반드시 원본(암호화된 값)을 저장하고, 마스킹은 출력 직전에만 한다.
@@ -19,7 +19,7 @@ public final class MaskingUtils {
     }
 
     /**
-     * 이름의 가운데 글자를 가린다. 두 글자 이름은 마지막 글자를 가린다.
+     * 이름의 첫 글자만 남기고 가린다. (예: 홍길동 → 홍**, 홍길 → 홍*)
      *
      * @param name 원본 이름
      * @return 마스킹된 이름 (name이 null이거나 비어 있으면 그대로 반환)
@@ -28,10 +28,7 @@ public final class MaskingUtils {
         if (name == null || name.length() < 2) {
             return name;
         }
-        if (name.length() == 2) {
-            return name.charAt(0) + String.valueOf(MASK);
-        }
-        return name.charAt(0) + repeat(name.length() - 2) + name.charAt(name.length() - 1);
+        return name.charAt(0) + repeat(name.length() - 1);
     }
 
     /**
