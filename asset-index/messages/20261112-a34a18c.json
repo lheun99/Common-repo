@@ -1,0 +1,16 @@
+{
+  "id": "20261112-a34a18c",
+  "createdAt": "2026-11-12T05:36:14Z",
+  "sourceNotification": "20261112-a34a18c.md",
+  "status": "draft",
+  "broadcasts": [
+    {
+      "asset": "Sequence",
+      "commit": "a34a18c",
+      "grade": "new",
+      "target": "unresolved",
+      "text": "[공통 신규] Sequence\n\n새 공통 자산이 추가되었습니다.\n문서번호 채번 API.\n\n상세: 20261112-a34a18c.md"
+    }
+  ],
+  "messages": []
+}
