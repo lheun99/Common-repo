@@ -1,11 +1,13 @@
 ---
 name: common-asset-sync
-description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-repo의 components/·backend/ 변경을 커밋하고 공통 자산 정리집(asset-index.json)에 반영해야 할 때, 또는 사람이 직접 커밋해서 정리집 반영이 밀려 있을 때 사용.
+description: 공통팀이 "공통 자산 정리해줘", "공통 개발 사항 정리해줘", "공통팀 개발 사항 정리해줘", "공통 변경 정리해줘", "개발한 공통 소스 정리해줘"처럼 공통팀의 개발 사항·변경을 정리해 달라고 할 때 사용. 요청에 "정리 자료"라는 말이 없으면 이 스킬이다. 또한 common-repo의 components/·backend/ 변경을 커밋하고 공통 자산 정리집(asset-index.json)에 반영해야 할 때, 사람이 직접 커밋해서 정리집 반영이 밀려 있을 때도 사용.
 ---
 
 # 공통 자산 정리 (커밋 + 정리집 + 변경 기록)
 
-이 문서 하나에 절차와 정리집 작성 규칙이 모두 들어 있다. 다른 지시 파일을 찾지 않는다.
+3단계의 조회·소스 읽기는 `tools/sync_collect.py`가, 6단계의 파일 반영은 `tools/apply_sync.py`가 대신한다.
+AI는 자산을 읽고 판단한 결과를 payload 파일 하나에 적고, 스크립트가 정리집 갱신·변경 기록 생성·로그 추가·검증·대기열 정리를 한 번에 한다.
+이 문서 하나에 모든 단계와 정리집 작성 규칙이 들어 있다. 다른 지시 파일을 찾지 않는다.
 
 이 스킬의 목적은 공통팀의 개발 사항을 개발팀에 **잘 설명하는 것**이다. 주석이나 커밋 메시지를 옮겨 적는 데
 그치지 않고, **소스를 읽고 실제 동작을 정리**한다. 누가 영향을 받는지 찾아 정리하는 일은 이 스킬이 하지 않는다.
@@ -78,24 +80,40 @@ description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-r
 - 커밋하면 post-commit 훅이 해시를 대기열에 자동으로 추가한다.
 - 사용자가 커밋을 거절하면 그 변경분은 정리하지 않는다. (원칙 1) 3단계로 가서 밀린 커밋만 정리한다.
 
-### 3. 정리 대상 커밋 모으기
-- 대기열 파일의 해시 목록을 읽는다. 40자리 16진수 해시가 아닌 줄은 무시한다.
-  (파일이 없거나 비어 있으면 정리할 것이 없다고 알리고 7단계(push 확인)로 간다.)
-- 이미 정리한 해시는 건너뛴다. 정리집의 `addedInCommit`/`updatedInCommit`에 있거나
-  `asset-index/changes/<해시7>.json`이 이미 있으면 정리한 것이다.
-- 여러 개면 오래된 커밋부터 순서대로 처리한다. (`git -C common-repo log --reverse --format=%H`의 순서)
+### 3. 정리 대상 커밋 모으기 (스크립트 한 번 실행)
+(common-repo에서 실행. 셸 명령은 하나만.)
+
+```
+python tools/sync_collect.py
+```
+
+- 대기열(`.git/common-asset-pending.txt`)에서 아직 정리하지 않은 커밋을 오래된 순서로 모아, 커밋별 정보와 소스를 JSON 하나로 낸다. 파일은 읽기만 한다.
+  - 40자리 16진수 해시가 아닌 줄은 무시한다. 이미 정리한 해시(정리집의 `addedInCommit`/`updatedInCommit`/`history`에 있거나 `asset-index/changes/<해시7>.json`이 있는 것)는 `alreadyProcessed`에 따로 담는다.
+  - 방금 2단계에서 커밋한 해시는 훅이 대기열에 넣어 두었으므로 자동으로 포함된다.
+- 특정 커밋만 보려면 `python tools/sync_collect.py --hashes <해시7> <해시7>`. (대기열과 상관없이 그 커밋을 읽고, 정리 여부도 따지지 않는다.)
+- `commits`가 비어 있으면(`pendingCount`가 0이거나 모두 `alreadyProcessed`) 정리할 것이 없다고 알리고 7단계(push 확인)로 간다.
+- 결과 JSON의 각 커밋에는 다음이 들어 있다. 이후 단계에서 `git show`로 다시 읽지 않는다.
+
+  | 필드 | 내용 |
+  |---|---|
+  | `commit`, `committedAt`, `subject` | 해시 앞 7자리, 커밋 시각(`%cI` 그대로), 커밋 메시지 |
+  | `files` | 바뀐 파일의 상태(`A`/`M`/`D`/`R`), 경로, `inScope`(components/·backend/ 소스 파일 여부) |
+  | `sources` | 바뀐 소스 파일마다 `before`(`<해시>~1` 시점), `after`(그 커밋 시점) 전문. 추가면 `before`가 null, 삭제면 `after`가 null |
+  | `siblings` | 바뀐 파일이 하위 폴더(예: `backend/code/`)에 있으면 그 폴더의 모든 소스 파일의 그 커밋 시점 전문. 바뀌지 않은 연결 파일도 들어 있다 |
+  | `existingEntries` | 바뀐 파일을 `path`/`files`로 가진 정리집의 기존 항목 전체 |
+
+- 소스가 너무 길어 잘린 파일(`...(잘림)`)은 그 파일만 `git -C common-repo show <해시>:<경로>`로 끝까지 읽는다.
 
 ### 4. 정리집 내용 구성 (아직 파일에 쓰지 않음)
 커밋마다 다음을 수행한다. 이 단계에서는 `asset-index/` 아래 어떤 파일도 **수정하지 않는다.**
 
-1. 커밋 정보를 확인한다.
-   - `git -C common-repo show -s --format="%H%n%cI%n%s" <해시>` → 해시, 커밋 시각(ISO 8601), 메시지
-   - `git -C common-repo diff-tree --no-commit-id --name-status -r <해시>` → 파일별 상태(A 추가 / M 수정 / D 삭제 / R 이름 변경)
-2. 바뀐 파일들을 아래 **[정리집 작성 규칙]** 의 "자산 판별"로 **자산 단위로 묶는다.**
+1. 3단계 JSON의 `committedAt`, `subject`, `files`로 커밋 정보와 파일별 상태를 확인한다. (`git show`를 다시 실행하지 않는다.)
+2. `inScope`인 파일들을 아래 **[정리집 작성 규칙]** 의 "자산 판별"로 **자산 단위로 묶는다.**
    함께 커밋된 파일 중 서로 연결된 파일들은 기능 하나다. 이후 단계는 파일이 아니라 자산 단위로 한다.
-3. 자산마다 그 자산의 **모든 파일**을 `git -C common-repo show <해시>:<경로>`로 그 커밋 시점의 내용을 **끝까지** 읽는다.
-   - 이번 커밋에서 바뀌지 않은 파일도 그 자산의 `files`에 있으면 함께 읽는다. (예: XML만 바뀌어도 Controller·Service를 함께 읽어야 기능 전체의 동작을 안다)
-   - 수정이면 비교를 위해 `<해시>~1` 시점의 같은 파일들도 읽는다.
+3. 자산마다 그 자산의 **모든 파일**을 **끝까지** 읽는다. 읽을 곳은 3단계 JSON이다.
+   - 바뀐 파일은 `sources`의 `after`, 수정이면 비교용으로 `before`.
+   - 이번 커밋에서 바뀌지 않았지만 그 자산의 `files`에 있는 파일은 `siblings`에서 읽는다. (예: XML만 바뀌어도 Controller·Service를 함께 읽어야 기능 전체의 동작을 안다)
+   - 기존 항목은 `existingEntries`에서 읽는다. 정리집 파일을 따로 열지 않는다. (기존 값과 비교해 판단하지 말고, 이전·이후 소스를 각각 규칙대로 뽑아 비교한다.)
 4. 규칙에 따라 자산마다 **추가 / 갱신 / 판단 보류** 중 하나로 정하고, 반영할 내용을 만든다.
    - 추가: 새 항목 전체
    - 갱신: 바뀌는 필드의 이전 값과 새 값
@@ -136,7 +154,7 @@ description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-r
   | 변경 등급·요약·할 일 | 인용(`>`) 블록, 등급은 **굵게** |
   | 확인이 필요한 것 (연결 끊김, 묶음 확인, 주석·코드 불일치) | `> ⚠ ...` 인용 블록 |
   | 자산 사이 구분 | `---` |
-- 상태 아이콘: 추가 🆕, 갱신 🔄, 판단 보류 ⏸️. 변경 등급 아이콘은 🔴 비호환 / 🟡 동작 변경 / 🟢 호환 추가 / ⚪ 신규.
+- 상태 아이콘: 추가 🆕, 갱신 🔄, 판단 보류 ⏸️. 변경 등급 아이콘은 🔴 수정 필요 / 🟡 확인 필요 / 🟢 기능 추가 / ⚪ 신규.
 - 표 칸 안에서 `|` 글자는 `\|`로 쓴다. 칸 하나에는 한 줄만 쓴다. 긴 목록은 표의 행으로 나눈다.
 - `detail`은 [detail 작성 형식]의 섹션(`[설명]`, `[사용 예]`, `[주의]`, `[동작]`, `[props]`, `[API]`, `[메서드]`)을 `#### 상세` 아래에
   **굵은 소제목**(예: **동작**)으로 나눠 보여 준다. (실제 저장은 6단계에서 JSON으로 한다.)
@@ -201,12 +219,12 @@ description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-r
 | Props | `page` `totalPages` `onChange` | `page` `totalPages` **`pageSize`** `onChange` |
 | onChange | `(page: number) => void` | `(value: { page, pageSize }) => void` |
 
-> **🔴 비호환** — onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
+> **🔴 수정 필요** — onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
 > - pageSize prop 추가 (선택, 기본 20)
 > - **할 일**: onChange 핸들러가 객체를 받도록 수정한다. 예: `onChange={({ page }) => setPage(page)}`
 > - **스캔 키**: `onChange`
 
-**변경 이력에 추가**: `1a2b3c4` 🔴 비호환 — onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
+**변경 이력에 추가**: `1a2b3c4` 🔴 수정 필요 — onChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.
 
 ---
 
@@ -226,7 +244,7 @@ description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-r
 |---|---|
 | ➕ 사용하지 않는 코드는 조회되지 않는다. | `WHERE use_yn = 'Y'` 추가 |
 
-> **🟡 동작 변경** — 코드 목록 조회에서 사용하지 않는 코드가 빠집니다.
+> **🟡 확인 필요** — 코드 목록 조회에서 사용하지 않는 코드가 빠집니다.
 > - **할 일**: 사용하지 않는 코드도 화면에 보여야 하는 곳이 있는지 확인하세요.
 
 > ⚠ **연결 끊김**: CodeService 구현체가 2개(CodeServiceImpl, CachedCodeServiceImpl) — 어느 것이 쓰이는지 확인 필요
@@ -243,8 +261,8 @@ description: 공통팀이 "공통 자산 정리해줘"라고 하거나, common-r
 | 자산 | 처리 | 등급 | 커밋 |
 |---|---|---|---|
 | Modal | 추가 | ⚪ 신규 | `477e742` |
-| Pagination | 갱신 | 🔴 비호환 | `1a2b3c4` |
-| Code | 갱신 | 🟡 동작 변경 | `7f8e9d0` |
+| Pagination | 갱신 | 🔴 수정 필요 | `1a2b3c4` |
+| Code | 갱신 | 🟡 확인 필요 | `7f8e9d0` |
 | Alert | 판단 보류 | — | `48daac6` |
 
 **남길 로그 줄**
@@ -270,32 +288,28 @@ docs: 공통 자산 정리집 갱신 (477e742)
 - 정리할 대상 파일이 하나도 없고 판단 보류도 없으면 미리보기 없이 "정리집에 반영할 내용이 없습니다"라고 알리고
   대기열에서 그 해시를 지운 뒤 7단계로 간다.
 
-### 6. 정리집 반영과 커밋
+### 6. 정리집 반영과 커밋 (스크립트 한 번 실행)
 승인받은 내용 **그대로** 반영한다. 미리보기에 없던 내용을 더하거나 빼지 않는다. 근거 메모와 `⚠` 표시는 저장하지 않는다.
-- `asset-index/asset-index.json`을 **UTF-8**, 들여쓰기 2칸의 올바른 JSON으로 저장한다.
-  - JSON 외의 텍스트(설명, 마크다운 코드펜스 등)는 파일에 남기지 않는다.
-  - **기존 서식을 유지한다.** `props`·`related`는 한 줄 배열(`["a", "b"]`), `usage`는 한 줄에 하나씩 쓴다.
-    바뀌지 않은 항목의 줄바꿈·순서가 달라지면 안 된다. (파일 전체를 다시 직렬화하는 셸 명령
-    `ConvertTo-Json` 등은 쓰지 않는다. 파일 편집 도구로 해당 항목만 고친다.)
-  - **새 항목은 `assets` 배열의 맨 끝에 추가한다.** 마지막 항목의 닫는 `}` 뒤에 `,`를 붙이고 그 뒤에 넣는다.
-    다른 항목의 중간에 끼워 넣지 않는다.
-  - 추가·갱신한 항목마다 `history`에 이번 커밋 줄을 붙인다. (아래 [정리집 작성 규칙]의 "변경 이력")
-- 변경 기록 `asset-index/changes/<해시7>.json`을 커밋마다 새 파일로 만든다. (UTF-8, 들여쓰기 2칸)
-- 저장한 뒤 **JSON이 올바른지 반드시 확인한다.** (common-repo에서 실행)
-  `node -e "for (const f of process.argv.slice(1)) JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('JSON OK')" asset-index/asset-index.json asset-index/changes/<해시7>.json`
-  `JSON OK`가 나오지 않으면 커밋하지 말고 고친 뒤 다시 확인한다.
-- `asset-index/automation.log`에 미리보기의 로그 줄을 추가한다. 대상 파일마다 반드시 한 줄(추가·갱신·판단 보류 중 하나)이 남아야 한다.
-- 정리집 파일**만** 커밋한다. 이때만 스킬이 직접 `git add`를 한다. 경로는 하나씩 적는다.
-  ```
-  git -C common-repo add asset-index/asset-index.json asset-index/automation.log asset-index/changes/<해시7>.json
-  git -C common-repo commit -m "<제목>" -m "<본문>" -- asset-index/asset-index.json asset-index/automation.log asset-index/changes/<해시7>.json
-  ```
-  - 끝의 `-- <경로>`는 빼지 않는다. 사용자가 stage해 두고 2단계에서 커밋을 거절한 파일이 있어도 정리집 커밋에
-    섞이지 않게 한다. `asset-index/` 폴더 전체를 경로로 주지 않는다. (다른 스킬의 파일이 섞일 수 있다.)
-  - 메시지: 아래 [커밋 메시지 형식]의 "정리집 커밋" 형식 (제목 + 본문)
-  - 정리집 커밋은 `components/`·`backend/`를 바꾸지 않으므로 훅이 대기열에 넣지 않는다.
-- 처리한 해시를 대기열 파일에서 지운다. (판단 보류만 나온 커밋도 처리한 것으로 보고 지운다.)
-  - 파일 편집 도구로 해당 줄만 지운다. 남은 해시가 없으면 **완전히 빈 파일**로 둔다. (`""`, 공백, 빈 줄을 남기지 않는다.)
+
+1. **payload 파일 하나를 만든다.** 파일 생성 도구로 `common-repo/.git/common-asset-payload.json`에 쓴다. (UTF-8. `.git` 안이라 커밋에 섞이지 않는다.)
+   형식은 아래 [payload 형식]을 따른다. 커밋이 여러 개면 `commits` 배열에 오래된 순서로 모두 넣는다. 자산 항목 전문과 변경 기록 전문을 이 파일에 한 번에 쓴다.
+2. **스크립트를 한 번 실행한다.** (common-repo에서 실행. 셸 명령은 하나만.)
+   ```
+   python tools/apply_sync.py --payload .git/common-asset-payload.json
+   ```
+   - 스크립트가 하는 일: 정리집에 항목 추가(맨 끝)·갱신(그 항목 부분만 교체), `history` 줄 추가, 변경 기록 파일 생성(`notified: false`), 로그 줄 추가(UTF-8), 대기열에서 처리한 해시 제거, JSON 검증.
+   - 성공하면 JSON `{"ok": true, "files": [...]}`이 나온다. 이 `files`가 아래 커밋 대상이다.
+   - 실패하면(종료 코드 1, `{"ok": false, "error": ...}`) 스크립트가 파일을 원래대로 되돌린 상태다. 오류를 읽고 payload를 고쳐 다시 실행한다. 정리집 파일을 직접 편집하지 않는다.
+   - 시험해 보려면 `--dry-run`을 붙인다. (파일을 쓰지 않고 요약과 로그 줄만 보여 준다)
+3. 정리집 파일**만** 커밋한다. 이때만 스킬이 직접 `git add`를 한다. 경로는 하나씩 적는다. `files`에 나온 파일이 대상이다.
+   ```
+   git -C common-repo add asset-index/asset-index.json asset-index/automation.log asset-index/changes/<해시7>.json
+   git -C common-repo commit -m "<제목>" -m "<본문>" -- asset-index/asset-index.json asset-index/automation.log asset-index/changes/<해시7>.json
+   ```
+   - 끝의 `-- <경로>`는 빼지 않는다. `asset-index/` 폴더 전체를 경로로 주지 않는다.
+   - 메시지: 아래 [커밋 메시지 형식]의 "정리집 커밋" 형식 (제목 + 본문)
+   - 정리집 커밋은 `components/`·`backend/`를 바꾸지 않으므로 훅이 대기열에 넣지 않는다.
+4. payload 파일은 그대로 둬도 된다. (다음 실행 때 덮어쓴다.)
 
 ### 7. push 확인 (마지막에 한 번)
 - push 안 된 커밋을 확인한다: `git -C common-repo log --oneline @{u}..HEAD`
@@ -312,7 +326,61 @@ docs: 공통 자산 정리집 갱신 (477e742)
 - push 결과
 - 이번에 만든 변경 기록 중 `docs`가 아닌 것이 있으면 마지막에 한 줄로 제안한다:
   **"변경 기록 N건(🔴 a / 🟡 b / 🟢 c / ⚪ d)이 생겼습니다. 이어서 영향도 조사 및 개발자 정리(common-asset-notify)를 진행할까요?"**
-  승인하면 `common-asset-notify` 스킬을 실행한다. 거절하면 끝낸다. (기록은 남아 있어 나중에 처리할 수 있다.)
+  승인하면 `common-asset-notify` 스킬을 실행한다. 대상은 **방금 만든 변경 기록만**이다. (변경 기록 파일 이름을 범위로 넘긴다.)
+  이 스킬은 사용처 스캔을 스크립트(`tools/impact_scan.py`)로 처리한다.
+  거절하면 끝낸다. (기록은 남아 있어 나중에 처리할 수 있다.)
+
+## payload 형식
+
+6단계에서 AI가 한 번 쓰는 파일이다. 정리집 항목과 변경 기록의 **내용은 이 문서의 [정리집 작성 규칙]·[변경 기록 작성 규칙]대로** 만든다. 형식만 아래에 모았다.
+
+```json
+{
+  "commits": [
+    {
+      "commit": "6731a2f",
+      "committedAt": "2026-11-12T06:21:10Z",
+      "subject": "fix: MaskingUtils 형식 검증 추가, PageRequest of()에 sort 필수 인자 추가",
+      "changes": [
+        {
+          "asset": "PageRequest",
+          "type": "backend-module",
+          "path": "common-repo/backend/PageRequest.java",
+          "fileStatus": "M",
+          "grade": "breaking",
+          "summary": "of()에 sort 필수 인자가 추가되었습니다.",
+          "details": [ { "what": "of() 시그니처", "before": "of(int page, int size)", "after": "of(int page, int size, String sort)" } ],
+          "action": "of() 호출에 sort를 추가하세요. 예: PageRequest.of(page, size, \"created_at desc\")",
+          "scanHints": ["of"]
+        }
+      ],
+      "assets": [
+        { "op": "update", "name": "PageRequest",
+          "set": { "usage": ["public static PageRequest of(int page, int size, String sort)"], "detail": "[동작]
+- ..." } },
+        { "op": "add",
+          "entry": { "type": "backend-module", "name": "NumberFormatUtils", "path": "common-repo/backend/NumberFormatUtils.java",
+                     "purpose": "...", "usage": ["..."], "detail": "[동작]
+- ...", "related": ["ApiResponse"] },
+          "logSuffix": " (생성 포함: 사용 예, 승인)" }
+      ],
+      "holds": [ { "path": "common-repo/backend/X.java", "reason": "연결된 파일을 찾지 못함", "grade": "breaking" } ]
+    }
+  ]
+}
+```
+
+- `commit`: 해시 앞 7자리. `committedAt`: `git show -s --format=%cI <해시>` 출력 그대로.
+- `changes`: 변경 기록 파일의 `changes` 배열 그대로. (`notified`·`committedAt`·`commit`·`subject`는 스크립트가 채운다. 대상 파일이 하나도 없는 커밋은 `changes`를 빈 배열로 둔다.)
+- `assets`: 자산마다 하나.
+  - `add`: `entry`에 `type`, `name`, `path`, (`files`), `purpose`, (`api`), `props` 또는 `usage`, `detail`, (`related`)를 쓴다.
+    `addedInCommit`·`addedAt`·`history`는 스크립트가 만든다. 새 항목은 정리집 맨 끝에 붙는다.
+  - `update`: `name`과 바뀌는 필드만 `set`에 담는다. 바뀌는 필드는 이후 소스 기준으로 **통째로** 쓴다.
+    `updatedInCommit`·`updatedAt`·`history` 줄은 스크립트가 붙인다.
+  - `history`의 `grade`·`summary`는 같은 `asset` 이름의 `changes` 값을 스크립트가 그대로 가져온다. 그래서 `changes`에 그 자산이 반드시 있어야 한다.
+  - `logSuffix`: 추론·생성 내용을 승인받았을 때 로그 줄 끝에 붙일 말. ([로그 형식] 참고)
+- `holds`: 판단 보류. 정리집은 건드리지 않고 로그 줄만 남긴다. (`changes`에는 이 파일도 넣는다.)
+- 로그 줄은 스크립트가 [로그 형식]대로 만든다. 직접 쓰지 않는다.
 
 ## 커밋 메시지 형식
 
@@ -333,13 +401,13 @@ feat: Spinner 컴포넌트 추가
 ### 정리집 커밋 (common-repo, asset-index/ 파일)
 - 제목: `docs: 공통 자산 정리집 갱신 (<짧은 해시들>)`
 - 본문: 정리집에 반영한 결과를 한 줄씩. 추가·갱신·판단 보류가 없는 줄은 쓰지 않는다.
-  비호환(🔴)·동작 변경(🟡)은 줄 끝에 `[비호환]`, `[동작 변경]`을 붙인다.
+  수정 필요(🔴)·확인 필요(🟡)은 줄 끝에 `[수정 필요]`, `[확인 필요]`을 붙인다.
 
 ```
 docs: 공통 자산 정리집 갱신 (48daac6, 1a2b3c4)
 
 - 추가: Spinner(frontend-component) ← 48daac6
-- 갱신: Pagination(frontend-component) onChange 인자를 객체로 변경 ← 1a2b3c4 [비호환]
+- 갱신: Pagination(frontend-component) onChange 인자를 객체로 변경 ← 1a2b3c4 [수정 필요]
 - 판단 보류: components/Alert.tsx - 같은 이름의 항목이 이미 있음 ← 48daac6
 ```
 
@@ -600,9 +668,9 @@ JSON에는 줄바꿈을 `\n`으로 넣은 하나의 문자열로 저장한다. �
 
 | 등급 | `grade` | 기준 | `action`(개발자가 할 일) |
 |---|---|---|---|
-| 🔴 비호환 | `breaking` | prop·public 메서드 삭제나 이름 변경, 필수 prop·인자 추가, 타입·반환 타입 변경, 예외를 던지는 조건 변경, 파일 삭제(D)나 이동(R). **API**: 엔드포인트 삭제, 경로·HTTP 메서드 변경, 요청 필드가 필수로 바뀜, 응답 필드 삭제·이름·타입 변경 | 반드시 수정할 내용 |
-| 🟡 동작 변경 | `behavior` | 시그니처는 같지만 기본값, 보정, null 처리, 렌더링 조건, 호출 시점 등 동작이 바뀜. **기능 자산**: 조회 조건·정렬, 검증 규칙, 캐시, 권한, 실패 시 응답이 바뀜 (XML·Impl만 바뀐 경우가 대부분 여기) | 확인할 내용 |
-| 🟢 호환 추가 | `compatible` | 선택 prop·새 public 메서드 추가 등 기존 사용 코드가 그대로 동작하는 추가. **API**: 새 엔드포인트, 선택 요청 필드, 응답 필드 추가 | 새로 쓸 수 있는 기능 |
+| 🔴 수정 필요 | `breaking` | prop·public 메서드 삭제나 이름 변경, 필수 prop·인자 추가, 타입·반환 타입 변경, 예외를 던지는 조건 변경, 파일 삭제(D)나 이동(R). **API**: 엔드포인트 삭제, 경로·HTTP 메서드 변경, 요청 필드가 필수로 바뀜, 응답 필드 삭제·이름·타입 변경 | 반드시 수정할 내용 |
+| 🟡 확인 필요 | `behavior` | 시그니처는 같지만 기본값, 보정, null 처리, 렌더링 조건, 호출 시점 등 동작이 바뀜. **기능 자산**: 조회 조건·정렬, 검증 규칙, 캐시, 권한, 실패 시 응답이 바뀜 (XML·Impl만 바뀐 경우가 대부분 여기) | 확인할 내용 |
+| 🟢 기능 추가 | `compatible` | 선택 prop·새 public 메서드 추가 등 기존 사용 코드가 그대로 동작하는 추가. **API**: 새 엔드포인트, 선택 요청 필드, 응답 필드 추가 | 새로 쓸 수 있는 기능 |
 | ⚪ 신규 | `new` | 새 자산 (A) | 이 자산이 대신할 수 있는 일 |
 | 문서 | `docs` | 주석·서식·내부 구현만 바뀌고 사용하는 쪽에서 보이는 동작은 같음 | `null` |
 
@@ -652,10 +720,9 @@ JSON에는 줄바꿈을 `\n`으로 넣은 하나의 문자열로 저장한다. �
 - `notified`: 항상 `false`로 만든다. `notified`, `notifiedAt`, `notification`은 `common-asset-notify`만 바꾼다.
 - `announcement`는 넣지 않는다. 정리 자료에 포함되면 `common-asset-announce`가 추가한다.
 
-### 로그 형식 (`asset-index/automation.log`, 한 줄씩 추가)
+### 로그 형식 (`asset-index/automation.log`, 한 줄씩 추가 — 스크립트가 이 형식으로 쓴다)
 
-- 파일 편집 도구로 파일 끝에 줄을 추가하고 **UTF-8**로 저장한다. 셸의 `echo`/`>>`/`Add-Content`/`Out-File`로
-  쓰지 않는다. (Windows에서 한글이 CP949로 깨진다.)
+- 로그는 `tools/apply_sync.py`가 **UTF-8**로 파일 끝에 추가한다. AI가 직접 쓰지 않는다. 셸의 `echo`/`>>`/`Add-Content`/`Out-File`로 쓰면 Windows에서 한글이 CP949로 깨진다.
 - 줄 앞뒤에 따옴표를 붙이지 않는다. 화살표는 `→`, `[커밋시각]`은 `%cI` 값을 그대로 쓴다.
 - **기존 줄은 절대 고치지 않는다.** 파일 끝에 새 줄만 추가한다. (띄어쓰기 정리도 하지 않는다.)
 - 아래 형식의 글자를 그대로 쓴다. `index에`, `index의`는 붙여 쓴다.
