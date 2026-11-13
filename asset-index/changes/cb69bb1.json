@@ -56,5 +56,7 @@
       "scanHints": null
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-13T01:45:00Z",
+  "notification": "20261113-cb69bb1.md"
 }
