@@ -68,13 +68,20 @@
       "usage": [
         "public static <T> ApiResponse<T> success(T data)",
         "public static <T> ApiResponse<T> fail(String message)",
+        "public static <T> ApiResponse<T> fail(String code, String message)",
         "public boolean isSuccess()",
         "public T getData()",
-        "public String getMessage()"
+        "public String getMessage()",
+        "public String getCode()"
       ],
-      "detail": "[사용 예]\n  return ApiResponse.success(user);\n  return ApiResponse.fail(\"존재하지 않는 사용자입니다.\");\n[동작]\n- new로 만들 수 없다. success()나 fail()로만 만든다.\n- JSON으로는 { \"success\": ..., \"data\": ..., \"message\": ... } 형태로 내려간다.\n[메서드]\n- success(data): 성공 응답을 만든다. message는 null이다.\n- fail(message): 실패 응답을 만든다. data는 null이다.\n- isSuccess(): 성공 여부\n- getData(): 응답 데이터 (실패 응답이면 null)\n- getMessage(): 실패 사유 (성공 응답이면 null)",
+      "detail": "[사용 예]\n  return ApiResponse.success(user);\n  return ApiResponse.fail(\"존재하지 않는 사용자입니다.\");\n  return ApiResponse.fail(\"E1001\", \"주문을 찾을 수 없습니다\");\n[동작]\n- new로 만들 수 없다. success()나 fail()로만 만든다.\n- JSON으로는 { \"success\": ..., \"data\": ..., \"message\": ..., \"code\": ... } 형태로 내려간다.\n- code 필드는 fail(code, message)로만 채워진다. success()나 fail(message)로 만든 응답은 code가 null이다.\n[메서드]\n- success(data): 성공 응답을 만든다. message는 null이다.\n- fail(message): 실패 응답을 만든다. data는 null이다.\n- fail(code, message): 오류 코드를 함께 내려줄 때 쓴다. (예: fail(\"E1001\", \"주문을 찾을 수 없습니다\"))\n- isSuccess(): 성공 여부\n- getData(): 응답 데이터 (실패 응답이면 null)\n- getMessage(): 실패 사유 (성공 응답이면 null)\n- getCode(): 오류 코드 (fail(message)로 만든 응답이나 성공 응답은 null)",
       "addedInCommit": "ac0e839",
-      "addedAt": "2026-09-10T12:50:08+09:00"
+      "addedAt": "2026-09-10T12:50:08+09:00",
+      "updatedInCommit": "cb69bb1",
+      "updatedAt": "2026-11-13T01:37:23Z",
+      "history": [
+        { "commit": "cb69bb1", "at": "2026-11-13T01:37:23Z", "grade": "compatible", "summary": "fail(code, message) 메서드와 getCode()가 추가되었습니다." }
+      ]
     },
     {
       "type": "backend-module",
@@ -97,17 +104,18 @@
       "purpose": "공통 페이지 요청 파라미터를 검증하고 기본값을 채워주는 유틸 클래스.",
       "usage": [
         "public static PageRequest of(int page, int size, String sort)",
-        "public int getOffset()",
+        "public long getOffset()",
         "public int getPage()",
         "public int getSize()"
       ],
-      "detail": "[설명]\n- 컨트롤러에서 매번 page/size 파라미터를 직접 검증하지 말고 이 클래스를 통해 생성한다.\n- page는 1부터 시작하며, 0 이하로 들어오면 1로 보정한다.\n- size는 최소 1, 최대 100으로 제한한다 — DB 부하 방지를 위해 100을 넘는 값은 강제로 100으로 잘린다.\n[사용 예]\n  PageRequest pr = PageRequest.of(requestPage, requestSize, \"created_at desc\");\n  int offset = pr.getOffset();\n[주의]\n- size에 음수를 넣으면 예외를 던지지 않고 기본값 20으로 대체한다. 호출부에서 별도 검증이 필요 없다.\n[동작]\n- size가 0이어도 1이 아니라 기본값 20으로 대체된다.\n[메서드]\n- of(page, size, sort): page는 요청받은 페이지 번호 (1-base), size는 요청받은 페이지 크기, sort는 정렬 기준 (필수, 예: created_at desc), 검증·보정이 끝난 PageRequest. sort가 null이거나 비어 있으면 IllegalArgumentException\n- getOffset(): DB 조회용 OFFSET 값 (page는 1-base라 -1 보정한다)\n- getPage(): 보정된 페이지 번호\n- getSize(): 보정된 페이지 크기",
+      "detail": "[설명]\n- 컨트롤러에서 매번 page/size 파라미터를 직접 검증하지 말고 이 클래스를 통해 생성한다.\n- page는 1부터 시작하며, 0 이하로 들어오면 1로 보정한다.\n- size는 최소 1, 최대 100으로 제한한다 — DB 부하 방지를 위해 100을 넘는 값은 강제로 100으로 잘린다.\n[사용 예]\n  PageRequest pr = PageRequest.of(requestPage, requestSize, \"created_at desc\");\n  long offset = pr.getOffset();\n[주의]\n- size에 음수를 넣으면 예외를 던지지 않고 기본값 20으로 대체한다. 호출부에서 별도 검증이 필요 없다.\n[동작]\n- size가 0이어도 1이 아니라 기본값 20으로 대체된다.\n[메서드]\n- of(page, size, sort): page는 요청받은 페이지 번호 (1-base), size는 요청받은 페이지 크기, sort는 정렬 기준 (필수, 예: created_at desc), 검증·보정이 끝난 PageRequest. sort가 null이거나 비어 있으면 IllegalArgumentException\n- getOffset(): DB 조회용 OFFSET 값 (page는 1-base라 -1 보정한다. 큰 페이지 번호에서도 넘치지 않도록 long이다)\n- getPage(): 보정된 페이지 번호\n- getSize(): 보정된 페이지 크기",
       "addedInCommit": "c55e533",
       "addedAt": "2026-09-10T14:55:03+09:00",
-      "updatedInCommit": "6731a2f",
-      "updatedAt": "2026-11-12T06:21:10Z",
+      "updatedInCommit": "cb69bb1",
+      "updatedAt": "2026-11-13T01:37:23Z",
       "history": [
-        { "commit": "6731a2f", "at": "2026-11-12T06:21:10Z", "grade": "breaking", "summary": "of()에 sort 필수 인자가 추가되어 기존 호출 코드가 컴파일되지 않습니다." }
+        { "commit": "6731a2f", "at": "2026-11-12T06:21:10Z", "grade": "breaking", "summary": "of()에 sort 필수 인자가 추가되어 기존 호출 코드가 컴파일되지 않습니다." },
+        { "commit": "cb69bb1", "at": "2026-11-13T01:37:23Z", "grade": "breaking", "summary": "getOffset() 반환 타입이 int에서 long으로 바뀌었습니다." }
       ]
     },
     {
@@ -151,9 +159,14 @@
         "public String getStoredFileName()",
         "public long getSize()"
       ],
-      "detail": "[설명]\n- storedFileName은 다운로드 API(GET /api/files/{storedFileName}) 호출 시 그대로 사용한다.\n[사용 예]\n  FileUploadResult result = fileStorageService.store(file);\n  String downloadUrl = \"/api/files/\" + result.getStoredFileName();\n[메서드]\n- getOriginalFileName(): 사용자가 올린 원본 파일명\n- getStoredFileName(): 서버에 저장된 파일명 (UUID 기반)\n- getSize(): 파일 크기 (byte)",
+      "detail": "[설명]\n- storedFileName은 다운로드 API(GET /api/files/{storedFileName}) 호출 시 그대로 사용한다.\n- originalFileName은 화면 표시용이며 서버에 저장된 이름과 다를 수 있다.\n[사용 예]\n  FileUploadResult result = fileStorageService.store(file);\n  String downloadUrl = \"/api/files/\" + result.getStoredFileName();\n[메서드]\n- getOriginalFileName(): 사용자가 올린 원본 파일명\n- getStoredFileName(): 서버에 저장된 파일명 (UUID 기반)\n- getSize(): 파일 크기 (byte)",
       "addedInCommit": "2eaa9e4",
-      "addedAt": "2026-09-10T15:20:35+09:00"
+      "addedAt": "2026-09-10T15:20:35+09:00",
+      "updatedInCommit": "cb69bb1",
+      "updatedAt": "2026-11-13T01:37:23Z",
+      "history": [
+        { "commit": "cb69bb1", "at": "2026-11-13T01:37:23Z", "grade": "docs", "summary": "originalFileName 주석 보강" }
+      ]
     },
     {
       "type": "frontend-component",
@@ -266,14 +279,15 @@
         "public static String maskEmail(String email)",
         "public static String maskRrn(String rrn)"
       ],
-      "detail": "[설명]\n- 화면 표시나 로그 출력 시 이름·휴대폰 번호·이메일·주민등록번호가 그대로 노출되지 않도록 일부를 *로 가린다.\n- 마스킹 규칙은 개인정보 보호 지침(2026-09 개정)을 따른다.\n[사용 예]\n  String name = MaskingUtils.maskName(\"홍길동\");          // 홍**\n  String phone = MaskingUtils.maskPhone(\"010-1234-5678\"); // 010-****-5678\n[주의]\n- 마스킹된 값은 원래 값으로 되돌릴 수 없다. DB에는 반드시 원본(암호화된 값)을 저장하고, 마스킹은 출력 직전에만 한다.\n[동작]\n- maskName()은 한 글자 이름도 가리지 않고 그대로 반환한다.\n- maskPhone(), maskRrn()에 null을 넘기면 NullPointerException이 난다.\n- maskRrn()은 자릿수를 검사하지 않는다. 숫자가 7자리보다 짧으면 StringIndexOutOfBoundsException이 난다.\n[메서드]\n- maskName(name): 이름의 첫 글자만 남기고 가린다. (예: 홍길동 → 홍**, 홍길 → 홍*) 마스킹된 이름 (name이 null이거나 비어 있으면 그대로 반환)\n- maskPhone(phone): 휴대폰 번호의 가운데 자리를 가린다. phone은 하이픈(-)이 포함된 휴대폰 번호 (예: 010-1234-5678), 마스킹된 번호 (예: 010-****-5678). 01X-XXXX-XXXX 형식이 아닌 경우 IllegalArgumentException\n- maskEmail(email): 이메일 아이디의 앞 2글자만 남기고 가린다. 도메인은 가리지 않는다. 마스킹된 이메일 (예: ho****@company.com). @가 없으면 그대로 반환\n- maskRrn(rrn): 주민등록번호 뒷자리를 첫 글자만 남기고 가린다. 단, 하이픈 없이 13자리로 들어오면 앞 6자리 뒤에 하이픈을 넣어 반환한다. rrn은 주민등록번호 (예: 900101-1234567 또는 9001011234567), 마스킹된 주민등록번호 (예: 900101-1******)",
+      "detail": "[설명]\n- 화면 표시나 로그 출력 시 이름·휴대폰 번호·이메일·주민등록번호가 그대로 노출되지 않도록 일부를 *로 가린다.\n- 마스킹 규칙은 개인정보 보호 지침(2026-09 개정)을 따른다.\n[사용 예]\n  String name = MaskingUtils.maskName(\"홍길동\");          // 홍**\n  String phone = MaskingUtils.maskPhone(\"010-1234-5678\"); // 010-****-5678\n[주의]\n- 마스킹된 값은 원래 값으로 되돌릴 수 없다. DB에는 반드시 원본(암호화된 값)을 저장하고, 마스킹은 출력 직전에만 한다.\n[동작]\n- maskName()은 한 글자 이름을 *로 반환한다.\n- maskPhone(), maskRrn()에 null을 넘기면 NullPointerException이 난다.\n- maskRrn()은 자릿수를 검사하지 않는다. 숫자가 7자리보다 짧으면 StringIndexOutOfBoundsException이 난다.\n[메서드]\n- maskName(name): 이름의 첫 글자만 남기고 가린다. (예: 홍길동 → 홍**, 홍길 → 홍*, 한 글자 이름은 *) 마스킹된 이름 (name이 null이거나 비어 있으면 그대로 반환, 한 글자면 *)\n- maskPhone(phone): 휴대폰 번호의 가운데 자리를 가린다. phone은 하이픈(-)이 포함된 휴대폰 번호 (예: 010-1234-5678), 마스킹된 번호 (예: 010-****-5678). 01X-XXXX-XXXX 형식이 아닌 경우 IllegalArgumentException\n- maskEmail(email): 이메일 아이디의 앞 2글자만 남기고 가린다. 도메인은 가리지 않는다. 마스킹된 이메일 (예: ho****@company.com). @가 없으면 그대로 반환\n- maskRrn(rrn): 주민등록번호 뒷자리를 첫 글자만 남기고 가린다. 단, 하이픈 없이 13자리로 들어오면 앞 6자리 뒤에 하이픈을 넣어 반환한다. rrn은 주민등록번호 (예: 900101-1234567 또는 9001011234567), 마스킹된 주민등록번호 (예: 900101-1******)",
       "addedInCommit": "1f654be",
       "addedAt": "2026-10-08T07:03:30+01:00",
-      "updatedInCommit": "6731a2f",
-      "updatedAt": "2026-11-12T06:21:10Z",
+      "updatedInCommit": "cb69bb1",
+      "updatedAt": "2026-11-13T01:37:23Z",
       "history": [
         { "commit": "625479e", "at": "2026-11-12T04:24:02Z", "grade": "behavior", "summary": "maskName() 마스킹 규칙이 \"가운데 글자 가리기\"에서 \"첫 글자만 남기고 가리기\"로 바뀌었습니다." },
-        { "commit": "6731a2f", "at": "2026-11-12T06:21:10Z", "grade": "behavior", "summary": "maskPhone()이 01X-XXXX-XXXX 형식이 아닌 값에 대해 IllegalArgumentException을 던지도록 검증이 추가되었습니다." }
+        { "commit": "6731a2f", "at": "2026-11-12T06:21:10Z", "grade": "behavior", "summary": "maskPhone()이 01X-XXXX-XXXX 형식이 아닌 값에 대해 IllegalArgumentException을 던지도록 검증이 추가되었습니다." },
+        { "commit": "cb69bb1", "at": "2026-11-13T01:37:23Z", "grade": "behavior", "summary": "maskName()이 한 글자 이름을 *로 반환하도록 바뀌었습니다." }
       ]
     },
     {

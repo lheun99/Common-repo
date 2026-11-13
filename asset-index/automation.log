@@ -24,3 +24,7 @@
 [2026-11-12T07:25:37Z] commit 62a81c6 → index의 Holiday(backend-feature) 갱신함: usage, detail(메서드) [compatible]
 [2026-11-12T07:52:22Z] commit 8777d82 → index에 NumberFormatUtils(backend-module) 추가함 [new]
 [2026-11-12T07:52:22Z] commit 8777d82 → index의 DateTimeUtils(backend-module) 갱신함: detail [docs]
+[2026-11-13T01:37:23Z] commit cb69bb1 → index의 ApiResponse(backend-module) 갱신함: usage, detail [compatible]
+[2026-11-13T01:37:23Z] commit cb69bb1 → index의 PageRequest(backend-module) 갱신함: usage, detail [breaking]
+[2026-11-13T01:37:23Z] commit cb69bb1 → index의 MaskingUtils(backend-module) 갱신함: detail [behavior]
+[2026-11-13T01:37:23Z] commit cb69bb1 → index의 FileUploadResult(backend-module) 갱신함: detail [docs]

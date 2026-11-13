@@ -1,0 +1,60 @@
+{
+  "commit": "cb69bb1",
+  "committedAt": "2026-11-13T01:37:23Z",
+  "subject": "feat: ApiResponse 오류 코드 추가, PageRequest getOffset() long 변경, MaskingUtils 한 글자 이름 마스킹 수정",
+  "changes": [
+    {
+      "asset": "ApiResponse",
+      "type": "backend-module",
+      "path": "common-repo/backend/ApiResponse.java",
+      "fileStatus": "M",
+      "grade": "compatible",
+      "summary": "fail(code, message) 메서드와 getCode()가 추가되었습니다.",
+      "details": [
+        { "what": "fail(code, message) 메서드 추가", "before": null, "after": "public static <T> ApiResponse<T> fail(String code, String message)" },
+        { "what": "getCode() 메서드 추가", "before": null, "after": "public String getCode()" },
+        { "what": "code 필드 추가 (JSON 응답에 포함)", "before": null, "after": "code" }
+      ],
+      "action": null,
+      "scanHints": null
+    },
+    {
+      "asset": "PageRequest",
+      "type": "backend-module",
+      "path": "common-repo/backend/PageRequest.java",
+      "fileStatus": "M",
+      "grade": "breaking",
+      "summary": "getOffset() 반환 타입이 int에서 long으로 바뀌었습니다.",
+      "details": [
+        { "what": "getOffset() 반환 타입", "before": "int", "after": "long" }
+      ],
+      "action": "getOffset() 결과를 int 변수에 담는 코드를 long으로 수정하세요. 예: long offset = pr.getOffset();",
+      "scanHints": ["getOffset"]
+    },
+    {
+      "asset": "MaskingUtils",
+      "type": "backend-module",
+      "path": "common-repo/backend/MaskingUtils.java",
+      "fileStatus": "M",
+      "grade": "behavior",
+      "summary": "maskName()이 한 글자 이름을 *로 반환하도록 바뀌었습니다.",
+      "details": [
+        { "what": "maskName() 한 글자 이름 처리", "before": "한 글자 이름은 그대로 반환", "after": "한 글자 이름은 *로 반환" }
+      ],
+      "action": "한 글자 이름을 마스킹 없이 그대로 표시하는 곳이 있는지 확인하세요.",
+      "scanHints": null
+    },
+    {
+      "asset": "FileUploadResult",
+      "type": "backend-module",
+      "path": "common-repo/backend/FileUploadResult.java",
+      "fileStatus": "M",
+      "grade": "docs",
+      "summary": "originalFileName 주석 보강",
+      "details": [],
+      "action": null,
+      "scanHints": null
+    }
+  ],
+  "notified": false
+}
