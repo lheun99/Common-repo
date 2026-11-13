@@ -9,7 +9,7 @@ package com.company.common.paging;
  *
  * 사용 예시:
  *   PageRequest pr = PageRequest.of(requestPage, requestSize);
- *   int offset = pr.getOffset();
+ *   long offset = pr.getOffset();
  *
  * 주의: size에 음수를 넣으면 예외를 던지지 않고 기본값 20으로 대체한다. 호출부에서 별도 검증이
  * 필요 없다.
@@ -42,9 +42,9 @@ public class PageRequest {
         return new PageRequest(safePage, safeSize);
     }
 
-    /** DB 조회용 OFFSET 값 (page는 1-base라 -1 보정한다) */
-    public int getOffset() {
-        return (page - 1) * size;
+    /** DB 조회용 OFFSET 값 (page는 1-base라 -1 보정한다. 큰 페이지 번호에서도 넘치지 않도록 long이다) */
+    public long getOffset() {
+        return (long) (page - 1) * size;
     }
 
     public int getPage() {

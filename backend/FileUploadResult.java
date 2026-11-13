@@ -4,6 +4,7 @@ package com.company.common.file;
  * 파일 업로드 결과로 반환되는 정보.
  *
  * storedFileName은 다운로드 API(GET /api/files/{storedFileName}) 호출 시 그대로 사용한다.
+ * originalFileName은 화면 표시용이며 서버에 저장된 이름과 다를 수 있다.
  */
 public class FileUploadResult {
     private final String originalFileName;

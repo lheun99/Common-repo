@@ -19,14 +19,17 @@ public final class MaskingUtils {
     }
 
     /**
-     * 이름의 첫 글자만 남기고 가린다. (예: 홍길동 → 홍**, 홍길 → 홍*)
+     * 이름의 첫 글자만 남기고 가린다. (예: 홍길동 → 홍**, 홍길 → 홍*, 한 글자 이름은 *)
      *
      * @param name 원본 이름
-     * @return 마스킹된 이름 (name이 null이거나 비어 있으면 그대로 반환)
+     * @return 마스킹된 이름 (name이 null이거나 비어 있으면 그대로 반환, 한 글자면 *)
      */
     public static String maskName(String name) {
-        if (name == null || name.length() < 2) {
+        if (name == null || name.isEmpty()) {
             return name;
+        }
+        if (name.length() < 2) {
+            return String.valueOf(MASK);
         }
         return name.charAt(0) + repeat(name.length() - 1);
     }
