@@ -1,0 +1,87 @@
+{
+  "id": "20261113-cb69bb1",
+  "createdAt": "2026-11-13T01:50:00Z",
+  "sourceNotification": "20261113-cb69bb1.md",
+  "status": "draft",
+  "broadcasts": [],
+  "messages": [
+    {
+      "recipient": {
+        "name": "김개발",
+        "email": "kim.dev@example.com",
+        "role": "author",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "PageRequest", "grade": "breaking", "commit": "cb69bb1", "action": "required" },
+        { "asset": "ApiResponse", "grade": "compatible", "commit": "cb69bb1", "action": "none" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/order/OrderController.java", "line": 11, "usageKind": "import", "action": "required" },
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/order/OrderController.java", "line": 10, "usageKind": "import", "action": "none" },
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/order/OrderController.java", "line": 12, "usageKind": "import", "action": "none" }
+      ],
+      "text": "[공통 변경]\n\n── PageRequest (수정 필요) ──\n\ngetOffset() 반환 타입이 int에서 long으로 바뀌었습니다.\n\n사용 예상 위치\n- shop-app OrderController.java:11 (import)\n\n확인 사항\n- 수정 필요: getOffset() 결과를 int 변수에 담는 코드를 long으로 수정하세요. 예: long offset = pr.getOffset();\n\n── ApiResponse (기능 추가) ──\n\nfail(code, message) 메서드와 getCode()가 추가되었습니다.\n\n사용 예상 위치\n- shop-app OrderController.java:10, 12 (import)\n\n상세: 20261113-cb69bb1.md"
+    },
+    {
+      "recipient": {
+        "name": "박개발",
+        "email": "park.dev@example.com",
+        "role": "author",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "MaskingUtils", "grade": "behavior", "commit": "cb69bb1", "action": "review" }
+      ],
+      "locations": [
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/employee/EmployeeService.java", "line": 8, "usageKind": "copy", "action": "review" },
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/employee/EmployeeService.java", "line": 12, "usageKind": "copy", "action": "review" },
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/util/MaskingUtils.java", "line": 10, "usageKind": "copy-modified", "action": "review" }
+      ],
+      "text": "[공통 변경]\n\n── MaskingUtils (확인 필요) ──\n\nmaskName()이 한 글자 이름을 *로 반환하도록 바뀌었습니다.\n\n사용 예상 위치\n- hr-app EmployeeService.java:8, 12 (복사본 사용)\n- hr-app MaskingUtils.java:10 (복사본(수정됨))\n\n확인 사항\n- 확인 필요: 한 글자 이름을 마스킹 없이 그대로 표시하는 곳이 있는지 확인하세요.\n\nhr-app은 공통 원본을 복사해서 쓰는 파일이라 공통 변경이 자동 반영되지 않습니다.\n\n상세: 20261113-cb69bb1.md"
+    },
+    {
+      "recipient": {
+        "name": "최PL",
+        "email": "pl.choi@example.com",
+        "role": "owner",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "PageRequest", "grade": "breaking", "commit": "cb69bb1", "action": "required" },
+        { "asset": "ApiResponse", "grade": "compatible", "commit": "cb69bb1", "action": "none" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/order/OrderController.java", "line": 11, "usageKind": "import", "action": "required" },
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/order/OrderController.java", "line": 10, "usageKind": "import", "action": "none" },
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/order/OrderController.java", "line": 12, "usageKind": "import", "action": "none" }
+      ],
+      "text": "[공통 변경]\n\n── PageRequest (수정 필요) ──\n\ngetOffset() 반환 타입이 int에서 long으로 바뀌었습니다.\n\nshop-app 영향 대상 1곳\n- 김개발 OrderController.java:11 (import)\n\n확인 사항\n- 수정 필요: getOffset() 결과를 int 변수에 담는 코드를 long으로 수정하세요. 예: long offset = pr.getOffset();\n\n── ApiResponse (기능 추가) ──\n\nfail(code, message) 메서드와 getCode()가 추가되었습니다.\n\nshop-app 영향 대상 1곳\n- 김개발 OrderController.java:10, 12 (import)\n\n상세: 20261113-cb69bb1.md"
+    },
+    {
+      "recipient": {
+        "name": "한PL",
+        "email": "pl.han@example.com",
+        "role": "owner",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "MaskingUtils", "grade": "behavior", "commit": "cb69bb1", "action": "review" }
+      ],
+      "locations": [
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/employee/EmployeeService.java", "line": 8, "usageKind": "copy", "action": "review" },
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/employee/EmployeeService.java", "line": 12, "usageKind": "copy", "action": "review" },
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/util/MaskingUtils.java", "line": 10, "usageKind": "copy-modified", "action": "review" }
+      ],
+      "text": "[공통 변경]\n\n── MaskingUtils (확인 필요) ──\n\nmaskName()이 한 글자 이름을 *로 반환하도록 바뀌었습니다.\n\nhr-app 영향 대상 2곳\n- 박개발 EmployeeService.java:8, 12 (복사본 사용)\n- 박개발 MaskingUtils.java:10 (복사본(수정됨))\n\n확인 사항\n- 확인 필요: 한 글자 이름을 마스킹 없이 그대로 표시하는 곳이 있는지 확인하세요.\n\nhr-app은 공통 원본을 복사해서 쓰는 파일이라 공통 변경이 자동 반영되지 않습니다.\n\n상세: 20261113-cb69bb1.md"
+    }
+  ]
+}
