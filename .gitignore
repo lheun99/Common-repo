@@ -2,3 +2,54 @@
 .intellicen/
 .codegraph/
 __pycache__/
+
+# ===== Added by cleanup =====
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+service-account*.json
+
+# --- OS / editor / tool local files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.iml
+*.swp
+*.log
+*.tmp
+.claude/settings.local.json
+.claude/worktrees/
+.worktrees/
+
+# --- Python ---
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# --- Java / Gradle / Maven / Eclipse ---
+.gradle/
+build/
+target/
+out/
+*.class
+.classpath
+.project
+.settings/
+.metadata/
