@@ -1,0 +1,114 @@
+{
+  "id": "20261116-05b7b21-cd21470-8777d82",
+  "createdAt": "2026-11-16T10:00:00+09:00",
+  "sourceNotification": "20261116-05b7b21-cd21470-8777d82.md",
+  "status": "draft",
+  "broadcasts": [
+    {
+      "asset": "NumberFormatUtils",
+      "commit": "8777d82",
+      "grade": "new",
+      "target": "unresolved",
+      "text": "[공통 신규] NumberFormatUtils\n\n새 공통 자산이 추가되었습니다.\n숫자 표시 형식 유틸 클래스.\n\n상세: 20261116-05b7b21-cd21470-8777d82.md"
+    }
+  ],
+  "messages": [
+    {
+      "recipient": {
+        "name": "김개발",
+        "email": "kim.dev@example.com",
+        "role": "author",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Dept", "grade": "breaking", "commit": "cd21470", "action": "required" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "backend/src/main/java/com/shop/order/OrderDeptLabel.java", "line": 15, "usageKind": "import", "action": "required" }
+      ],
+      "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\n사용 예상 위치\n- shop-app backend/src/main/java/com/shop/order/OrderDeptLabel.java:15 (import)\n\n확인 사항\n- 수정 필요: getDeptName() 호출을 getDeptLabel()로, DeptVO.getDeptName()을 getName()으로 수정하세요. API 응답에서 deptName 필드를 name으로 변경하세요.\n\n상세: 20261116-05b7b21-cd21470-8777d82.md"
+    },
+    {
+      "recipient": {
+        "name": "이개발",
+        "email": "lee.dev@example.com",
+        "role": "author",
+        "projects": ["admin-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Dept", "grade": "breaking", "commit": "cd21470", "action": "required" }
+      ],
+      "locations": [
+        { "project": "admin-app", "file": "frontend/src/pages/DeptTree.tsx", "line": 9, "usageKind": "api-call", "action": "required" },
+        { "project": "admin-app", "file": "backend/src/main/java/com/admin/dept/DeptService.java", "line": 7, "usageKind": "copy", "action": "review" }
+      ],
+      "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\n사용 예상 위치\n- admin-app frontend/src/pages/DeptTree.tsx:9 (API 호출)\n- admin-app backend/src/main/java/com/admin/dept/DeptService.java:7 (복사본(수정됨))\n\n확인 사항\n- 수정 필요: getDeptName() 호출을 getDeptLabel()로, DeptVO.getDeptName()을 getName()으로 수정하세요. API 응답에서 deptName 필드를 name으로 변경하세요.\n- 확인 필요: getDeptName() 호출을 getDeptLabel()로, DeptVO.getDeptName()을 getName()으로 수정하세요. API 응답에서 deptName 필드를 name으로 변경하세요.\n\nadmin-app은 공통 원본을 복사해서 쓰는 파일이라 공통 변경이 자동 반영되지 않습니다. 새 버전 반영 여부를 직접 판단해야 합니다.\n\n상세: 20261116-05b7b21-cd21470-8777d82.md"
+    },
+    {
+      "recipient": {
+        "name": "박개발",
+        "email": "park.dev@example.com",
+        "role": "author",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Dept", "grade": "breaking", "commit": "cd21470", "action": "required" }
+      ],
+      "locations": [
+        { "project": "hr-app", "file": "backend/src/main/java/com/hr/employee/EmployeeDeptService.java", "line": 19, "usageKind": "import", "action": "required" }
+      ],
+      "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\n사용 예상 위치\n- hr-app backend/src/main/java/com/hr/employee/EmployeeDeptService.java:19 (import)\n\n확인 사항\n- 수정 필요: getDeptName() 호출을 getDeptLabel()로, DeptVO.getDeptName()을 getName()으로 수정하세요. API 응답에서 deptName 필드를 name으로 변경하세요.\n\n상세: 20261116-05b7b21-cd21470-8777d82.md"
+    },
+    {
+      "recipient": {
+        "name": "최PL",
+        "email": "pl.choi@example.com",
+        "role": "owner",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Dept", "grade": "breaking", "commit": "cd21470", "action": "required" }
+      ],
+      "locations": [],
+      "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\nshop-app 영향: 1곳\n- 김개발 backend/src/main/java/com/shop/order/OrderDeptLabel.java:15 (import)\n\n상세: 20261116-05b7b21-cd21470-8777d82.md"
+    },
+    {
+      "recipient": {
+        "name": "정PL",
+        "email": "pl.jung@example.com",
+        "role": "owner",
+        "projects": ["admin-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Dept", "grade": "breaking", "commit": "cd21470", "action": "required" }
+      ],
+      "locations": [],
+      "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\nadmin-app 영향: 2곳\n- 이개발 frontend/src/pages/DeptTree.tsx:9 (API 호출)\n- 이개발 backend/src/main/java/com/admin/dept/DeptService.java:7 (복사본(수정됨))\n\nadmin-app은 공통 원본을 복사해서 쓰는 파일이라 공통 변경이 자동 반영되지 않습니다. 새 버전 반영 여부를 직접 판단해야 합니다.\n\n상세: 20261116-05b7b21-cd21470-8777d82.md"
+    },
+    {
+      "recipient": {
+        "name": "한PL",
+        "email": "pl.han@example.com",
+        "role": "owner",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Dept", "grade": "breaking", "commit": "cd21470", "action": "required" }
+      ],
+      "locations": [],
+      "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\nhr-app 영향: 1곳\n- 박개발 backend/src/main/java/com/hr/employee/EmployeeDeptService.java:19 (import)\n\n상세: 20261116-05b7b21-cd21470-8777d82.md"
+    }
+  ]
+}
