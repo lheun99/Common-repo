@@ -1,0 +1,91 @@
+{
+  "id": "20261112-b6395ec",
+  "createdAt": "2026-11-16T10:00:00+09:00",
+  "sourceNotification": "20261112-b6395ec.md",
+  "status": "draft",
+  "broadcasts": [],
+  "messages": [
+    {
+      "recipient": {
+        "name": "김개발",
+        "email": "kim.dev@example.com",
+        "role": "author",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Pagination", "grade": "breaking", "commit": "b6395ec", "action": "required" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "frontend/src/pages/OrderList.tsx", "line": 13, "usageKind": "import", "action": "required" }
+      ],
+      "text": "[공통 변경] Pagination (수정 필요)\n\nonChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.\n\n사용 예상 위치\n- shop-app frontend/src/pages/OrderList.tsx:13 (import)\n\n확인 사항\n- 수정 필요: onChange 핸들러가 객체를 받도록 수정하세요. 예: onChange={({ page }) => setPage(page)}\n\n상세: 20261112-b6395ec.md"
+    },
+    {
+      "recipient": {
+        "name": "박개발",
+        "email": "park.dev@example.com",
+        "role": "author",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Pagination", "grade": "breaking", "commit": "b6395ec", "action": "required" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "frontend/src/pages/ProductList.tsx", "line": 15, "usageKind": "import", "action": "required" }
+      ],
+      "text": "[공통 변경] Pagination (수정 필요)\n\nonChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.\n\n사용 예상 위치\n- shop-app frontend/src/pages/ProductList.tsx:15 (import)\n\n확인 사항\n- 수정 필요: onChange 핸들러가 객체를 받도록 수정하세요. 예: onChange={({ page }) => setPage(page)}\n\n상세: 20261112-b6395ec.md"
+    },
+    {
+      "recipient": {
+        "name": "이개발",
+        "email": "lee.dev@example.com",
+        "role": "author",
+        "projects": ["admin-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Pagination", "grade": "breaking", "commit": "b6395ec", "action": "review" }
+      ],
+      "locations": [
+        { "project": "admin-app", "file": "frontend/src/components/Pagination.tsx", "line": null, "usageKind": "copy", "action": "review" },
+        { "project": "admin-app", "file": "frontend/src/pages/UserList.tsx", "line": 10, "usageKind": "copy-usage", "action": "review" }
+      ],
+      "text": "[공통 변경] Pagination (수정 필요)\n\nonChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.\n\n사용 예상 위치\n- admin-app frontend/src/components/Pagination.tsx (복사본(수정됨))\n- admin-app frontend/src/pages/UserList.tsx:10 (복사본 사용)\n\n확인 사항\n- 확인 필요: onChange 핸들러가 객체를 받도록 수정하세요. 예: onChange={({ page }) => setPage(page)}\n\nadmin-app은 공통 원본을 복사해서 쓰는 파일이라 공통 변경이 자동 반영되지 않습니다. 새 버전 반영 여부를 직접 판단해야 합니다.\n\n상세: 20261112-b6395ec.md"
+    },
+    {
+      "recipient": {
+        "name": "최PL",
+        "email": "pl.choi@example.com",
+        "role": "owner",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Pagination", "grade": "breaking", "commit": "b6395ec", "action": "required" }
+      ],
+      "locations": [],
+      "text": "[공통 변경] Pagination (수정 필요)\n\nonChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.\n\nshop-app 영향: 2곳\n- 김개발 frontend/src/pages/OrderList.tsx:13 (import)\n- 박개발 frontend/src/pages/ProductList.tsx:15 (import)\n\n상세: 20261112-b6395ec.md"
+    },
+    {
+      "recipient": {
+        "name": "정PL",
+        "email": "pl.jung@example.com",
+        "role": "owner",
+        "projects": ["admin-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Pagination", "grade": "breaking", "commit": "b6395ec", "action": "review" }
+      ],
+      "locations": [],
+      "text": "[공통 변경] Pagination (수정 필요)\n\nonChange 인자가 page 숫자에서 { page, pageSize } 객체로 바뀌었습니다.\n\nadmin-app 영향: 2곳\n- 이개발 frontend/src/components/Pagination.tsx (복사본(수정됨))\n- 이개발 frontend/src/pages/UserList.tsx:10 (복사본 사용)\n\nadmin-app은 공통 원본을 복사해서 쓰는 파일이라 공통 변경이 자동 반영되지 않습니다. 새 버전 반영 여부를 직접 판단해야 합니다.\n\n상세: 20261112-b6395ec.md"
+    }
+  ]
+}
