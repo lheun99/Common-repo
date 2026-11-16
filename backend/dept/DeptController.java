@@ -34,7 +34,7 @@ public class DeptController {
     }
 
     /**
-     * 바로 아래 하위 부서 목록을 조회한다.
+     * 바로 아래 하위 부서 목록을 조회한다. 폐지된 부서는 제외한다.
      *
      * @param deptCode 상위 부서 코드
      */

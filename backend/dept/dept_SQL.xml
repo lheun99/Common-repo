@@ -4,7 +4,7 @@
 
     <select id="selectDept" resultType="com.company.common.dept.DeptVO">
         SELECT dept_code        AS deptCode,
-               dept_name        AS deptName,
+               dept_name        AS name,
                parent_dept_code AS parentDeptCode,
                sort_order       AS sortOrder
           FROM tb_common_dept
@@ -13,11 +13,12 @@
 
     <select id="selectChildList" resultType="com.company.common.dept.DeptVO">
         SELECT dept_code        AS deptCode,
-               dept_name        AS deptName,
+               dept_name        AS name,
                parent_dept_code AS parentDeptCode,
                sort_order       AS sortOrder
           FROM tb_common_dept
          WHERE parent_dept_code = #{parentDeptCode}
+           AND use_yn = 'Y'
          ORDER BY sort_order, dept_code
     </select>
 
