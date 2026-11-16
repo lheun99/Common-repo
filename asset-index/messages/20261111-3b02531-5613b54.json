@@ -1,0 +1,73 @@
+{
+  "id": "20261111-3b02531-5613b54",
+  "createdAt": "2026-11-16T10:00:00+09:00",
+  "sourceNotification": "20261111-3b02531-5613b54.md",
+  "status": "draft",
+  "broadcasts": [],
+  "messages": [
+    {
+      "recipient": {
+        "name": "김개발",
+        "email": "kim.dev@example.com",
+        "role": "author",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Button", "grade": "compatible", "commit": "5613b54", "action": "none" }
+      ],
+      "locations": [
+        { "project": "shop-app", "file": "frontend/src/pages/OrderList.tsx", "line": 12, "usageKind": "import", "action": "none" }
+      ],
+      "text": "[공통 변경] Button (기능 추가)\n\nsize prop이 추가되었습니다. (sm/md/lg, 기본 md)\n\n사용 예상 위치\n- shop-app frontend/src/pages/OrderList.tsx:12 (import)\n\n확인 사항\n- size prop을 사용해 버튼 크기를 지정할 수 있습니다. 예: <Button label=\"확인\" size=\"lg\" />\n\n상세: 20261111-3b02531-5613b54.md"
+    },
+    {
+      "recipient": {
+        "name": "박개발",
+        "email": "park.dev@example.com",
+        "role": "author",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Button", "grade": "compatible", "commit": "5613b54", "action": "none" }
+      ],
+      "locations": [
+        { "project": "hr-app", "file": "frontend/src/pages/EmployeeDetail.tsx", "line": 10, "usageKind": "import", "action": "none" }
+      ],
+      "text": "[공통 변경] Button (기능 추가)\n\nsize prop이 추가되었습니다. (sm/md/lg, 기본 md)\n\n사용 예상 위치\n- hr-app frontend/src/pages/EmployeeDetail.tsx:10 (import)\n\n확인 사항\n- size prop을 사용해 버튼 크기를 지정할 수 있습니다. 예: <Button label=\"확인\" size=\"lg\" />\n\n상세: 20261111-3b02531-5613b54.md"
+    },
+    {
+      "recipient": {
+        "name": "최PL",
+        "email": "pl.choi@example.com",
+        "role": "owner",
+        "projects": ["shop-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Button", "grade": "compatible", "commit": "5613b54", "action": "none" }
+      ],
+      "locations": [],
+      "text": "[공통 변경] Button (기능 추가)\n\nsize prop이 추가되었습니다. (sm/md/lg, 기본 md)\n\nshop-app 영향: 1곳\n- 김개발 frontend/src/pages/OrderList.tsx:12 (import)\n\n상세: 20261111-3b02531-5613b54.md"
+    },
+    {
+      "recipient": {
+        "name": "한PL",
+        "email": "pl.han@example.com",
+        "role": "owner",
+        "projects": ["hr-app"],
+        "chatId": "unresolved",
+        "idNote": null
+      },
+      "assets": [
+        { "asset": "Button", "grade": "compatible", "commit": "5613b54", "action": "none" }
+      ],
+      "locations": [],
+      "text": "[공통 변경] Button (기능 추가)\n\nsize prop이 추가되었습니다. (sm/md/lg, 기본 md)\n\nhr-app 영향: 1곳\n- 박개발 frontend/src/pages/EmployeeDetail.tsx:10 (import)\n\n상세: 20261111-3b02531-5613b54.md"
+    }
+  ]
+}
