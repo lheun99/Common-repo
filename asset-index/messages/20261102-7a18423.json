@@ -1,0 +1,16 @@
+{
+  "id": "20261102-7a18423",
+  "createdAt": "2026-11-16T10:00:00+09:00",
+  "sourceNotification": "20261102-7a18423.md",
+  "status": "draft",
+  "broadcasts": [
+    {
+      "asset": "EmptyState",
+      "commit": "7a18423",
+      "grade": "new",
+      "target": "unresolved",
+      "text": "[공통 신규] EmptyState\n\n새 공통 자산이 추가되었습니다.\n\n상세: 20261102-7a18423.md"
+    }
+  ],
+  "messages": []
+}
