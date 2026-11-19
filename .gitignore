@@ -53,3 +53,6 @@ out/
 .project
 .settings/
 .metadata/
+
+# --- Slack 봇 토큰 (알림 발송 테스트용) ---
+.slack-token
