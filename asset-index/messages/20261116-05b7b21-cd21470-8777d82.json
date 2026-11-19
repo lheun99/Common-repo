@@ -41,9 +41,7 @@
           "action": "required"
         }
       ],
-      "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\n사용 예상 위치\n- shop-app backend/src/main/java/com/shop/order/OrderDeptLabel.java:15 (import)\n\n확인 사항\n- 수정 필요: getDeptName() 호출을 getDeptLabel()로, DeptVO.getDeptName()을 getName()으로 수정하세요. API 응답에서 deptName 필드를 name으로 변경하세요.\n\n상세: 20261116-05b7b21-cd21470-8777d82.md",
-      "sentAt": "2026-11-19T05:45:41+09:00",
-      "slackTs": "1795067141.033159"
+      "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\n사용 예상 위치\n- shop-app backend/src/main/java/com/shop/order/OrderDeptLabel.java:15 (import)\n\n확인 사항\n- 수정 필요: getDeptName() 호출을 getDeptLabel()로, DeptVO.getDeptName()을 getName()으로 수정하세요. API 응답에서 deptName 필드를 name으로 변경하세요.\n\n상세: 20261116-05b7b21-cd21470-8777d82.md"
     },
     {
       "recipient": {
@@ -113,8 +111,9 @@
         }
       ],
       "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\n사용 예상 위치\n- hr-app backend/src/main/java/com/hr/employee/EmployeeDeptService.java:19 (import)\n\n확인 사항\n- 수정 필요: getDeptName() 호출을 getDeptLabel()로, DeptVO.getDeptName()을 getName()으로 수정하세요. API 응답에서 deptName 필드를 name으로 변경하세요.\n\n상세: 20261116-05b7b21-cd21470-8777d82.md",
-      "sentAt": "2026-11-19T05:45:41+09:00",
-      "slackTs": "1795067141.873799"
+      "sentAt": "2026-11-19T06:20:01+09:00",
+      "slackTs": "1795069201.110859",
+      "sendCount": 2
     },
     {
       "recipient": {
@@ -183,5 +182,5 @@
       "text": "[공통 변경] Dept (수정 필요)\n\nDept 부서 조회 API가 추가되었습니다.\ngetDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다.\n\nhr-app 영향: 1곳\n- 박개발 backend/src/main/java/com/hr/employee/EmployeeDeptService.java:19 (import)\n\n상세: 20261116-05b7b21-cd21470-8777d82.md"
     }
   ],
-  "sentAt": "2026-11-19T05:45:41+09:00"
+  "sentAt": "2026-11-19T06:20:01+09:00"
 }
