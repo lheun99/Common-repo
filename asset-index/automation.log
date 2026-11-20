@@ -28,5 +28,3 @@
 [2026-11-13T01:37:23Z] commit cb69bb1 → index의 PageRequest(backend-module) 갱신함: usage, detail [breaking]
 [2026-11-13T01:37:23Z] commit cb69bb1 → index의 MaskingUtils(backend-module) 갱신함: detail [behavior]
 [2026-11-13T01:37:23Z] commit cb69bb1 → index의 FileUploadResult(backend-module) 갱신함: detail [docs]
-[2026-11-16T04:44:22Z] commit 05b7b21 → index에 Dept(backend-feature) 추가함 [new] (생성 포함: 사용 예, 승인)
-[2026-11-16T04:53:47Z] commit cd21470 → index의 Dept(backend-feature) 갱신함: usage, detail [breaking]

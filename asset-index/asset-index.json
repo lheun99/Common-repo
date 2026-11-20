@@ -408,39 +408,6 @@
       "history": [
         { "commit": "8777d82", "at": "2026-11-12T07:52:22Z", "grade": "new", "summary": "NumberFormatUtils가 추가되었습니다." }
       ]
-    },
-    {
-      "type": "backend-feature",
-      "name": "Dept",
-      "path": "common-repo/backend/dept/DeptController.java",
-      "files": [
-        "common-repo/backend/dept/DeptController.java",
-        "common-repo/backend/dept/DeptService.java",
-        "common-repo/backend/dept/DeptServiceImpl.java",
-        "common-repo/backend/dept/DeptMapper.java",
-        "common-repo/backend/dept/DeptVO.java",
-        "common-repo/backend/dept/dept_SQL.xml"
-      ],
-      "purpose": "부서 조회 API.",
-      "api": [
-        "GET /api/depts/{deptCode}",
-        "GET /api/depts/{deptCode}/children"
-      ],
-      "usage": [
-        "DeptVO getDept(String deptCode)",
-        "String getDeptLabel(String deptCode)",
-        "List<DeptVO> getChildDepts(String parentDeptCode)"
-      ],
-      "detail": "[설명]\n- 화면에서 부서 이름이나 조직도를 보여 줄 때 사용한다.\n- 서버 코드에서는 DeptService를 주입해서 직접 호출한다.\n[사용 예]\n  GET /api/depts/D100\n  → { \"success\": true, \"data\": { \"deptCode\": \"D100\", \"name\": \"영업1팀\", \"parentDeptCode\": \"D10\", \"sortOrder\": 1 } }\n  DeptVO dept = deptService.getDept(\"D100\");\n  String name = deptService.getDeptLabel(\"D100\");\n  List<DeptVO> children = deptService.getChildDepts(\"D10\");\n[동작]\n- deptCode가 null이거나 빈 문자열이면 IllegalArgumentException이 던져진다.\n- 하위 부서 목록은 sortOrder, deptCode 순서로 정렬된다.\n- 폐지된 부서는 하위 부서 목록에서 제외된다.\n[API]\n- GET /api/depts/{deptCode}: 부서 한 건 조회\n  요청: deptCode(문자열, 필수)\n  응답: { success, data: { deptCode, name, parentDeptCode, sortOrder } }\n  실패: deptCode가 null이거나 빈 문자열이면 → IllegalArgumentException\n- GET /api/depts/{deptCode}/children: 하위 부서 목록 조회\n  요청: deptCode(문자열, 필수)\n  응답: { success, data: [{ deptCode, name, parentDeptCode, sortOrder }] }\n  실패: deptCode가 null이거나 빈 문자열이면 → IllegalArgumentException\n[메서드]\n- getDept(deptCode): 부서 정보. 없으면 null\n- getDeptLabel(deptCode): 부서 이름. 없으면 빈 문자열\n- getChildDepts(parentDeptCode): 바로 아래 하위 부서 목록",
-      "related": ["ApiResponse"],
-      "addedInCommit": "05b7b21",
-      "addedAt": "2026-11-16T04:44:22Z",
-      "updatedInCommit": "cd21470",
-      "updatedAt": "2026-11-16T04:53:47Z",
-      "history": [
-        { "commit": "05b7b21", "at": "2026-11-16T04:44:22Z", "grade": "new", "summary": "Dept 부서 조회 API가 추가되었습니다." },
-        { "commit": "cd21470", "at": "2026-11-16T04:53:47Z", "grade": "breaking", "summary": "getDeptName()이 getDeptLabel()로 이름이 바뀌었고, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 목록에서 폐지된 부서가 제외됩니다." }
-      ]
     }
   ]
 }
