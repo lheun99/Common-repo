@@ -1,0 +1,31 @@
+{
+  "commit": "f9d36fe",
+  "committedAt": "2026-11-20T05:22:58Z",
+  "subject": "refactor: DeptVO deptName 필드를 name으로 변경, getDeptName을 getDeptLabel로 변경, 하위 부서 조회에 폐지 부서 제외",
+  "changes": [
+    {
+      "asset": "Dept",
+      "type": "backend-feature",
+      "path": "common-repo/backend/dept/DeptController.java",
+      "fileStatus": "M",
+      "grade": "breaking",
+      "summary": "getDeptName()이 getDeptLabel()로, DeptVO의 deptName 필드가 name으로 변경되었습니다. 하위 부서 조회에서 폐지된 부서가 제외됩니다.",
+      "details": [
+        { "what": "DeptService 메서드 이름", "before": "String getDeptName(String deptCode)", "after": "String getDeptLabel(String deptCode)" },
+        { "what": "DeptVO 필드/JSON 응답 필드", "before": "deptName", "after": "name" },
+        { "what": "하위 부서 조회 조건", "before": null, "after": "use_yn = 'Y' (폐지 부서 제외)" }
+      ],
+      "action": "getDeptName() 호출을 getDeptLabel()로, DeptVO의 getDeptName()을 getName()으로 수정하세요. JSON 응답에서 deptName 필드를 name으로 수정하세요.",
+      "scanHints": ["getDeptName", "deptName"],
+      "affectedApi": ["GET /api/depts/{deptCode}", "GET /api/depts/{deptCode}/children", "getDeptName"],
+      "changedFiles": [
+        "common-repo/backend/dept/DeptController.java",
+        "common-repo/backend/dept/DeptService.java",
+        "common-repo/backend/dept/DeptServiceImpl.java",
+        "common-repo/backend/dept/DeptVO.java",
+        "common-repo/backend/dept/dept_SQL.xml"
+      ]
+    }
+  ],
+  "notified": false
+}
