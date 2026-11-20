@@ -14,5 +14,7 @@
       "action": "부서 조회가 필요한 화면이나 서버 코드에서 DeptService를 주입하거나 API를 호출하세요."
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-20T15:00:00+09:00",
+  "notification": "20261120-f9d36fe-ff2954a-8777d82.md"
 }

@@ -27,5 +27,7 @@
       ]
     }
   ],
-  "notified": false
+  "notified": true,
+  "notifiedAt": "2026-11-20T15:00:00+09:00",
+  "notification": "20261120-f9d36fe-ff2954a-8777d82.md"
 }
