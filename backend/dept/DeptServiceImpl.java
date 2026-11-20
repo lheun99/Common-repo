@@ -23,9 +23,9 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
-    public String getDeptName(String deptCode) {
+    public String getDeptLabel(String deptCode) {
         DeptVO dept = getDept(deptCode);
-        return (dept != null) ? dept.getDeptName() : "";
+        return (dept != null) ? dept.getName() : "";
     }
 
     @Override

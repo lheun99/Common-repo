@@ -9,7 +9,7 @@ public class DeptVO {
     private String deptCode;
 
     /** 부서 이름 (예: 영업1팀) */
-    private String deptName;
+    private String name;
 
     /** 상위 부서 코드. 최상위 부서는 null */
     private String parentDeptCode;
@@ -25,12 +25,12 @@ public class DeptVO {
         this.deptCode = deptCode;
     }
 
-    public String getDeptName() {
-        return deptName;
+    public String getName() {
+        return name;
     }
 
-    public void setDeptName(String deptName) {
-        this.deptName = deptName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getParentDeptCode() {

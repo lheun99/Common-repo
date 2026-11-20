@@ -17,7 +17,7 @@ public interface DeptService {
      * @param deptCode 부서 코드
      * @return 부서 이름. 없으면 빈 문자열
      */
-    String getDeptName(String deptCode);
+    String getDeptLabel(String deptCode);
 
     /**
      * @param parentDeptCode 상위 부서 코드
