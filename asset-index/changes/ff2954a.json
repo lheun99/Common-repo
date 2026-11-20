@@ -1,0 +1,18 @@
+{
+  "commit": "ff2954a",
+  "committedAt": "2026-11-20T14:16:44+09:00",
+  "subject": "feat: Dept 부서 조회 API 추가",
+  "changes": [
+    {
+      "asset": "Dept",
+      "type": "backend-feature",
+      "path": "common-repo/backend/dept/DeptController.java",
+      "fileStatus": "A",
+      "grade": "new",
+      "summary": "Dept 부서 조회 API가 추가되었습니다.",
+      "details": [],
+      "action": "부서 조회가 필요한 화면이나 서버 코드에서 DeptService를 주입하거나 API를 호출하세요."
+    }
+  ],
+  "notified": false
+}
