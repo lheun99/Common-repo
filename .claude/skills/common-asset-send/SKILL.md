@@ -52,7 +52,7 @@ description: 공통팀이 "알림 보내줘", "알림 메시지 발송해줘", "
 ### 4. 기록 커밋
 메시지 파일만 커밋한다.
 ```
-git -C common-repo add <메시지 파일>
+git -C common-repo add <메시지 파일>   # 파일 이름에 공백·괄호가 있으므로 경로는 따옴표로 감싼다
 git -C common-repo commit -m "docs: 알림 발송 기록 (<파일 이름>)" -m "- Slack 전송 <N>건, 건너뜀 <S>건, 실패 <F>건" -- <메시지 파일>
 ```
 push는 묻고 진행한다.
